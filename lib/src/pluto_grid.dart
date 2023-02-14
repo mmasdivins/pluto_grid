@@ -15,6 +15,9 @@ typedef PlutoOnLoadedEventCallback = void Function(
 typedef PlutoOnChangedEventCallback = void Function(
     PlutoGridOnChangedEvent event);
 
+typedef PlutoOnRowChangedEventCallback = void Function(
+    PlutoGridOnRowChangedEvent event);
+
 typedef PlutoOnSelectedEventCallback = void Function(
     PlutoGridOnSelectedEvent event);
 
@@ -61,6 +64,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.columnGroups,
     this.onLoaded,
     this.onChanged,
+    this.onRowChanged,
     this.onSelected,
     this.onSorted,
     this.onRowChecked,
@@ -152,6 +156,8 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// The [onChanged] callback is not called.
   /// {@endtemplate}
   final PlutoOnChangedEventCallback? onChanged;
+
+  final PlutoOnRowChangedEventCallback? onRowChanged;
 
   /// {@template pluto_grid_property_onSelected}
   /// [onSelected] can receive a response only if [PlutoGrid.mode] is set to [PlutoGridMode.select] .
@@ -507,6 +513,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       ),
       columnGroups: widget.columnGroups,
       onChanged: widget.onChanged,
+      onRowChanged: widget.onRowChanged,
       onSelected: widget.onSelected,
       onSorted: widget.onSorted,
       onRowChecked: widget.onRowChecked,
@@ -1288,6 +1295,28 @@ class PlutoGridOnChangedEvent {
     return out;
   }
 }
+
+class PlutoGridOnRowChangedEvent {
+  final int rowIdx;
+  final PlutoRow row;
+  final Map<String,dynamic> oldCellValues;
+
+  const PlutoGridOnRowChangedEvent({
+    required this.rowIdx,
+    required this.row,
+    required this.oldCellValues,
+  });
+
+  @override
+  String toString() {
+    String out = '[PlutoGridOnRowChangedEvent] ';
+    out += 'RowIndex : $rowIdx\n';
+    out += '::: oldCellValues : $oldCellValues\n';
+    out += '::: row : $row';
+    return out;
+  }
+}
+
 
 /// This is the argument value of the [PlutoGrid.onSelected] callback
 /// that is called when the [PlutoGrid.mode] value is in select mode.

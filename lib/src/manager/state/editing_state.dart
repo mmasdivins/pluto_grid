@@ -238,7 +238,19 @@ mixin EditingState implements IPlutoGridState {
 
     currentRow.setState(PlutoRowState.updated);
 
+    // Abans d'actualitzar el cell value notifiquem
+    // de que la fila s'ha modificat
+    trackRowCell(
+      refRows.indexOf(currentRow),
+      currentRow
+    );
+
     cell.value = value;
+
+    // Notifiquem que s'ha canviat
+    if (currentCellPosition?.rowIdx != null) {
+      notifyTrackingRow(currentCellPosition!.rowIdx!);
+    }
 
     if (callOnChangedEvent == true && onChanged != null) {
       onChanged!(PlutoGridOnChangedEvent(

@@ -212,6 +212,10 @@ mixin CellState implements IPlutoGridState {
 
     setEditing(autoEditing, notify: false);
 
+    // If row changed notifiy changed row
+
+    notifyTrackingRow(rowIdx);
+
     notifyListeners(notify, setCurrentCell.hashCode);
   }
 

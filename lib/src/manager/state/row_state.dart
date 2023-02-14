@@ -1,9 +1,18 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid/src/manager/state/cell_state.dart';
+
+class RowEditingState {
+  int? indexRow;
+  Map<String, dynamic>? cellValues;
+  PlutoRow? newRow;
+}
 
 abstract class IRowState {
   List<PlutoRow> get rows;
+
+  RowEditingState get rowEditingState;
 
   /// [refRows] is a List<PlutoRow> type and holds the entire row data.
   ///
@@ -97,11 +106,20 @@ abstract class IRowState {
     bool flag, {
     bool notify = true,
   });
+
+  void trackRowCell(int idxRow, PlutoRow row);
+
+  void notifyTrackingRow(int idxRow);
 }
 
 mixin RowState implements IPlutoGridState {
   @override
   List<PlutoRow> get rows => [...refRows];
+
+  RowEditingState _rowEditingState = RowEditingState();
+
+  @override
+  RowEditingState get rowEditingState => _rowEditingState;
 
   @override
   List<PlutoRow> get checkedRows => refRows.where((row) => row.checked!).toList(
@@ -552,4 +570,35 @@ mixin RowState implements IPlutoGridState {
       row.sortIdx += increase;
     }
   }
+
+  @override
+  void trackRowCell(int idxRow, PlutoRow row){
+    if (_rowEditingState.cellValues == null){
+      Map<String,dynamic> cellValues = <String,dynamic>{};
+      row.cells.forEach((key, cell) {
+        cellValues[key] = cell.value;
+      });
+      _rowEditingState.cellValues = cellValues;
+    }
+    _rowEditingState.indexRow ??= idxRow;
+    _rowEditingState.newRow ??= refRows[idxRow];
+  }
+
+  void notifyTrackingRow(int idxRow){
+    if (_rowEditingState.indexRow != null && _rowEditingState.indexRow != idxRow){
+      // S'ha canviat la fila seleccionada enviem els canvis si n'hi havia
+      // de la fila que modificavem
+      var originalRow = refRows.originalList[_rowEditingState.indexRow!];
+
+      onRowChanged?.call(PlutoGridOnRowChangedEvent(
+          rowIdx: idxRow,
+          row: _rowEditingState.newRow!,
+          oldCellValues: _rowEditingState.cellValues!
+      ));
+
+      // Reiniciem el row editing state
+      _rowEditingState = RowEditingState();
+    }
+  }
+
 }

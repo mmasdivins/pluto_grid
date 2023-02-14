@@ -71,6 +71,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     required this.scroll,
     List<PlutoColumnGroup>? columnGroups,
     this.onChanged,
+    this.onRowChanged,
     this.onSelected,
     this.onSorted,
     this.onRowChecked,
@@ -117,6 +118,9 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
   @override
   final PlutoOnChangedEventCallback? onChanged;
+
+  @override
+  final PlutoOnRowChangedEventCallback? onRowChanged;
 
   @override
   final PlutoOnSelectedEventCallback? onSelected;
@@ -215,6 +219,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     required super.scroll,
     super.columnGroups,
     super.onChanged,
+    super.onRowChanged,
     super.onSelected,
     super.onSorted,
     super.onRowChecked,

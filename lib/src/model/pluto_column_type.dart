@@ -154,6 +154,15 @@ abstract class PlutoColumnType {
     );
   }
 
+
+  factory PlutoColumnType.custom({
+    dynamic defaultValue,
+  }) {
+    return PlutoColumnTypeCustom(
+      defaultValue: defaultValue,
+    );
+  }
+
   bool isValid(dynamic value);
 
   int compare(dynamic a, dynamic b);
@@ -173,6 +182,8 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
   bool get isDate => this is PlutoColumnTypeDate;
 
   bool get isTime => this is PlutoColumnTypeTime;
+
+  bool get isCustom => this is PlutoColumnTypeCustom;
 
   PlutoColumnTypeText get text {
     if (this is! PlutoColumnTypeText) {
@@ -220,6 +231,14 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
     }
 
     return this as PlutoColumnTypeTime;
+  }
+
+  PlutoColumnTypeCustom get custom{
+    if (this is! PlutoColumnTypeCustom) {
+      throw TypeError();
+    }
+
+    return this as PlutoColumnTypeCustom;
   }
 
   bool get hasFormat => this is PlutoColumnTypeHasFormat;
@@ -500,6 +519,30 @@ class PlutoColumnTypeTime
   @override
   int compare(dynamic a, dynamic b) {
     return _compareWithNull(a, b, () => a.toString().compareTo(b.toString()));
+  }
+
+  @override
+  dynamic makeCompareValue(dynamic v) {
+    return v;
+  }
+}
+
+class PlutoColumnTypeCustom implements PlutoColumnType {
+  @override
+  final dynamic defaultValue;
+
+  const PlutoColumnTypeCustom({
+    this.defaultValue,
+  });
+
+  @override
+  bool isValid(dynamic value) {
+    return true;
+  }
+
+  @override
+  int compare(dynamic a, dynamic b) {
+    return _compareWithNull(a, b, () => a.compareTo(b));
   }
 
   @override
