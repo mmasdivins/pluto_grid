@@ -34,6 +34,8 @@ abstract class IGridState {
 
   CreateHeaderCallBack? get createHeader;
 
+  CreateColumnIndexCallBack? get createColumnIndex;
+
   CreateFooterCallBack? get createFooter;
 
   PlutoGridLocaleText get localeText;

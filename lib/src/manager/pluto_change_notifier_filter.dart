@@ -111,6 +111,7 @@ abstract class PlutoChangeNotifierFilterResolver {
       /// layout_state
       stateManager.setShowColumnTitle.hashCode: 'setShowColumnTitle',
       stateManager.setShowColumnFooter.hashCode: 'setShowColumnFooter',
+      stateManager.setShowColumnIndex.hashCode: 'setShowColumnIndex',
       stateManager.setShowColumnFilter.hashCode: 'setShowColumnFilter',
       stateManager.setShowLoading.hashCode: 'setShowLoading',
       stateManager.notifyChangedShowFrozenColumn.hashCode:
@@ -190,6 +191,7 @@ class PlutoNotifierFilterResolverDefault
       stateManager.setShowColumnTitle.hashCode,
       stateManager.setShowColumnFilter.hashCode,
       stateManager.setShowColumnFooter.hashCode,
+      stateManager.setShowColumnIndex.hashCode,
       stateManager.setShowColumnGroups.hashCode,
       stateManager.setShowLoading.hashCode,
       stateManager.toggleFrozenColumn.hashCode,

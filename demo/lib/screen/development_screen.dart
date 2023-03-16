@@ -501,6 +501,11 @@ class _HeaderState extends State<_Header> {
         .setShowColumnFooter(!widget.stateManager.showColumnFooter);
   }
 
+  void handleToggleColumnIndex() {
+    widget.stateManager
+        .setShowColumnIndex(!widget.stateManager.showColumnIndex);
+  }
+
   void handleSelectingMode(Object? mode) {
     setState(() {
       gridSelectingMode = mode as PlutoGridSelectingMode;

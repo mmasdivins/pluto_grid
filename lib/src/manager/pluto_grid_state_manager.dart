@@ -82,6 +82,8 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     this.rowColorCallback,
     this.createHeader,
     this.createFooter,
+    this.createColumnIndex,
+    this.showColumnIndex = false,
     PlutoColumnMenuDelegate? columnMenuDelegate,
     PlutoChangeNotifierFilterResolver? notifierFilterResolver,
     PlutoGridConfiguration configuration = const PlutoGridConfiguration(),
@@ -150,6 +152,12 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
   final CreateHeaderCallBack? createHeader;
 
   @override
+  final CreateColumnIndexCallBack? createColumnIndex;
+
+  @override
+  final bool showColumnIndex;
+
+  @override
   final CreateFooterCallBack? createFooter;
 
   @override
@@ -174,6 +182,8 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
       refColumns.originalList.any((e) => e.footerRenderer != null),
       notify: false,
     );
+
+    setShowColumnIndex(showColumnIndex, notify: false);
 
     setGroupToColumn();
   }
@@ -230,6 +240,8 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     super.rowColorCallback,
     super.createHeader,
     super.createFooter,
+    super.createColumnIndex,
+    super.showColumnIndex,
     super.columnMenuDelegate,
     super.notifierFilterResolver,
     super.configuration,

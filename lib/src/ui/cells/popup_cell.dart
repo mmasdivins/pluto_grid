@@ -46,6 +46,10 @@ mixin PopupCellState<T extends PopupCell> on State<T>
   /// Implement a callback function that takes [PlutoGridStateManager] as a parameter.
   CreateHeaderCallBack? createHeader;
 
+  /// Callback function that returns Column Index to be inserted at the popup
+  /// Implement a callback function that takes [PlutoGridStateManager] as a parameter.
+  CreateColumnIndexCallBack? createColumnIndex;
+
   /// Callback function that returns Footer to be inserted at the bottom of the popup
   /// Implement a callback function that takes [PlutoGridStateManager] as a parameter.
   CreateFooterCallBack? createFooter;
@@ -94,6 +98,7 @@ mixin PopupCellState<T extends PopupCell> on State<T>
           1,
       height: popupHeight,
       createHeader: createHeader,
+      createColumnIndex: createColumnIndex,
       createFooter: createFooter,
       configuration: widget.stateManager.configuration.copyWith(
         tabKeyAction: PlutoGridTabKeyAction.normal,

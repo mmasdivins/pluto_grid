@@ -538,6 +538,9 @@ class PlutoDualGridProps {
   /// {@macro pluto_grid_property_createHeader}
   final CreateHeaderCallBack? createHeader;
 
+  /// {@macro pluto_grid_property_createColumnIndex}
+  final CreateColumnIndexCallBack? createColumnIndex;
+
   /// {@macro pluto_grid_property_createFooter}
   final CreateFooterCallBack? createFooter;
 
@@ -581,6 +584,7 @@ class PlutoDualGridProps {
     this.onColumnsMoved,
     this.createHeader,
     this.createFooter,
+    this.createColumnIndex,
     this.noRowsWidget,
     this.rowColorCallback,
     this.columnMenuDelegate,
@@ -602,6 +606,7 @@ class PlutoDualGridProps {
     PlutoOptional<PlutoOnRowsMovedEventCallback?>? onRowsMoved,
     PlutoOptional<PlutoOnColumnsMovedEventCallback?>? onColumnsMoved,
     PlutoOptional<CreateHeaderCallBack?>? createHeader,
+    PlutoOptional<CreateColumnIndexCallBack?>? createColumnIndex,
     PlutoOptional<CreateFooterCallBack?>? createFooter,
     PlutoOptional<Widget?>? noRowsWidget,
     PlutoOptional<PlutoRowColorCallback?>? rowColorCallback,
@@ -630,6 +635,8 @@ class PlutoDualGridProps {
           onColumnsMoved == null ? this.onColumnsMoved : onColumnsMoved.value,
       createHeader:
           createHeader == null ? this.createHeader : createHeader.value,
+      createColumnIndex:
+        createColumnIndex == null ? this.createColumnIndex : createColumnIndex.value,
       createFooter:
           createFooter == null ? this.createFooter : createFooter.value,
       noRowsWidget:

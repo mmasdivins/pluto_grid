@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show Intl;
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid/src/ui/pluto_column_index.dart';
 
 import 'helper/platform_helper.dart';
 import 'ui/ui.dart';
@@ -42,6 +43,9 @@ typedef PlutoOnColumnsMovedEventCallback = void Function(
 typedef CreateHeaderCallBack = Widget Function(
     PlutoGridStateManager stateManager);
 
+typedef CreateColumnIndexCallBack = Widget? Function(int index,
+    PlutoGridStateManager stateManager);
+
 typedef CreateFooterCallBack = Widget Function(
     PlutoGridStateManager stateManager);
 
@@ -74,6 +78,8 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onColumnsMoved,
     this.createHeader,
     this.createFooter,
+    this.createColumnIndex,
+    this.showColumnIndex = false,
     this.noRowsWidget,
     this.rowColorCallback,
     this.columnMenuDelegate,
@@ -228,6 +234,12 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// {@endtemplate}
   final CreateHeaderCallBack? createHeader;
 
+  /// Modifica la columna dels index
+  final CreateColumnIndexCallBack? createColumnIndex;
+
+  /// Indica si crea la columna index
+  final bool showColumnIndex;
+
   /// {@template pluto_grid_property_createFooter}
   /// [createFooter] is equivalent to [createHeader].
   /// However, it is located at the bottom of the grid.
@@ -366,6 +378,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
 
   bool _showColumnFooter = false;
 
+  bool _showColumnIndex = false;
+
   bool _showColumnGroups = false;
 
   bool _showFrozenColumn = false;
@@ -383,6 +397,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
   double _rightFrozenLeftOffset = 0.0;
 
   Widget? _header;
+
+  Widget? _columnIndex;
 
   Widget? _footer;
 
@@ -418,6 +434,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
     _initSelectMode();
 
     _initHeaderFooter();
+
+    _initColumnIndex();
 
     _disposeList.add(() {
       _gridFocusNode.dispose();
@@ -459,6 +477,11 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
     _showColumnFooter = update<bool>(
       _showColumnFooter,
       stateManager.showColumnFooter,
+    );
+
+    _showColumnIndex = update<bool>(
+      _showColumnIndex,
+      stateManager.showColumnIndex,
     );
 
     _showColumnGroups = update<bool>(
@@ -524,6 +547,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       rowColorCallback: widget.rowColorCallback,
       createHeader: widget.createHeader,
       createFooter: widget.createFooter,
+      createColumnIndex: widget.createColumnIndex,
+      showColumnIndex: widget.showColumnIndex,
       columnMenuDelegate: widget.columnMenuDelegate,
       notifierFilterResolver: widget.notifierFilterResolver,
       configuration: widget.configuration,
@@ -600,6 +625,11 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
     }
   }
 
+
+  void _initColumnIndex() {
+    _stateManager.setShowColumnIndex(widget.showColumnIndex, notify: true);
+  }
+
   KeyEventResult _handleGridFocusOnKey(FocusNode focusNode, RawKeyEvent event) {
     if (_keyManager.eventResult.isSkip == false) {
       _keyManager.subject.add(PlutoKeyManagerEvent(
@@ -635,6 +665,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
 
             final bool showColumnFooter = _stateManager.showColumnFooter;
 
+            final bool showColumnIndex = _stateManager.showColumnIndex;
+
             return CustomMultiChildLayout(
               key: _stateManager.gridKey,
               delegate: PlutoGridLayoutDelegate(
@@ -647,6 +679,13 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
                   id: _StackName.bodyRows,
                   child: PlutoBodyRows(_stateManager),
                 ),
+
+                if (showColumnIndex)
+                  LayoutId(
+                    id: _StackName.bodyColumnsIndex,
+                    child: PlutoColumnIndex(_stateManager),
+                  ),
+
                 LayoutId(
                   id: _StackName.bodyColumns,
                   child: PlutoBodyColumns(_stateManager),
@@ -969,6 +1008,55 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
         bodyLeftOffset += s.width;
       }
     }
+
+    if (hasChild(_StackName.bodyColumnsIndex)) {
+      var s = layoutChild(
+        _StackName.bodyColumnsIndex,
+        BoxConstraints.tight(
+          Size(
+            20,
+            _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
+          ),
+        ),
+      );
+
+      final double posX = isLTR
+          ? bodyLeftOffset
+          : size.width - bodyRightOffset - PlutoGridSettings.gridBorderWidth;
+
+      positionChild(
+        _StackName.bodyColumnsIndex,
+        Offset(posX, columnsTopOffset),
+      );
+
+      if (isLTR) {
+        bodyLeftOffset += s.width;
+      } else {
+        bodyRightOffset += s.width;
+      }
+    }
+
+    // if (hasChild(_StackName.bodyColumnsIndex)) {
+    //   var s = layoutChild(
+    //     _StackName.bodyColumnsIndex,
+    //     BoxConstraints.loose(
+    //       Size(
+    //         _safe(size.width - bodyLeftOffset - bodyRightOffset),
+    //         size.height - columnsTopOffset - bodyRowsBottomOffset,
+    //       ),
+    //     ),
+    //   );
+    //
+    //   final double posX =
+    //   isLTR ? bodyLeftOffset : size.width - s.width - bodyRightOffset;
+    //
+    //   positionChild(
+    //     _StackName.bodyColumnsIndex,
+    //     Offset(posX, columnsTopOffset),
+    //   );
+    //
+    //   bodyRowsTopOffset += s.height;
+    // }
 
     if (hasChild(_StackName.bodyColumns)) {
       var s = layoutChild(
@@ -1734,6 +1822,7 @@ enum _StackName {
   leftFrozenColumnFooters,
   leftFrozenRows,
   leftFrozenDivider,
+  bodyColumnsIndex,
   bodyColumns,
   bodyColumnFooters,
   bodyRows,
