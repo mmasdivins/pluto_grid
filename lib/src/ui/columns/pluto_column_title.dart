@@ -505,6 +505,8 @@ class _ColumnTextWidget extends PlutoStatefulWidget {
 
 class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
   bool _isFilteredList = false;
+  bool _focusInColumn = false;
+
 
   @override
   PlutoGridStateManager get stateManager => widget.stateManager;
@@ -521,6 +523,18 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
     _isFilteredList = update<bool>(
       _isFilteredList,
       stateManager.isFilteredColumn(widget.column),
+    );
+
+
+    bool inColumn = false;
+    var ci = stateManager.columnIndex(widget.column);
+    var ccp = stateManager.currentCellPosition;
+    if (ccp != null && ccp.columnIdx == ci){
+      inColumn = true;
+    }
+    _focusInColumn = update<bool>(
+      _focusInColumn,
+      inColumn,
     );
   }
 
@@ -556,12 +570,13 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     return Text.rich(
       TextSpan(
         text: _title,
         children: _children,
       ),
-      style: stateManager.configuration.style.columnTextStyle,
+      style: _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle,
       overflow: TextOverflow.ellipsis,
       softWrap: false,
       maxLines: 1,

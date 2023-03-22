@@ -21,7 +21,7 @@ class PlutoColumnIndexState extends PlutoStateWithChange<PlutoColumnIndex> {
 
   List<PlutoRow> _rows = [];
 
-  // late final ScrollController _verticalScroll;
+  late final ScrollController _verticalScroll;
 
   // late final ScrollController _horizontalScroll;
 
@@ -36,16 +36,16 @@ class PlutoColumnIndexState extends PlutoStateWithChange<PlutoColumnIndex> {
     //
     // stateManager.scroll.setBodyRowsHorizontal(_horizontalScroll);
     //
-    // _verticalScroll = stateManager.scroll.vertical!.addAndGet();
+    _verticalScroll = stateManager.scroll.vertical!.addAndGet();
     //
-    // stateManager.scroll.setBodyRowsVertical(_verticalScroll);
+    stateManager.scroll.setBodyRowsVertical(_verticalScroll);
 
     updateState(PlutoNotifierEventForceUpdate.instance);
   }
 
   @override
   void dispose() {
-    // _verticalScroll.dispose();
+    _verticalScroll.dispose();
 
     // _horizontalScroll.dispose();
 
@@ -87,7 +87,7 @@ class PlutoColumnIndexState extends PlutoStateWithChange<PlutoColumnIndex> {
           child: CustomSingleChildLayout(
             delegate: ListResizeDelegate(stateManager, _columns),
             child: ListView.builder(
-              // controller: _verticalScroll,
+              controller: _verticalScroll,
               scrollDirection: Axis.vertical,
               physics: const ClampingScrollPhysics(),
               itemCount: _rows.length,
@@ -96,14 +96,18 @@ class PlutoColumnIndexState extends PlutoStateWithChange<PlutoColumnIndex> {
               itemBuilder: (ctx, i) {
                 var index = "${i+1}";
 
+                bool isRowFocused = false;
                 var ccp = stateManager.currentCellPosition;
                 Color? color;
                 if (ccp != null && ccp.rowIdx == i){
+                  isRowFocused = true;
                   color = style.activatedColor;
                 }
 
                 Widget widget = Center(
-                  child: Text(index),
+                  child: Text(index, style: TextStyle(
+                    fontWeight: isRowFocused ? FontWeight.bold : FontWeight.normal,
+                  )),
                 );
 
                 if (stateManager.createColumnIndex != null){

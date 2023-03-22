@@ -228,6 +228,12 @@ class PlutoGridStyleConfig {
       fontSize: 14,
       fontWeight: FontWeight.w600,
     ),
+    this.columnSelectedTextStyle = const TextStyle(
+      color: Colors.black,
+      decoration: TextDecoration.none,
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+    ),
     this.cellTextStyle = const TextStyle(
       color: Colors.black,
       fontSize: 14,
@@ -279,6 +285,12 @@ class PlutoGridStyleConfig {
     this.defaultColumnFilterPadding = PlutoGridSettings.columnFilterPadding,
     this.defaultCellPadding = PlutoGridSettings.cellPadding,
     this.columnTextStyle = const TextStyle(
+      color: Colors.white,
+      decoration: TextDecoration.none,
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+    ),
+    this.columnSelectedTextStyle = const TextStyle(
       color: Colors.white,
       decoration: TextDecoration.none,
       fontSize: 14,
@@ -412,6 +424,9 @@ class PlutoGridStyleConfig {
   /// Column - text style
   final TextStyle columnTextStyle;
 
+  /// Column selected - text style
+  final TextStyle columnSelectedTextStyle;
+
   /// Cell - text style
   final TextStyle cellTextStyle;
 
@@ -480,6 +495,7 @@ class PlutoGridStyleConfig {
     EdgeInsets? defaultColumnFilterPadding,
     EdgeInsets? defaultCellPadding,
     TextStyle? columnTextStyle,
+    TextStyle? columnSelectedTextStyle,
     TextStyle? cellTextStyle,
     IconData? columnContextIcon,
     IconData? columnResizeIcon,
@@ -537,6 +553,7 @@ class PlutoGridStyleConfig {
           defaultColumnFilterPadding ?? this.defaultColumnFilterPadding,
       defaultCellPadding: defaultCellPadding ?? this.defaultCellPadding,
       columnTextStyle: columnTextStyle ?? this.columnTextStyle,
+      columnSelectedTextStyle: columnSelectedTextStyle ?? this.columnSelectedTextStyle,
       cellTextStyle: cellTextStyle ?? this.cellTextStyle,
       columnContextIcon: columnContextIcon ?? this.columnContextIcon,
       columnResizeIcon: columnResizeIcon ?? this.columnResizeIcon,
@@ -593,6 +610,7 @@ class PlutoGridStyleConfig {
             defaultColumnFilterPadding == other.defaultColumnFilterPadding &&
             defaultCellPadding == other.defaultCellPadding &&
             columnTextStyle == other.columnTextStyle &&
+            columnSelectedTextStyle == other.columnSelectedTextStyle &&
             cellTextStyle == other.cellTextStyle &&
             columnContextIcon == other.columnContextIcon &&
             columnResizeIcon == other.columnResizeIcon &&
@@ -638,6 +656,7 @@ class PlutoGridStyleConfig {
         defaultColumnFilterPadding,
         defaultCellPadding,
         columnTextStyle,
+        columnSelectedTextStyle,
         cellTextStyle,
         columnContextIcon,
         columnResizeIcon,
