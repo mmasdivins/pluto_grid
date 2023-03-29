@@ -19,6 +19,9 @@ typedef PlutoOnChangedEventCallback = void Function(
 typedef PlutoOnRowChangedEventCallback = void Function(
     PlutoGridOnRowChangedEvent event);
 
+typedef PlutoOnSelectedCellChangedEventCallback = void Function(
+    PlutoGridOnSelectedCellChangedEvent event);
+
 typedef PlutoOnSelectedEventCallback = void Function(
     PlutoGridOnSelectedEvent event);
 
@@ -69,6 +72,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onLoaded,
     this.onChanged,
     this.onRowChanged,
+    this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
     this.onRowChecked,
@@ -164,6 +168,9 @@ class PlutoGrid extends PlutoStatefulWidget {
   final PlutoOnChangedEventCallback? onChanged;
 
   final PlutoOnRowChangedEventCallback? onRowChanged;
+
+  /// Event que és crida quan és canvia la cel·la seleccionada
+  final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
 
   /// {@template pluto_grid_property_onSelected}
   /// [onSelected] can receive a response only if [PlutoGrid.mode] is set to [PlutoGridMode.select] .
@@ -537,6 +544,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       columnGroups: widget.columnGroups,
       onChanged: widget.onChanged,
       onRowChanged: widget.onRowChanged,
+      onSelectedCellChanged: widget.onSelectedCellChanged,
       onSelected: widget.onSelected,
       onSorted: widget.onSorted,
       onRowChecked: widget.onRowChecked,
@@ -1401,6 +1409,25 @@ class PlutoGridOnRowChangedEvent {
     out += 'RowIndex : $rowIdx\n';
     out += '::: oldCellValues : $oldCellValues\n';
     out += '::: row : $row';
+    return out;
+  }
+}
+
+
+class PlutoGridOnSelectedCellChangedEvent {
+  final PlutoCell? oldCell;
+  final PlutoCell cell;
+
+  const PlutoGridOnSelectedCellChangedEvent({
+    required this.oldCell,
+    required this.cell,
+  });
+
+  @override
+  String toString() {
+    String out = '[PlutoGridOnSelectedCellChangedEvent] ';
+    out += 'oldCell : $oldCell\n';
+    out += 'cell : $cell\n';
     return out;
   }
 }

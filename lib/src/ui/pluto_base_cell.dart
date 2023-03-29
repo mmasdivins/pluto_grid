@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -15,7 +17,7 @@ class PlutoBaseCell extends StatelessWidget
 
   final PlutoGridStateManager stateManager;
 
-  const PlutoBaseCell({
+  PlutoBaseCell({
     Key? key,
     required this.cell,
     required this.column,
@@ -23,6 +25,12 @@ class PlutoBaseCell extends StatelessWidget
     required this.row,
     required this.stateManager,
   }) : super(key: key);
+
+
+  Timer? doubleTapTimer;
+  bool isPressed = false;
+  bool isSingleTap = false;
+  bool isDoubleTap = false;
 
   @override
   double get width => column.width;
@@ -46,7 +54,11 @@ class PlutoBaseCell extends StatelessWidget
   }
 
   void _handleOnTapUp(TapUpDetails details) {
-    _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
+    if (stateManager.onRowDoubleTap == null){
+      _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
+    } else {
+      _onTapUp(details);
+    }
   }
 
   void _handleOnLongPressStart(LongPressStartDetails details) {
@@ -103,6 +115,32 @@ class PlutoBaseCell extends StatelessWidget
         : _handleOnSecondaryTap;
   }
 
+  ///https://github.com/flutter/flutter/issues/121674
+  void _onTapUp(TapUpDetails details) {
+    isPressed = true;
+    if (doubleTapTimer != null && doubleTapTimer!.isActive) {
+      isDoubleTap = true;
+      doubleTapTimer?.cancel();
+      if (stateManager.onRowDoubleTap != null){
+        _addGestureEvent(PlutoGridGestureType.onDoubleTap, Offset.zero);
+      }
+    } else {
+      doubleTapTimer = Timer(Duration(milliseconds: 300), _doubleTapTimerElapsed);
+    }
+
+    _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
+  }
+
+  void _doubleTapTimerElapsed() {
+    if (isPressed) {
+      isSingleTap = true;
+    } else {
+      isPressed = false;
+      isSingleTap = false;
+      isDoubleTap = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -113,7 +151,7 @@ class PlutoBaseCell extends StatelessWidget
       onLongPressMoveUpdate: _handleOnLongPressMoveUpdate,
       onLongPressEnd: _handleOnLongPressEnd,
       // Optional gestures.
-      onDoubleTap: _onDoubleTapOrNull(),
+      // onDoubleTap: _onDoubleTapOrNull(),
       onSecondaryTapDown: _onSecondaryTapOrNull(),
       child: _CellContainer(
         cell: cell,

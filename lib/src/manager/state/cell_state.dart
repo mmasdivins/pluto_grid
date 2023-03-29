@@ -201,6 +201,7 @@ mixin CellState implements IPlutoGridState {
       return;
     }
 
+    var oldCell = _state._currentCell;
     _state._currentCell = cell;
 
     _state._currentCellPosition = PlutoGridCellPosition(
@@ -212,8 +213,12 @@ mixin CellState implements IPlutoGridState {
 
     setEditing(autoEditing, notify: false);
 
-    // If row changed notifiy changed row
+    onSelectedCellChanged?.call(PlutoGridOnSelectedCellChangedEvent(
+        oldCell: oldCell,
+        cell: currentCell!
+    ));
 
+    // If row changed notifiy changed row
     notifyTrackingRow(rowIdx);
 
     notifyListeners(notify, setCurrentCell.hashCode);

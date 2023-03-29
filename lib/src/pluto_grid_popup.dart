@@ -22,6 +22,8 @@ class PlutoGridPopup {
 
   final PlutoOnRowChangedEventCallback? onRowChanged;
 
+  final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
+
   /// {@macro pluto_grid_property_onSelected}
   final PlutoOnSelectedEventCallback? onSelected;
 
@@ -88,6 +90,7 @@ class PlutoGridPopup {
     this.onLoaded,
     this.onChanged,
     this.onRowChanged,
+    this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
     this.onRowChecked,
@@ -139,6 +142,7 @@ class PlutoGridPopup {
                           onLoaded: onLoaded,
                           onChanged: onChanged,
                           onRowChanged: onRowChanged,
+                          onSelectedCellChanged: onSelectedCellChanged,
                           onSelected: (PlutoGridOnSelectedEvent event) {
                             Navigator.pop(ctx, event);
                           },
