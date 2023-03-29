@@ -510,6 +510,7 @@ mixin RowState implements IPlutoGridState {
         row.setState(PlutoRowState.added);
       }
 
+      bool wasEmpty = refRows.isEmpty;
       refRows.insertAll(safetyIndex, rows);
 
       PlutoGridStateManager.initializeRows(
@@ -517,6 +518,13 @@ mixin RowState implements IPlutoGridState {
         rows,
         forceApplySortIdx: false,
       );
+
+      // If the rows were empty on initializing new rows we set
+      // the first cell as focused
+      if (wasEmpty){
+        setCurrentCell(firstCell, 0);
+        gridFocusNode.requestFocus();
+      }
     }
 
     if (isPaginated) {
