@@ -33,6 +33,27 @@ class PlutoGridConfiguration {
   /// {@macro pluto_grid_tab_key_action_moveToNextOnEdge}
   final PlutoGridTabKeyAction tabKeyAction;
 
+  /// Last row key down action type.
+  ///
+  /// [PlutoGridLastRowKeyDownAction.none]
+  /// {@macro pluto_grid_last_row_key_down_action_none}
+  ///
+  /// [PlutoGridLastRowKeyDownAction.addOne]
+  /// {@macro pluto_grid_last_row_key_down_action_addOne}
+  ///
+  /// [PlutoGridLastRowKeyDownAction.addMultiple]
+  /// {@macro pluto_grid_last_row_key_down_action_addMultiple}
+  final PlutoGridLastRowKeyDownAction lastRowKeyDownAction;
+
+  /// Last row key up action type.
+  ///
+  /// [PlutoGridLastRowKeyUpAction.none]
+  /// {@macro pluto_grid_last_row_key_up_action_none}
+  ///
+  /// [PlutoGridLastRowKeyUpAction.removeOne]
+  /// {@macro pluto_grid_last_row_key_down_action_removeOne}
+  final PlutoGridLastRowKeyUpAction lastRowKeyUpAction;
+
   /// Set custom shortcut keys.
   ///
   /// Refer to the code below to redefine the action of a specific key
@@ -78,6 +99,8 @@ class PlutoGridConfiguration {
     this.enableMoveHorizontalInEditing = false,
     this.enterKeyAction = PlutoGridEnterKeyAction.editingAndMoveDown,
     this.tabKeyAction = PlutoGridTabKeyAction.normal,
+    this.lastRowKeyDownAction = PlutoGridLastRowKeyDownAction.none,
+    this.lastRowKeyUpAction = PlutoGridLastRowKeyUpAction.none,
     this.shortcut = const PlutoGridShortcut(),
     this.style = const PlutoGridStyleConfig(),
     this.scrollbar = const PlutoGridScrollbarConfig(),
@@ -91,6 +114,8 @@ class PlutoGridConfiguration {
     this.enableMoveHorizontalInEditing = false,
     this.enterKeyAction = PlutoGridEnterKeyAction.editingAndMoveDown,
     this.tabKeyAction = PlutoGridTabKeyAction.normal,
+    this.lastRowKeyDownAction = PlutoGridLastRowKeyDownAction.none,
+    this.lastRowKeyUpAction = PlutoGridLastRowKeyUpAction.none,
     this.shortcut = const PlutoGridShortcut(),
     this.style = const PlutoGridStyleConfig.dark(),
     this.scrollbar = const PlutoGridScrollbarConfig(),
@@ -133,6 +158,8 @@ class PlutoGridConfiguration {
     bool? enableMoveHorizontalInEditing,
     PlutoGridEnterKeyAction? enterKeyAction,
     PlutoGridTabKeyAction? tabKeyAction,
+    PlutoGridLastRowKeyDownAction? lastRowKeyDownAction,
+    PlutoGridLastRowKeyUpAction? lastRowKeyUpAction,
     PlutoGridShortcut? shortcut,
     PlutoGridStyleConfig? style,
     PlutoGridScrollbarConfig? scrollbar,
@@ -147,6 +174,8 @@ class PlutoGridConfiguration {
           enableMoveHorizontalInEditing ?? this.enableMoveHorizontalInEditing,
       enterKeyAction: enterKeyAction ?? this.enterKeyAction,
       tabKeyAction: tabKeyAction ?? this.tabKeyAction,
+      lastRowKeyDownAction: lastRowKeyDownAction ?? this.lastRowKeyDownAction,
+      lastRowKeyUpAction: lastRowKeyUpAction ?? this.lastRowKeyUpAction,
       shortcut: shortcut ?? this.shortcut,
       style: style ?? this.style,
       scrollbar: scrollbar ?? this.scrollbar,
@@ -167,6 +196,8 @@ class PlutoGridConfiguration {
                 other.enableMoveHorizontalInEditing &&
             enterKeyAction == other.enterKeyAction &&
             tabKeyAction == other.tabKeyAction &&
+            lastRowKeyDownAction == other.lastRowKeyDownAction &&
+            lastRowKeyUpAction == other.lastRowKeyUpAction &&
             shortcut == other.shortcut &&
             style == other.style &&
             scrollbar == other.scrollbar &&
@@ -181,6 +212,8 @@ class PlutoGridConfiguration {
         enableMoveHorizontalInEditing,
         enterKeyAction,
         tabKeyAction,
+        lastRowKeyDownAction,
+        lastRowKeyUpAction,
         shortcut,
         style,
         scrollbar,
@@ -1637,4 +1670,50 @@ enum PlutoGridTabKeyAction {
   bool get isNormal => this == PlutoGridTabKeyAction.normal;
 
   bool get isMoveToNextOnEdge => this == PlutoGridTabKeyAction.moveToNextOnEdge;
+}
+
+
+/// Down key on last row action type.
+enum PlutoGridLastRowKeyDownAction {
+  /// {@template pluto_grid_last_row_key_down_action_none}
+  /// Down key on last row does nothing
+  /// {@endtemplate}
+  none,
+
+  /// {@template pluto_grid_last_row_key_down_action_addOne}
+  /// Down key on last row add a new default row if the last
+  /// row was not a default row
+  /// {@endtemplate}
+  addOne,
+
+  /// {@template pluto_grid_last_row_key_down_action_addMultiple}
+  /// Down key on last row add a new default row even if the last
+  /// row was a default row
+  /// {@endtemplate}
+  addMultiple;
+
+  bool get isNone => this == PlutoGridLastRowKeyDownAction.none;
+
+  bool get isAddOne => this == PlutoGridLastRowKeyDownAction.addOne;
+
+  bool get isAddMultiple => this == PlutoGridLastRowKeyDownAction.addMultiple;
+}
+
+
+/// Up key on last row action type.
+enum PlutoGridLastRowKeyUpAction {
+  /// {@template pluto_grid_last_row_key_up_action_none}
+  /// Up key on last row does nothing
+  /// {@endtemplate}
+  none,
+
+  /// {@template pluto_grid_last_row_key_down_action_removeOne}
+  /// Up key on last row removes the row if it's a default row
+  /// {@endtemplate}
+  removeOne;
+
+  bool get isNone => this == PlutoGridLastRowKeyUpAction.none;
+
+  bool get isRemoveOne => this == PlutoGridLastRowKeyUpAction.removeOne;
+
 }

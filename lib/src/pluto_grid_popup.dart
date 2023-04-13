@@ -20,8 +20,16 @@ class PlutoGridPopup {
   /// {@macro pluto_grid_property_onChanged}
   final PlutoOnChangedEventCallback? onChanged;
 
+  /// {@macro pluto_grid_property_onRowChanged}
   final PlutoOnRowChangedEventCallback? onRowChanged;
 
+  /// {@macro pluto_grid_property_onLastRowKeyDown}
+  final PlutoOnLastRowKeyDownEventCallback? onLastRowKeyDown;
+
+  /// {@macro pluto_grid_property_onLastRowKeyUp}
+  final PlutoOnLastRowKeyUpEventCallback? onLastRowKeyUp;
+
+  /// {@macro pluto_grid_property_onSelectedCellChanged}
   final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
 
   /// {@macro pluto_grid_property_onSelected}
@@ -90,6 +98,8 @@ class PlutoGridPopup {
     this.onLoaded,
     this.onChanged,
     this.onRowChanged,
+    this.onLastRowKeyDown,
+    this.onLastRowKeyUp,
     this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
@@ -142,6 +152,8 @@ class PlutoGridPopup {
                           onLoaded: onLoaded,
                           onChanged: onChanged,
                           onRowChanged: onRowChanged,
+                          onLastRowKeyDown: onLastRowKeyDown,
+                          onLastRowKeyUp: onLastRowKeyUp,
                           onSelectedCellChanged: onSelectedCellChanged,
                           onSelected: (PlutoGridOnSelectedEvent event) {
                             Navigator.pop(ctx, event);

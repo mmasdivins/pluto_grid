@@ -19,6 +19,12 @@ typedef PlutoOnChangedEventCallback = void Function(
 typedef PlutoOnRowChangedEventCallback = void Function(
     PlutoGridOnRowChangedEvent event);
 
+typedef PlutoOnLastRowKeyDownEventCallback = void Function(
+    PlutoGridOnLastRowKeyDownEvent event);
+
+typedef PlutoOnLastRowKeyUpEventCallback = void Function(
+    PlutoGridOnLastRowKeyUpEvent event);
+
 typedef PlutoOnSelectedCellChangedEventCallback = void Function(
     PlutoGridOnSelectedCellChangedEvent event);
 
@@ -72,6 +78,8 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onLoaded,
     this.onChanged,
     this.onRowChanged,
+    this.onLastRowKeyDown,
+    this.onLastRowKeyUp,
     this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
@@ -167,7 +175,23 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// {@endtemplate}
   final PlutoOnChangedEventCallback? onChanged;
 
+  /// {@template pluto_grid_property_onRowChanged}
+  /// [onRowChanged] is called when the values of a row are changed.
+  ///
+  /// After changing a cell value of a row and changing the current cell to
+  /// another row
+  /// {@endtemplate}
   final PlutoOnRowChangedEventCallback? onRowChanged;
+
+  /// {@template pluto_grid_property_onLastRowKeyDown}
+  /// [onLastRowKeyDown] is called when the key down is pressed on the last row.
+  /// {@endtemplate}
+  final PlutoOnLastRowKeyDownEventCallback? onLastRowKeyDown;
+
+  /// {@template pluto_grid_property_onLastRowKeyUp}
+  /// [onLastRowKeyUp] is called when the key up is pressed on the last row.
+  /// {@endtemplate}
+  final PlutoOnLastRowKeyUpEventCallback? onLastRowKeyUp;
 
   /// Event que és crida quan és canvia la cel·la seleccionada
   final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
@@ -544,6 +568,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       columnGroups: widget.columnGroups,
       onChanged: widget.onChanged,
       onRowChanged: widget.onRowChanged,
+      onLastRowKeyDown: widget.onLastRowKeyDown,
+      onLastRowKeyUp: widget.onLastRowKeyUp,
       onSelectedCellChanged: widget.onSelectedCellChanged,
       onSelected: widget.onSelected,
       onSorted: widget.onSorted,
@@ -1023,7 +1049,8 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
         BoxConstraints.tight(
           Size(
             20,
-            _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
+            size.height,
+            // _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
           ),
         ),
       );
@@ -1413,6 +1440,47 @@ class PlutoGridOnRowChangedEvent {
   }
 }
 
+class PlutoGridOnLastRowKeyDownEvent {
+  final int rowIdx;
+  final PlutoRow row;
+  final bool isRowDefault;
+
+  const PlutoGridOnLastRowKeyDownEvent({
+    required this.rowIdx,
+    required this.row,
+    required this.isRowDefault,
+  });
+
+  @override
+  String toString() {
+    String out = '[PlutoGridOnLastRowKeyDownEvent] ';
+    out += 'RowIndex : $rowIdx\n';
+    out += '::: isRowDefault : $isRowDefault\n';
+    out += '::: row : $row';
+    return out;
+  }
+}
+
+class PlutoGridOnLastRowKeyUpEvent {
+  final int rowIdx;
+  final PlutoRow row;
+  final bool isRowDefault;
+
+  const PlutoGridOnLastRowKeyUpEvent({
+    required this.rowIdx,
+    required this.row,
+    required this.isRowDefault,
+  });
+
+  @override
+  String toString() {
+    String out = '[PlutoGridOnLastRowKeyUpEvent] ';
+    out += 'RowIndex : $rowIdx\n';
+    out += '::: isRowDefault : $isRowDefault\n';
+    out += '::: row : $row';
+    return out;
+  }
+}
 
 class PlutoGridOnSelectedCellChangedEvent {
   final PlutoCell? oldCell;

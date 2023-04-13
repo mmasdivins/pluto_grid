@@ -45,6 +45,8 @@ class _DevelopmentScreenState extends State<DevelopmentScreen> {
 
   PlutoGridConfiguration _configuration = PlutoGridConfiguration(
     tabKeyAction: PlutoGridTabKeyAction.moveToNextOnEdge,
+    lastRowKeyDownAction: PlutoGridLastRowKeyDownAction.none,
+    lastRowKeyUpAction: PlutoGridLastRowKeyUpAction.none,
     // columnHeight: 30.0,
     // columnFilterHeight: 30.0,
     // rowHeight: 30.0,

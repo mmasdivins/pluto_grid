@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -88,7 +89,83 @@ class PlutoGridActionMoveCellFocus extends PlutoGridShortcutAction {
       return;
     }
 
+    var index = stateManager.rows.indexOf(stateManager.currentCell!.row);
+
     stateManager.moveCurrentCell(direction, force: force);
+
+    if (stateManager.mode != PlutoGridMode.readOnly
+        && direction.isDown
+        && stateManager.rows.length == (index + 1)) {
+
+      bool isRowDefault = _isRowDefault(stateManager, stateManager.currentCell!.row);
+
+      // Si tenim definit l'event onLastRowKeyDown no fem cas de la configuració
+      // lastRowKeyDownAction
+      if (stateManager.onLastRowKeyDown != null){
+        stateManager.onLastRowKeyDown!.call(PlutoGridOnLastRowKeyDownEvent(
+            rowIdx: index,
+            row: stateManager.currentCell!.row,
+            isRowDefault: isRowDefault,
+        ));
+      }
+      else {
+        if (stateManager.configuration.lastRowKeyDownAction.isAddMultiple){
+          // Afegim una nova fila al final
+          stateManager.insertRows(
+            index + 1,
+            [stateManager.getNewRow()],
+          );
+          stateManager.moveCurrentCell(direction, force: force);
+        }
+        else if (stateManager.configuration.lastRowKeyDownAction.isAddOne){
+          if (!isRowDefault){
+            // Afegim una nova fila al final
+            stateManager.insertRows(
+              index + 1,
+              [stateManager.getNewRow()],
+            );
+            stateManager.moveCurrentCell(direction, force: force);
+          }
+        }
+      }
+    }
+
+    if (stateManager.mode != PlutoGridMode.readOnly
+        && direction.isUp
+        && stateManager.rows.length == (index + 1)) {
+
+      var row = stateManager.rows.elementAt(index);
+      bool isRowDefault = _isRowDefault(stateManager, row);
+
+      // Si tenim definit l'event onLastRowKeyUp no fem cas de la configuració
+      // lastRowKeyUpAction
+      if (stateManager.onLastRowKeyUp != null){
+        stateManager.onLastRowKeyUp!.call(PlutoGridOnLastRowKeyUpEvent(
+          rowIdx: index,
+          row: row,
+          isRowDefault: isRowDefault,
+        ));
+      }
+      else {
+        if (stateManager.configuration.lastRowKeyUpAction.isRemoveOne && isRowDefault){
+          // Esborrem la última fila si s'ha creat i no conté res
+          stateManager.removeRows([row]);
+        }
+      }
+
+
+
+    }
+  }
+
+  bool _isRowDefault(PlutoGridStateManager stateManager, PlutoRow row){
+    for (var element in stateManager.refColumns) {
+      var cell = row.cells[element.field]!;
+      if (element.type.defaultValue != cell.value) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

@@ -72,10 +72,21 @@ class PlutoColumnIndexState extends PlutoStateWithChange<PlutoColumnIndex> {
     // final scrollbarConfig = stateManager.configuration.scrollbar;
     final style = stateManager.style;
 
+    double totalColumnsHeight = 0;
+
+    if (stateManager.showColumnGroups) {
+      totalColumnsHeight =
+          stateManager.columnGroupHeight + stateManager.columnHeight;
+    } else {
+      totalColumnsHeight = stateManager.columnHeight;
+    }
+
+    totalColumnsHeight += stateManager.columnFilterHeight;
+
     return Column(
       children: [
         Container(
-          height: stateManager.columnHeight,
+          height: totalColumnsHeight,
           decoration: BoxDecoration(
             border: BorderDirectional(
               end: BorderSide(color: style.borderColor, width: 1.0),
@@ -119,12 +130,35 @@ class PlutoColumnIndexState extends PlutoStateWithChange<PlutoColumnIndex> {
 
                 return DecoratedBox(
                   decoration: BoxDecoration(
-                      border: Border.all(
-                        // color: stateManager.hasFocus ? style.activatedBorderColor : style.inactivatedBorderColor,
-                        color: style.inactivatedBorderColor,
-                        width: 0,
+                    color: null,
+                    border: style.enableCellBorderVertical ? BorderDirectional(
+                      end: BorderSide(
+                        color: style.borderColor,
+                        width: 1.0,
+                      ),
+                      bottom: BorderSide(
+                        width: PlutoGridSettings.rowBorderWidth,
+                        color: style.borderColor,
                       )
+                    ) : null,
                   ),
+                  // BoxDecoration(
+                  //     border: Border(
+                  //       bottom: BorderSide(
+                  //         color: style.inactivatedBorderColor,
+                  //         width: 0,
+                  //       ),
+                  //       right: BorderSide(
+                  //         color: style.inactivatedBorderColor,
+                  //         width: 0,
+                  //       ),
+                  //     )
+                      // Border.all(
+                      //   // color: stateManager.hasFocus ? style.activatedBorderColor : style.inactivatedBorderColor,
+                      //   color: style.inactivatedBorderColor,
+                      //   width: 0,
+                      // )
+                  // ),
                   child: Container(
                     color: color,
                     child: widget,
