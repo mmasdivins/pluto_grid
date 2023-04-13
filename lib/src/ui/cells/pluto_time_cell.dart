@@ -41,8 +41,17 @@ class PlutoTimeCellState extends State<PlutoTimeCell>
   @override
   IconData? get icon => widget.column.type.time.popupIcon;
 
-  String get cellValue =>
-      widget.cell.value ?? widget.column.type.time.defaultValue;
+  String get cellValue {
+    if (widget.cell.value != null){
+      var value = widget.column.type.time.defaultValue;
+      if (widget.column.type.time.defaultValue is Function){
+        value = widget.column.type.time.defaultValue.call();
+      }
+      return value;
+    }
+    return widget.cell.value ?? widget.column.type.time.defaultValue;
+  }
+
 
   String get cellHour => cellValue.toString().substring(0, 2);
 

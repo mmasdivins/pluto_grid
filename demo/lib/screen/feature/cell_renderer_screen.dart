@@ -113,7 +113,7 @@ class _CellRendererScreenState extends State<CellRendererScreen> {
         title: 'column5',
         field: 'column5',
         type: PlutoColumnType.text(),
-        enableEditingMode: false,
+        enableEditingMode: (c) => false,
         renderer: (rendererContext) {
           return Image.asset('assets/images/cat.jpg');
         },

@@ -34,6 +34,7 @@ void main() {
     PlutoOnColumnsMovedEventCallback? onColumnsMoved,
     CreateHeaderCallBack? createHeader,
     CreateColumnIndexCallBack? createColumnIndex,
+    IsRowDefaultCallback? isRowDefault,
     CreateFooterCallBack? createFooter,
     Widget? noRowsWidget,
     PlutoRowColorCallback? rowColorCallback,

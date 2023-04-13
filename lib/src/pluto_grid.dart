@@ -55,6 +55,9 @@ typedef CreateHeaderCallBack = Widget Function(
 typedef CreateColumnIndexCallBack = Widget? Function(int index,
     PlutoGridStateManager stateManager);
 
+typedef IsRowDefaultCallback = bool Function(PlutoRow row,
+    PlutoGridStateManager stateManager);
+
 typedef CreateFooterCallBack = Widget Function(
     PlutoGridStateManager stateManager);
 
@@ -90,6 +93,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onColumnsMoved,
     this.createHeader,
     this.createFooter,
+    this.isRowDefault,
     this.createColumnIndex,
     this.showColumnIndex = false,
     this.noRowsWidget,
@@ -267,6 +271,11 @@ class PlutoGrid extends PlutoStatefulWidget {
 
   /// Modifica la columna dels index
   final CreateColumnIndexCallBack? createColumnIndex;
+
+  /// {@template pluto_grid_property_isRowDefalut}
+  /// Callback to check if a row is default
+  /// {@endtemplate}
+  final IsRowDefaultCallback? isRowDefault;
 
   /// Indica si crea la columna index
   final bool showColumnIndex;
@@ -582,6 +591,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       createHeader: widget.createHeader,
       createFooter: widget.createFooter,
       createColumnIndex: widget.createColumnIndex,
+      isRowDefault: widget.isRowDefault,
       showColumnIndex: widget.showColumnIndex,
       columnMenuDelegate: widget.columnMenuDelegate,
       notifierFilterResolver: widget.notifierFilterResolver,

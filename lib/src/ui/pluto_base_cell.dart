@@ -387,7 +387,7 @@ class _CellState extends PlutoStateWithChange<_Cell> {
 
   @override
   Widget build(BuildContext context) {
-    if (_showTypedCell && widget.column.enableEditingMode == true) {
+    if (_showTypedCell && widget.column.enableEditingMode?.call(widget.cell) == true) {
       if (widget.column.type.isSelect) {
         return PlutoSelectCell(
           stateManager: stateManager,

@@ -730,7 +730,7 @@ mixin ColumnState implements IPlutoGridState {
         field: titleField,
         type: PlutoColumnType.text(),
         enableRowChecked: true,
-        enableEditingMode: false,
+        enableEditingMode: (c) => false,
         enableDropToResize: true,
         enableContextMenu: false,
         enableColumnDrag: false,
@@ -923,7 +923,12 @@ mixin ColumnState implements IPlutoGridState {
       final List<MapEntry<String, PlutoCell>> cells = [];
 
       for (var column in columns) {
-        final cell = PlutoCell(value: column.type.defaultValue)
+        var value = column.type.defaultValue;
+        if (value is Function){
+          value = column.type.defaultValue.call();
+        }
+
+        final cell = PlutoCell(value: value)
           ..setRow(row)
           ..setColumn(column);
 

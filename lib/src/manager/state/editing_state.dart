@@ -71,7 +71,7 @@ mixin EditingState implements IPlutoGridState {
 
   @override
   bool isEditableCell(PlutoCell cell) {
-    if (cell.column.enableEditingMode != true) {
+    if (cell.column.enableEditingMode?.call(cell) != true) {
       return false;
     }
 

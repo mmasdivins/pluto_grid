@@ -93,11 +93,13 @@ class PlutoGridActionMoveCellFocus extends PlutoGridShortcutAction {
 
     stateManager.moveCurrentCell(direction, force: force);
 
+    var isRowDefaultFunction = stateManager.isRowDefault ?? _isRowDefault;
+
     if (stateManager.mode != PlutoGridMode.readOnly
         && direction.isDown
         && stateManager.rows.length == (index + 1)) {
 
-      bool isRowDefault = _isRowDefault(stateManager, stateManager.currentCell!.row);
+      bool isRowDefault = isRowDefaultFunction(stateManager.currentCell!.row, stateManager);
 
       // Si tenim definit l'event onLastRowKeyDown no fem cas de la configuració
       // lastRowKeyDownAction
@@ -135,7 +137,7 @@ class PlutoGridActionMoveCellFocus extends PlutoGridShortcutAction {
         && stateManager.rows.length == (index + 1)) {
 
       var row = stateManager.rows.elementAt(index);
-      bool isRowDefault = _isRowDefault(stateManager, row);
+      bool isRowDefault = isRowDefaultFunction(row, stateManager);
 
       // Si tenim definit l'event onLastRowKeyUp no fem cas de la configuració
       // lastRowKeyUpAction
@@ -158,10 +160,16 @@ class PlutoGridActionMoveCellFocus extends PlutoGridShortcutAction {
     }
   }
 
-  bool _isRowDefault(PlutoGridStateManager stateManager, PlutoRow row){
+  bool _isRowDefault(PlutoRow row, PlutoGridStateManager stateManager){
     for (var element in stateManager.refColumns) {
       var cell = row.cells[element.field]!;
-      if (element.type.defaultValue != cell.value) {
+
+      var value = element.type.defaultValue;
+      if (element.type.defaultValue is Function){
+        value = element.type.defaultValue.call();
+      }
+
+      if (value != cell.value) {
         return false;
       }
     }
@@ -448,7 +456,7 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
       stateManager.toggleEditing(notify: false);
     } else {
       if (stateManager.isEditing == true ||
-          stateManager.currentColumn?.enableEditingMode == false) {
+          stateManager.currentColumn?.enableEditingMode?.call(stateManager.currentCell) == false) {
         final saveIsEditing = stateManager.isEditing;
 
         _moveCell(keyEvent, stateManager);

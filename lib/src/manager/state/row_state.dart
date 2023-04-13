@@ -207,8 +207,13 @@ mixin RowState implements IPlutoGridState {
     final cells = <String, PlutoCell>{};
 
     for (var column in refColumns) {
+      var value = column.type.defaultValue;
+      if (value is Function){
+        value = column.type.defaultValue.call();
+      }
+
       cells[column.field] = PlutoCell(
-        value: column.type.defaultValue,
+        value: value,
       );
     }
 

@@ -1079,7 +1079,7 @@ final testColumnsA = [
     field: 'column6',
     type: PlutoColumnType.text(),
     enableFilterMenuItem: false,
-    enableEditingMode: false,
+    enableEditingMode: (c) => false,
     renderer: (rendererContext) {
       return Image.asset(
         'assets/images/cat.jpg',
@@ -1092,7 +1092,7 @@ final testColumnsA = [
     field: 'column7',
     type: PlutoColumnType.number(),
     enableFilterMenuItem: false,
-    enableEditingMode: false,
+    enableEditingMode: (c) => false,
     // NEW Custom cellPadding
     cellPadding: EdgeInsets.zero,
     width: 80,

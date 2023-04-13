@@ -64,7 +64,7 @@ class _AddAndRemoveColumnRowScreenState
           'edited',
           'created',
         ]),
-        enableEditingMode: false,
+        enableEditingMode: (c) => false,
         frozen: PlutoColumnFrozen.end,
         titleSpan: const TextSpan(children: [
           WidgetSpan(

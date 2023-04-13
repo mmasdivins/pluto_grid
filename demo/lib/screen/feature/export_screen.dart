@@ -119,7 +119,7 @@ class _ExportScreenState extends State<ExportScreen> {
         title: 'Column 5',
         field: 'column5',
         type: PlutoColumnType.text(),
-        enableEditingMode: false,
+        enableEditingMode: (c) => false,
         renderer: (rendererContext) {
           return Image.asset('assets/images/cat.jpg');
         },
