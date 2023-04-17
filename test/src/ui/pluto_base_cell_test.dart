@@ -553,7 +553,7 @@ void main() {
           field: 'header',
           readOnly: readOnly,
           type: PlutoColumnType.text(),
-          enableEditingMode: enableEditingMode,
+          enableEditingMode: (c) => enableEditingMode,
         );
 
         final PlutoRow row = PlutoRow(

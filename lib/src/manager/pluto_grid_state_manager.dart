@@ -86,6 +86,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     this.createHeader,
     this.createFooter,
     this.createColumnIndex,
+    this.createCornerWidget,
     this.isRowDefault,
     this.showColumnIndex = false,
     PlutoColumnMenuDelegate? columnMenuDelegate,
@@ -166,6 +167,9 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
   @override
   final CreateColumnIndexCallBack? createColumnIndex;
+
+  @override
+  final CreateCornerWidgetCallBack? createCornerWidget;
 
   @override
   final IsRowDefaultCallback? isRowDefault;
@@ -260,6 +264,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     super.createHeader,
     super.createFooter,
     super.createColumnIndex,
+    super.createCornerWidget,
     super.isRowDefault,
     super.showColumnIndex,
     super.columnMenuDelegate,

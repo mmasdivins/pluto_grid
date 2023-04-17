@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -40,6 +41,24 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
 
     stateManager.scroll.setBodyRowsVertical(_verticalScroll);
 
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   _verticalScroll.addListener(() {
+    //       double offset = _verticalScroll.offset;
+    //       int rowIndex = stateManager.currentCellPosition?.rowIdx ?? 0;
+    //       if (offset <= 0) {
+    //         rowIndex = rowIndex == 0 ? 0 : (rowIndex - 1);
+    //       }
+    //       else {
+    //         rowIndex += 3;
+    //       }
+    //       // int rowIndex = (offset / PlutoGridSettings.rowHeight).floor();
+    //       PlutoCell cell =
+    //           stateManager.rows[rowIndex].cells.entries.elementAt(2).value;
+    //       stateManager.setCurrentCell(cell, rowIndex);
+    //       stateManager.gridFocusNode.requestFocus();
+    //   });
+    // });
+
     updateState(PlutoNotifierEventForceUpdate.instance);
   }
 
@@ -71,7 +90,36 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
   Widget build(BuildContext context) {
     final scrollbarConfig = stateManager.configuration.scrollbar;
 
-    return PlutoScrollbar(
+    return Listener(
+        onPointerSignal: (pointerSignal){
+          if (pointerSignal is PointerScrollEvent){
+            if (stateManager.refRows.isEmpty || stateManager.refColumns.isEmpty)
+              return;
+
+            double offset = pointerSignal.scrollDelta.dy;
+            var f = stateManager.currentColumn?.field;
+            if (f?.isEmpty ?? true){
+              f = stateManager.refColumns.first.field;
+            }
+            var ci = stateManager.refRows.first.cells.entries.toList().indexWhere((entry) => entry.key == f);
+            int currentRowIndex = stateManager.currentCellPosition?.rowIdx ?? 0;
+            int offsetRowIndex = (offset / PlutoGridSettings.rowHeight).floor();
+            int rowIndex = currentRowIndex + offsetRowIndex;
+            if (rowIndex < 0){
+              rowIndex = 0;
+            }
+            else if (rowIndex >= stateManager.refRows.length){
+              rowIndex = stateManager.refRows.length - 1;
+            }
+
+            PlutoCell cell =
+                stateManager.rows[rowIndex].cells.entries.elementAt(ci).value;
+            stateManager.setCurrentCell(cell, rowIndex);
+            stateManager.gridFocusNode.requestFocus();
+          }
+
+        },
+        child: PlutoScrollbar(
       verticalController:
           scrollbarConfig.draggableScrollbar ? _verticalScroll : null,
       horizontalController:
@@ -116,7 +164,7 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 

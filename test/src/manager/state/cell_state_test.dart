@@ -449,7 +449,7 @@ void main() {
         field: 'field',
         readOnly: readonly,
         type: PlutoColumnType.text(),
-        enableEditingMode: enableEditingMode,
+        enableEditingMode: (c) => enableEditingMode,
       );
     }
 

@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show Intl;
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:pluto_grid/src/ui/pluto_column_index.dart';
+import 'package:pluto_grid/src/ui/pluto_column_index_body.dart';
 
 import 'helper/platform_helper.dart';
 import 'ui/ui.dart';
@@ -55,6 +56,9 @@ typedef CreateHeaderCallBack = Widget Function(
 typedef CreateColumnIndexCallBack = Widget? Function(int index,
     PlutoGridStateManager stateManager);
 
+typedef CreateCornerWidgetCallBack = Widget? Function(
+    PlutoGridStateManager stateManager);
+
 typedef IsRowDefaultCallback = bool Function(PlutoRow row,
     PlutoGridStateManager stateManager);
 
@@ -95,6 +99,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.createFooter,
     this.isRowDefault,
     this.createColumnIndex,
+    this.createCornerWidget,
     this.showColumnIndex = false,
     this.noRowsWidget,
     this.rowColorCallback,
@@ -271,6 +276,9 @@ class PlutoGrid extends PlutoStatefulWidget {
 
   /// Modifica la columna dels index
   final CreateColumnIndexCallBack? createColumnIndex;
+
+  /// Crea el widget de la cantonada
+  final CreateCornerWidgetCallBack? createCornerWidget;
 
   /// {@template pluto_grid_property_isRowDefalut}
   /// Callback to check if a row is default
@@ -591,6 +599,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       createHeader: widget.createHeader,
       createFooter: widget.createFooter,
       createColumnIndex: widget.createColumnIndex,
+      createCornerWidget: widget.createCornerWidget,
       isRowDefault: widget.isRowDefault,
       showColumnIndex: widget.showColumnIndex,
       columnMenuDelegate: widget.columnMenuDelegate,
@@ -724,11 +733,16 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
                   child: PlutoBodyRows(_stateManager),
                 ),
 
-                if (showColumnIndex)
+                if (showColumnIndex) ...[
                   LayoutId(
-                    id: _StackName.bodyColumnsIndex,
+                    id: _StackName.columnsIndex,
                     child: PlutoColumnIndex(_stateManager),
                   ),
+                  LayoutId(
+                    id: _StackName.columnsIndexBody,
+                    child: PlutoColumnIndexBody(_stateManager),
+                  ),
+                ],
 
                 LayoutId(
                   id: _StackName.bodyColumns,
@@ -896,6 +910,7 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
     double columnsTopOffset = 0;
     double bodyLeftOffset = 0;
     double bodyRightOffset = 0;
+    double cornerOffset = 0;
 
     // first layout header and footer and see what remains for the scrolling part
     if (hasChild(_StackName.header)) {
@@ -1053,34 +1068,6 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
       }
     }
 
-    if (hasChild(_StackName.bodyColumnsIndex)) {
-      var s = layoutChild(
-        _StackName.bodyColumnsIndex,
-        BoxConstraints.tight(
-          Size(
-            20,
-            size.height,
-            // _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
-          ),
-        ),
-      );
-
-      final double posX = isLTR
-          ? bodyLeftOffset
-          : size.width - bodyRightOffset - PlutoGridSettings.gridBorderWidth;
-
-      positionChild(
-        _StackName.bodyColumnsIndex,
-        Offset(posX, columnsTopOffset),
-      );
-
-      if (isLTR) {
-        bodyLeftOffset += s.width;
-      } else {
-        bodyRightOffset += s.width;
-      }
-    }
-
     // if (hasChild(_StackName.bodyColumnsIndex)) {
     //   var s = layoutChild(
     //     _StackName.bodyColumnsIndex,
@@ -1103,19 +1090,42 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
     //   bodyRowsTopOffset += s.height;
     // }
 
+    if (hasChild(_StackName.columnsIndex)) {
+      var s = layoutChild(
+        _StackName.columnsIndex,
+        BoxConstraints.tight(
+          Size(20, size.height),
+        ),
+      );
+
+      final double posX = isLTR ? 0 : size.width - s.width;
+
+      positionChild(
+        _StackName.columnsIndex,
+        Offset(posX, columnsTopOffset),
+      );
+
+      cornerOffset = s.width;
+      // if (isLTR) {
+      //   bodyLeftOffset = s.width;
+      // } else {
+      //   bodyRightOffset = s.width;
+      // }
+    }
+
     if (hasChild(_StackName.bodyColumns)) {
       var s = layoutChild(
         _StackName.bodyColumns,
         BoxConstraints.loose(
           Size(
-            _safe(size.width - bodyLeftOffset - bodyRightOffset),
+            _safe(size.width - bodyLeftOffset - bodyRightOffset - cornerOffset),
             size.height,
           ),
         ),
       );
 
       final double posX =
-          isLTR ? bodyLeftOffset : size.width - s.width - bodyRightOffset;
+          isLTR ? bodyLeftOffset + cornerOffset : size.width - s.width - bodyRightOffset;
 
       positionChild(
         _StackName.bodyColumns,
@@ -1180,6 +1190,33 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
       bodyRowsTopOffset += s.height;
     } else {
       bodyRowsTopOffset += PlutoGridSettings.gridBorderWidth;
+    }
+
+    if (hasChild(_StackName.columnsIndexBody)) {
+      var s = layoutChild(
+        _StackName.columnsIndexBody,
+        BoxConstraints.tight(
+          Size(
+            20,
+            size.height - bodyRowsTopOffset - bodyRowsBottomOffset,
+            // _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
+          ),
+        ),
+      );
+
+      final double posX = isLTR
+          ? bodyLeftOffset
+          : size.width - bodyRightOffset - PlutoGridSettings.gridBorderWidth;
+      positionChild(
+        _StackName.columnsIndexBody,
+        Offset(posX, bodyRowsTopOffset),
+      );
+
+      if (isLTR) {
+        bodyLeftOffset += s.width;
+      } else {
+        bodyRightOffset += s.width;
+      }
     }
 
     if (hasChild(_StackName.leftFrozenRows)) {
@@ -1927,7 +1964,8 @@ enum _StackName {
   leftFrozenColumnFooters,
   leftFrozenRows,
   leftFrozenDivider,
-  bodyColumnsIndex,
+  columnsIndex,
+  columnsIndexBody,
   bodyColumns,
   bodyColumnFooters,
   bodyRows,

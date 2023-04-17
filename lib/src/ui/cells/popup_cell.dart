@@ -50,6 +50,10 @@ mixin PopupCellState<T extends PopupCell> on State<T>
   /// Implement a callback function that takes [PlutoGridStateManager] as a parameter.
   CreateColumnIndexCallBack? createColumnIndex;
 
+  /// Callback function that returns corner widget to be inserted at the popup
+  /// Implement a callback function that takes [PlutoGridStateManager] as a parameter.
+  CreateCornerWidgetCallBack? createCornerWidget;
+
   /// Callback function that returns is a row is default at the popup
   /// Implement a callback function that takes [PlutoGridStateManager] as a parameter.
   IsRowDefaultCallback? isRowDefault;
@@ -103,6 +107,7 @@ mixin PopupCellState<T extends PopupCell> on State<T>
       height: popupHeight,
       createHeader: createHeader,
       createColumnIndex: createColumnIndex,
+      createCornerWidget: createCornerWidget,
       isRowDefault: isRowDefault,
       createFooter: createFooter,
       configuration: widget.stateManager.configuration.copyWith(

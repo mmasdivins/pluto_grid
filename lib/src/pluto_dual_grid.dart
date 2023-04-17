@@ -541,6 +541,9 @@ class PlutoDualGridProps {
   /// {@macro pluto_grid_property_createColumnIndex}
   final CreateColumnIndexCallBack? createColumnIndex;
 
+  /// {@macro pluto_grid_property_createCornerWidget}
+  final CreateCornerWidgetCallBack? createCornerWidget;
+
   /// {@macro pluto_grid_property_isRowDefault}
   final IsRowDefaultCallback? isRowDefault;
 
@@ -588,6 +591,7 @@ class PlutoDualGridProps {
     this.createHeader,
     this.createFooter,
     this.createColumnIndex,
+    this.createCornerWidget,
     this.isRowDefault,
     this.noRowsWidget,
     this.rowColorCallback,
@@ -611,6 +615,7 @@ class PlutoDualGridProps {
     PlutoOptional<PlutoOnColumnsMovedEventCallback?>? onColumnsMoved,
     PlutoOptional<CreateHeaderCallBack?>? createHeader,
     PlutoOptional<CreateColumnIndexCallBack?>? createColumnIndex,
+    PlutoOptional<CreateCornerWidgetCallBack?>? createCornerWidget,
     PlutoOptional<IsRowDefaultCallback?>? isRowDefault,
     PlutoOptional<CreateFooterCallBack?>? createFooter,
     PlutoOptional<Widget?>? noRowsWidget,
@@ -642,7 +647,9 @@ class PlutoDualGridProps {
           createHeader == null ? this.createHeader : createHeader.value,
       createColumnIndex:
         createColumnIndex == null ? this.createColumnIndex : createColumnIndex.value,
-     isRowDefault:
+      createCornerWidget:
+        createCornerWidget == null ? this.createCornerWidget : createCornerWidget.value,
+      isRowDefault:
        isRowDefault == null ? this.isRowDefault : isRowDefault.value,
       createFooter:
           createFooter == null ? this.createFooter : createFooter.value,

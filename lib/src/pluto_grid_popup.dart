@@ -59,6 +59,9 @@ class PlutoGridPopup {
   /// {@macro pluto_grid_property_createColumnIndex}
   final CreateColumnIndexCallBack? createColumnIndex;
 
+  /// {@macro pluto_grid_property_createCornerWidget}
+  final CreateCornerWidgetCallBack? createCornerWidget;
+
   /// {@macro pluto_grid_property_isRowDefault}
   final IsRowDefaultCallback? isRowDefault;
 
@@ -114,6 +117,7 @@ class PlutoGridPopup {
     this.createHeader,
     this.createFooter,
     this.createColumnIndex,
+    this.createCornerWidget,
     this.isRowDefault,
     this.noRowsWidget,
     this.rowColorCallback,
@@ -171,6 +175,7 @@ class PlutoGridPopup {
                           createHeader: createHeader,
                           createFooter: createFooter,
                           createColumnIndex: createColumnIndex,
+                          createCornerWidget: createCornerWidget,
                           isRowDefault: isRowDefault,
                           noRowsWidget: noRowsWidget,
                           rowColorCallback: rowColorCallback,

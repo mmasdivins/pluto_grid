@@ -298,7 +298,7 @@ void main() {
             title: 'column',
             field: 'column',
             type: PlutoColumnType.text(),
-            enableEditingMode: enableEditingMode,
+            enableEditingMode: (c) => enableEditingMode,
           ),
         ];
 

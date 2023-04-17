@@ -42,6 +42,8 @@ abstract class IGridState {
 
   CreateColumnIndexCallBack? get createColumnIndex;
 
+  CreateCornerWidgetCallBack? get createCornerWidget;
+
   IsRowDefaultCallback? get isRowDefault;
 
   CreateFooterCallBack? get createFooter;

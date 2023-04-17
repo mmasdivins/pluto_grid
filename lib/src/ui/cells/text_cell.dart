@@ -214,6 +214,12 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       _restoreText();
     }
 
+    // Quan sortim de la cel·la perquè anem cap a la fila d'amunt o a la fila
+    // d'avall guardem els canvis de la cel·la
+    if (keyManager.isUp || keyManager.isDown) {
+      _handleOnComplete();
+    }
+
     // KeyManager 로 이벤트 처리를 위임 한다.
     widget.stateManager.keyManager!.subject.add(keyManager);
 
