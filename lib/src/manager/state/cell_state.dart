@@ -218,10 +218,38 @@ mixin CellState implements IPlutoGridState {
         cell: currentCell!
     ));
 
+    var isRowDefaultFunction = isRowDefault ?? _isRowDefault;
+
+    if (mode != PlutoGridMode.readOnly
+        && oldCell != null
+        && configuration.lastRowKeyUpAction.isRemoveOne) {
+
+      bool isRowDefault = isRowDefaultFunction(oldCell.row, this as PlutoGridStateManager);
+      if (isRowDefault){
+        removeRows([oldCell.row]);
+      }
+    }
+
     // If row changed notifiy changed row
     notifyTrackingRow(rowIdx);
 
     notifyListeners(notify, setCurrentCell.hashCode);
+  }
+
+  bool _isRowDefault(PlutoRow row, PlutoGridStateManager stateManager){
+    for (var element in stateManager.refColumns) {
+      var cell = row.cells[element.field]!;
+
+      var value = element.type.defaultValue;
+      if (element.type.defaultValue is Function){
+        value = element.type.defaultValue.call();
+      }
+
+      if (value != cell.value) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override

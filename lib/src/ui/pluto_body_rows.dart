@@ -93,8 +93,9 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
     return Listener(
         onPointerSignal: (pointerSignal){
           if (pointerSignal is PointerScrollEvent){
-            if (stateManager.refRows.isEmpty || stateManager.refColumns.isEmpty)
+            if (stateManager.refRows.isEmpty || stateManager.refColumns.isEmpty){
               return;
+            }
 
             double offset = pointerSignal.scrollDelta.dy;
             var f = stateManager.currentColumn?.field;
@@ -113,7 +114,7 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
             }
 
             PlutoCell cell =
-                stateManager.rows[rowIndex].cells.entries.elementAt(ci).value;
+                stateManager.rows[rowIndex].cells.entries.firstWhere((e) => e.key == f).value;
             stateManager.setCurrentCell(cell, rowIndex);
             stateManager.gridFocusNode.requestFocus();
           }

@@ -59,6 +59,9 @@ typedef CreateColumnIndexCallBack = Widget? Function(int index,
 typedef CreateCornerWidgetCallBack = Widget? Function(
     PlutoGridStateManager stateManager);
 
+typedef OnDeleteRowEventCallBack = void Function(PlutoRow row,
+    PlutoGridStateManager stateManager);
+
 typedef IsRowDefaultCallback = bool Function(PlutoRow row,
     PlutoGridStateManager stateManager);
 
@@ -100,6 +103,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.isRowDefault,
     this.createColumnIndex,
     this.createCornerWidget,
+    this.onDeleteRowEvent,
     this.showColumnIndex = false,
     this.noRowsWidget,
     this.rowColorCallback,
@@ -279,6 +283,9 @@ class PlutoGrid extends PlutoStatefulWidget {
 
   /// Crea el widget de la cantonada
   final CreateCornerWidgetCallBack? createCornerWidget;
+
+  /// Event d'esborrament de fila
+  final OnDeleteRowEventCallBack? onDeleteRowEvent;
 
   /// {@template pluto_grid_property_isRowDefalut}
   /// Callback to check if a row is default
@@ -600,6 +607,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       createFooter: widget.createFooter,
       createColumnIndex: widget.createColumnIndex,
       createCornerWidget: widget.createCornerWidget,
+      onDeleteRowEvent: widget.onDeleteRowEvent,
       isRowDefault: widget.isRowDefault,
       showColumnIndex: widget.showColumnIndex,
       columnMenuDelegate: widget.columnMenuDelegate,

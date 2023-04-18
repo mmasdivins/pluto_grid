@@ -129,5 +129,9 @@ class PlutoGridShortcut {
     // Select all cells or rows
     LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyA):
         const PlutoGridActionSelectAll(),
+    // Deletes the selected row
+    LogicalKeySet(LogicalKeyboardKey.delete):
+        const PlutoGridActionDelete(),
+
   };
 }

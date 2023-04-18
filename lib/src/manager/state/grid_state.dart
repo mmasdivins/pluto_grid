@@ -44,6 +44,8 @@ abstract class IGridState {
 
   CreateCornerWidgetCallBack? get createCornerWidget;
 
+  OnDeleteRowEventCallBack? get onDeleteRowEvent;
+
   IsRowDefaultCallback? get isRowDefault;
 
   CreateFooterCallBack? get createFooter;

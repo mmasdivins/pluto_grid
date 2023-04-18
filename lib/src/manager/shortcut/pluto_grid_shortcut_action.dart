@@ -52,6 +52,9 @@ import 'package:pluto_grid/pluto_grid.dart';
 ///
 /// [PlutoGridActionSelectAll]
 /// {@macro pluto_grid_action_select_all}
+///
+/// [PlutoGridActionDelete]
+/// {@macro pluto_grid_action_delete}
 abstract class PlutoGridShortcutAction {
   const PlutoGridShortcutAction();
 
@@ -767,5 +770,30 @@ class PlutoGridActionSelectAll extends PlutoGridShortcutAction {
     }
 
     stateManager.setAllCurrentSelecting();
+  }
+}
+
+
+/// {@template pluto_grid_action_delete}
+/// Delete selected row.
+/// {@endtemplate}
+class PlutoGridActionDelete extends PlutoGridShortcutAction {
+  const PlutoGridActionDelete();
+
+  @override
+  void execute({
+    required PlutoKeyManagerEvent keyEvent,
+    required PlutoGridStateManager stateManager,
+  }) {
+    if (stateManager.isEditing == true
+        || stateManager.mode == PlutoGridMode.readOnly
+        || stateManager.currentCell == null
+        || stateManager.onDeleteRowEvent == null) {
+      return;
+    }
+
+    var row = stateManager.currentCell!.row;
+
+    stateManager.onDeleteRowEvent!.call(row, stateManager);
   }
 }
