@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid/src/manager/state/row_state.dart';
 
 abstract class IGridState {
   GlobalKey get gridKey;
@@ -190,6 +191,7 @@ mixin GridState implements IPlutoGridState {
     setSelectingMode(selectingMode);
 
     resetCurrentState();
+
   }
 
   @override

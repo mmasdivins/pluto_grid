@@ -222,6 +222,7 @@ mixin CellState implements IPlutoGridState {
 
     if (mode != PlutoGridMode.readOnly
         && oldCell != null
+        && oldCell.row != currentCell!.row
         && configuration.lastRowKeyUpAction.isRemoveOne) {
 
       bool isRowDefault = isRowDefaultFunction(oldCell.row, this as PlutoGridStateManager);
@@ -230,8 +231,10 @@ mixin CellState implements IPlutoGridState {
       }
     }
 
-    // If row changed notifiy changed row
-    notifyTrackingRow(rowIdx);
+    if (mode != PlutoGridMode.readOnly){
+      // If row changed notifiy changed row
+      notifyTrackingRow(rowIdx);
+    }
 
     notifyListeners(notify, setCurrentCell.hashCode);
   }

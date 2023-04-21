@@ -107,6 +107,8 @@ abstract class IRowState {
     bool notify = true,
   });
 
+  void resetRowEditingState();
+
   void trackRowCell(int idxRow, PlutoRow row);
 
   void notifyTrackingRow(int idxRow);
@@ -206,7 +208,7 @@ mixin RowState implements IPlutoGridState {
   PlutoRow getNewRow() {
     final cells = <String, PlutoCell>{};
 
-    for (var column in refColumns) {
+    for (var column in refColumns.originalList) {
       var value = column.type.defaultValue;
       if (value is Function){
         value = column.type.defaultValue.call();
@@ -352,6 +354,12 @@ mixin RowState implements IPlutoGridState {
       refRows.removeAt(currentRowIdx!);
     }
 
+    // Si esborrem la fila que teniem tracking,
+    // reiniciem l'estat
+    if (_rowEditingState.indexRow == currentRowIdx){
+      _rowEditingState = RowEditingState();
+    }
+
     resetCurrentState(notify: false);
 
     notifyListeners(true, removeCurrentRow.hashCode);
@@ -390,6 +398,12 @@ mixin RowState implements IPlutoGridState {
       refRows.removeWhereFromOriginal((row) => removeKeys.contains(row.key));
     }
 
+    // Si esborrem la fila que teniem tracking,
+    // reiniciem l'estat
+    if (rows.contains(_rowEditingState.newRow)){
+      _rowEditingState = RowEditingState();
+    }
+
     updateCurrentCellPosition(notify: false);
 
     setCurrentSelectingPositionByCellKey(selectingCellKey, notify: false);
@@ -406,6 +420,8 @@ mixin RowState implements IPlutoGridState {
     }
 
     refRows.clearFromOriginal();
+
+    _rowEditingState = RowEditingState();
 
     resetCurrentState(notify: false);
 
@@ -610,8 +626,14 @@ mixin RowState implements IPlutoGridState {
       ));
 
       // Reiniciem el row editing state
-      _rowEditingState = RowEditingState();
+      resetRowEditingState();
     }
+  }
+
+  @override
+  void resetRowEditingState(){
+    // Reiniciem el row editing state
+    _rowEditingState = RowEditingState();
   }
 
 }
