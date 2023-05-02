@@ -121,13 +121,19 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
     }
 
     if (selection.baseOffset == 0 && keyManager.isLeft) {
-      return true;
+      // No volem mouren's cap a l'esquerra encara que
+      // el cursor estigui al principi de la paraula
+      return false;
+      // return true;
     }
 
     final textLength = _textController.text.length;
 
     if (selection.baseOffset == textLength && keyManager.isRight) {
-      return true;
+      // No volem mouren's cap a la dreta encara que
+      // el cursor estigui al final de la paraula
+      return false;
+      // return true;
     }
 
     return false;

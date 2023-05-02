@@ -609,8 +609,11 @@ mixin RowState implements IPlutoGridState {
       });
       _rowEditingState.cellValues = cellValues;
     }
-    _rowEditingState.indexRow ??= idxRow;
-    _rowEditingState.newRow ??= refRows[idxRow];
+
+    if (idxRow >= 0 && refRows.length >= idxRow){
+      _rowEditingState.indexRow ??= idxRow;
+      _rowEditingState.newRow ??= refRows[idxRow];
+    }
   }
 
   void notifyTrackingRow(int idxRow){
