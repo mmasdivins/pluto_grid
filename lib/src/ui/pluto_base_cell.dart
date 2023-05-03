@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid/src/ui/cells/hint_triangle_cell.dart';
 
 import 'ui.dart';
 
@@ -330,12 +331,24 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child = Padding(
+      padding: widget.cellPadding,
+      child: widget.child,
+    );
+
+    if (widget.column.showHint?.call(widget.row.cells) ?? false) {
+      child = HintTriangleCell(
+          hintValue: widget.cell.hintValue,
+          hintColor: widget.column.hintColor?.call(widget.row.cells),
+          width: widget.column.width,
+          height: widget.stateManager.rowHeight,
+          child: child
+      );
+    }
+
     return DecoratedBox(
       decoration: _decoration,
-      child: Padding(
-        padding: widget.cellPadding,
-        child: widget.child,
-      ),
+      child: child,
     );
   }
 }

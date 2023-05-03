@@ -192,6 +192,13 @@ class PlutoColumn {
   /// Hide the column.
   bool hide;
 
+  /// Indica si ensenyem el hint
+  bool Function(Map<String, PlutoCell> cells)? showHint;
+
+
+  /// Color del hint
+  Color? Function(Map<String, PlutoCell> cells)? hintColor;
+
   PlutoColumn({
     required this.title,
     required this.field,
@@ -226,10 +233,14 @@ class PlutoColumn {
     this.enableAutoEditing = false,
     this.enableEditingMode,
     this.hide = false,
+    this.showHint,
+    this.hintColor,
   })  : _key = UniqueKey(),
         _checkReadOnly = checkReadOnly
   {
     enableEditingMode = enableEditingMode ?? (c) => true;
+    showHint = showHint ?? (c) => false;
+    hintColor = hintColor ?? (c) => Colors.black;
   }
 
   final Key _key;
