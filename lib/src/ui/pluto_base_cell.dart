@@ -289,9 +289,16 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
     required Color? cellColorGroupedRow,
     required PlutoGridSelectingMode selectingMode,
   }) {
+
+    Color? cellColor = widget.column.cellColor?.call(widget.row.cells);
+    if (cellColor == null && readOnly) {
+      // SI no s'ha posat un custom color i és read only el posem en gris
+      cellColor = const Color(0xffcfd3d7);
+    }
+
     if (isCurrentCell) {
       return BoxDecoration(
-        color: _currentCellColor(
+        color: cellColor ?? _currentCellColor(
           hasFocus: hasFocus,
           isEditing: isEditing,
           readOnly: readOnly,
@@ -308,7 +315,7 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
       );
     } else if (isSelectedCell) {
       return BoxDecoration(
-        color: activatedColor,
+        color: cellColor ?? activatedColor,
         border: Border.all(
           color: hasFocus ? activatedBorderColor : inactivatedBorderColor,
           width: 1,
@@ -316,7 +323,7 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
       );
     } else {
       return BoxDecoration(
-        color: isGroupedRowCell ? cellColorGroupedRow : null,
+        color: cellColor ?? (isGroupedRowCell ? cellColorGroupedRow : null),
         border: enableCellVerticalBorder
             ? BorderDirectional(
                 end: BorderSide(

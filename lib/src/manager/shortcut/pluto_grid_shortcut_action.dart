@@ -152,8 +152,9 @@ class PlutoGridActionMoveCellFocus extends PlutoGridShortcutAction {
         ));
       }
       else {
-        if (stateManager.configuration.lastRowKeyUpAction.isRemoveOne && isRowDefault){
-          // Esborrem la última fila si s'ha creat i no conté res
+        if (stateManager.configuration.lastRowKeyUpAction.isRemoveOne && isRowDefault && stateManager.rows.length > 1){
+          // Esborrem la última fila si s'ha creat i no conté res i hi ha més d'una
+          // fila
           stateManager.removeRows([row]);
         }
       }
