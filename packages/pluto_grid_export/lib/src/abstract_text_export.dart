@@ -42,7 +42,7 @@ abstract class AbstractTextExport<T> {
     for (PlutoColumn column in visibleColumns(state)) {
       dynamic value = plutoRow.cells[column.field]?.value;
       serializedRow
-          .add(value != null ? column.formattedValueForDisplay(value) : null);
+          .add(value != null ? column.formattedValueForDisplay(value) : "");
     }
 
     return serializedRow;
