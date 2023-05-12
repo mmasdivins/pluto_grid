@@ -1102,7 +1102,7 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
       var s = layoutChild(
         _StackName.columnsIndex,
         BoxConstraints.tight(
-          Size(20, size.height),
+          Size(30, size.height),
         ),
       );
 
@@ -1205,7 +1205,7 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
         _StackName.columnsIndexBody,
         BoxConstraints.tight(
           Size(
-            20,
+            30,
             size.height - bodyRowsTopOffset - bodyRowsBottomOffset,
             // _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
           ),
