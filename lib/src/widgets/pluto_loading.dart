@@ -39,6 +39,8 @@ class PlutoLoading extends StatelessWidget {
           backgroundColor: Colors.transparent,
           color: indicatorColor,
         );
+      case PlutoGridLoadingLevel.gridInvisible:
+        return const _GridInvisibleLoading();
     }
   }
 }
@@ -89,6 +91,28 @@ class _GridLoading extends StatelessWidget {
               )
             ],
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GridInvisibleLoading extends StatelessWidget {
+  const _GridInvisibleLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: const [
+        Positioned.fill(
+          child:
+          // Opacity(
+          //   opacity: 0.7,
+          //   child:
+            ColoredBox(
+              color: Colors.transparent,
+            ),
+          // ),
         ),
       ],
     );

@@ -171,6 +171,25 @@ mixin GridState implements IPlutoGridState {
 
     _state._mode = mode;
 
+    if (mode != PlutoGridMode.readOnly && rows.isEmpty) {
+      // SI no hi ha cap fila i estem en edició posem una fila buida
+      removeAllRows(notify: false);
+      appendRows([_createNewRow()]);
+    }
+    else if (mode == PlutoGridMode.readOnly && rows.isNotEmpty) {
+      // Si passem a no edició i tenim files que són default
+      // les esborrem
+      var isRowDefaultFunction = isRowDefault ?? _isRowDefault;
+      List<PlutoRow> rowsRemove = [];
+      for (var row in rows) {
+        if (isRowDefaultFunction(row, this as PlutoGridStateManager)) {
+          rowsRemove.add(row);
+        }
+      }
+      removeRows(rowsRemove);
+
+    }
+
     PlutoGridSelectingMode selectingMode;
 
     switch (mode) {
@@ -193,6 +212,39 @@ mixin GridState implements IPlutoGridState {
     resetCurrentState();
 
   }
+
+  PlutoRow _createNewRow() {
+    final cells = <String, PlutoCell>{};
+
+    for (var column in refColumns.originalList) {
+      var value = column.type.defaultValue;
+      if (value is Function){
+        value = column.type.defaultValue.call();
+      }
+
+      cells[column.field] = PlutoCell(
+        value: value,
+      );
+    }
+    return PlutoRow(cells: cells);
+  }
+
+  bool _isRowDefault(PlutoRow row, PlutoGridStateManager state){
+    for (var element in refColumns) {
+      var cell = row.cells[element.field]!;
+
+      var value = element.type.defaultValue;
+      if (element.type.defaultValue is Function){
+        value = element.type.defaultValue.call();
+      }
+
+      if (value != cell.value) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
   @override
   void resetCurrentState({bool notify = true}) {

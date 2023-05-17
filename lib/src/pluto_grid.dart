@@ -1330,6 +1330,9 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
         case PlutoGridLoadingLevel.grid:
           loadingSize = size;
           break;
+        case PlutoGridLoadingLevel.gridInvisible:
+          loadingSize = size;
+          break;
         case PlutoGridLoadingLevel.rows:
           loadingSize = Size(size.width, 3);
           positionChild(
@@ -1950,6 +1953,9 @@ enum PlutoGridMode {
 enum PlutoGridLoadingLevel {
   /// {@macro pluto_grid_loading_level_grid}
   grid,
+
+  /// {@macro pluto_grid_loading_level_gridInvisible}
+  gridInvisible,
 
   /// {@macro pluto_grid_loading_level_rows}
   rows,

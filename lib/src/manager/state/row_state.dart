@@ -616,14 +616,17 @@ mixin RowState implements IPlutoGridState {
     }
   }
 
+  void setRowEditingState(RowEditingState rowEditingState) {
+    _rowEditingState = rowEditingState;
+  }
+
   void notifyTrackingRow(int idxRow){
     if (_rowEditingState.indexRow != null && _rowEditingState.indexRow != idxRow){
       // S'ha canviat la fila seleccionada enviem els canvis si n'hi havia
       // de la fila que modificavem
-      var originalRow = refRows.originalList[_rowEditingState.indexRow!];
 
       onRowChanged?.call(PlutoGridOnRowChangedEvent(
-          rowIdx: idxRow,
+          rowIdx: _rowEditingState.indexRow!,
           row: _rowEditingState.newRow!,
           oldCellValues: _rowEditingState.cellValues!
       ));
