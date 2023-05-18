@@ -461,7 +461,20 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
     } else {
       if (stateManager.isEditing == true ||
           stateManager.currentColumn?.enableEditingMode?.call(stateManager.currentCell) == false) {
-        final saveIsEditing = stateManager.isEditing;
+
+        bool saveIsEditing = stateManager.isEditing;
+
+        // Si la següent cel·la no és editable hem de canviar l'estat
+        // isEditing a false
+        var position = _getNextPosition(keyEvent, stateManager);
+        if (position != null && position.rowIdx != null && position.columnIdx != null) {
+          var nextCell = stateManager.refRows[position.rowIdx!].cells[stateManager.refColumns[position.columnIdx!].field];
+          if (nextCell != null) {
+            bool isReadOnly = nextCell.column.checkReadOnly(stateManager.refRows[position.rowIdx!], nextCell);
+            saveIsEditing = isReadOnly ? false : saveIsEditing;
+          }
+        }
+
 
         _moveCell(keyEvent, stateManager);
 
@@ -523,6 +536,46 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
         );
       }
     }
+  }
+
+  PlutoGridCellPosition? _getNextPosition(
+      PlutoKeyManagerEvent keyEvent,
+      PlutoGridStateManager stateManager,
+  ) {
+    final enterKeyAction = stateManager.configuration.enterKeyAction;
+
+    if (enterKeyAction.isNone) {
+      return null;
+    }
+
+    if (enterKeyAction.isEditingAndMoveDown) {
+      if (keyEvent.event.isShiftPressed) {
+        return stateManager.cellPositionToMove(
+          stateManager.currentCellPosition,
+          PlutoMoveDirection.up,
+        );
+
+      } else {
+        return stateManager.cellPositionToMove(
+          stateManager.currentCellPosition,
+          PlutoMoveDirection.down,
+        );
+      }
+    }
+    else if (enterKeyAction.isEditingAndMoveRight) {
+      if (keyEvent.event.isShiftPressed) {
+        return stateManager.cellPositionToMove(
+          stateManager.currentCellPosition,
+          PlutoMoveDirection.left,
+        );
+      } else {
+        return stateManager.cellPositionToMove(
+          stateManager.currentCellPosition,
+          PlutoMoveDirection.right,
+        );
+      }
+    }
+    return null;
   }
 }
 
@@ -786,6 +839,12 @@ class PlutoGridActionDelete extends PlutoGridShortcutAction {
     required PlutoKeyManagerEvent keyEvent,
     required PlutoGridStateManager stateManager,
   }) {
+
+    bool isEdting = stateManager.isEditing;
+    var mode = stateManager.mode;
+    var cell = stateManager.currentCell;
+    var odre = stateManager.onDeleteRowEvent;
+
     if (stateManager.isEditing == true
         || stateManager.mode == PlutoGridMode.readOnly
         || stateManager.currentCell == null
