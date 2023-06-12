@@ -345,7 +345,7 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
 
     if (widget.column.showHint?.call(widget.row.cells) ?? false) {
       child = HintTriangleCell(
-          hintValue: widget.cell.hintValue,
+          hintValue: widget.column.hintValue?.call(widget.row.cells),//widget.cell.hintValue,
           hintColor: widget.column.hintColor?.call(widget.row.cells),
           width: widget.column.width,
           height: widget.stateManager.rowHeight,

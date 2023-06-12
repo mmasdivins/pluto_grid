@@ -534,8 +534,9 @@ mixin RowState implements IPlutoGridState {
       bool wasEmpty = refRows.isEmpty;
       refRows.insertAll(safetyIndex, rows);
 
+      // Initialize the original list without the filter
       PlutoGridStateManager.initializeRows(
-        refColumns,
+        refColumns.originalList,
         rows,
         forceApplySortIdx: false,
       );

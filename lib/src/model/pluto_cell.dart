@@ -4,17 +4,13 @@ import 'package:pluto_grid/pluto_grid.dart';
 class PlutoCell {
   PlutoCell({
     dynamic value,
-    String? hintValue,
     Key? key,
   })  : _key = key ?? UniqueKey(),
-        _value = value,
-        _hintValue = hintValue;
+        _value = value;
 
   final Key _key;
 
   dynamic _value;
-
-  dynamic _hintValue;
 
   dynamic _valueForSorting;
 
@@ -64,18 +60,6 @@ class PlutoCell {
     _value = changed;
 
     _valueForSorting = null;
-  }
-
-  dynamic get hintValue {
-    return _hintValue;
-  }
-
-  set hintValue(dynamic changed) {
-    if (_hintValue == changed) {
-      return;
-    }
-
-    _hintValue = changed;
   }
 
   dynamic get valueForSorting {

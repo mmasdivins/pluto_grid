@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 /// Define the action by implementing the [execute] method
@@ -459,8 +460,16 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
     if (stateManager.configuration.enterKeyAction.isToggleEditing) {
       stateManager.toggleEditing(notify: false);
     } else {
+
+      bool isReadOnly = false;
+      if (stateManager.currentColumn != null && stateManager.currentRow != null && stateManager.currentCell != null) {
+        isReadOnly = stateManager.currentColumn!.checkReadOnly(stateManager.currentRow!, stateManager.currentCell!);
+      }
+
       if (stateManager.isEditing == true ||
-          stateManager.currentColumn?.enableEditingMode?.call(stateManager.currentCell) == false) {
+          stateManager.currentColumn?.enableEditingMode?.call(stateManager.currentCell) == false ||
+          isReadOnly == true
+      ) {
 
         bool saveIsEditing = stateManager.isEditing;
 
@@ -475,12 +484,18 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
           }
         }
 
-
         _moveCell(keyEvent, stateManager);
 
         stateManager.setEditing(saveIsEditing, notify: false);
       } else {
         stateManager.toggleEditing(notify: false);
+        // On change editing after enter, select all text in cell
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (stateManager.textEditingController != null) {
+            stateManager.textEditingController!.selection = TextSelection(baseOffset: 0, extentOffset: stateManager.textEditingController!.value.text.length);
+          }
+        });
+
       }
     }
 
