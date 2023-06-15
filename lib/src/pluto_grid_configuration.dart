@@ -273,6 +273,7 @@ class PlutoGridStyleConfig {
     ),
     this.columnContextIcon = Icons.dehaze,
     this.columnResizeIcon = Icons.code_sharp,
+    this.hideResizeIcon = false,
     this.columnAscendingIcon,
     this.columnDescendingIcon,
     this.rowGroupExpandedIcon = Icons.keyboard_arrow_down,
@@ -335,6 +336,7 @@ class PlutoGridStyleConfig {
     ),
     this.columnContextIcon = Icons.dehaze,
     this.columnResizeIcon = Icons.code_sharp,
+    this.hideResizeIcon = false,
     this.columnAscendingIcon,
     this.columnDescendingIcon,
     this.rowGroupExpandedIcon = Icons.keyboard_arrow_down,
@@ -471,6 +473,10 @@ class PlutoGridStyleConfig {
   /// only the width of the column can be adjusted.
   final IconData columnResizeIcon;
 
+  /// If hideResizeIcon is true, it does not show the icon to resize, but keeps the
+  /// functionality for resizing
+  final bool hideResizeIcon;
+
   /// Ascending icon when sorting a column.
   ///
   /// If no value is specified, the default icon is set.
@@ -532,6 +538,7 @@ class PlutoGridStyleConfig {
     TextStyle? cellTextStyle,
     IconData? columnContextIcon,
     IconData? columnResizeIcon,
+    bool? hideResizeIcon,
     PlutoOptional<Icon?>? columnAscendingIcon,
     PlutoOptional<Icon?>? columnDescendingIcon,
     IconData? rowGroupExpandedIcon,
@@ -590,6 +597,7 @@ class PlutoGridStyleConfig {
       cellTextStyle: cellTextStyle ?? this.cellTextStyle,
       columnContextIcon: columnContextIcon ?? this.columnContextIcon,
       columnResizeIcon: columnResizeIcon ?? this.columnResizeIcon,
+      hideResizeIcon: hideResizeIcon ?? this.hideResizeIcon,
       columnAscendingIcon: columnAscendingIcon == null
           ? this.columnAscendingIcon
           : columnAscendingIcon.value,
@@ -647,6 +655,7 @@ class PlutoGridStyleConfig {
             cellTextStyle == other.cellTextStyle &&
             columnContextIcon == other.columnContextIcon &&
             columnResizeIcon == other.columnResizeIcon &&
+            hideResizeIcon == other.hideResizeIcon &&
             columnAscendingIcon == other.columnAscendingIcon &&
             columnDescendingIcon == other.columnDescendingIcon &&
             rowGroupExpandedIcon == other.rowGroupExpandedIcon &&
@@ -693,6 +702,7 @@ class PlutoGridStyleConfig {
         cellTextStyle,
         columnContextIcon,
         columnResizeIcon,
+        hideResizeIcon,
         columnAscendingIcon,
         columnDescendingIcon,
         rowGroupExpandedIcon,

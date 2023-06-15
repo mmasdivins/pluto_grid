@@ -126,6 +126,11 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
   Widget build(BuildContext context) {
     final style = stateManager.configuration.style;
 
+    final resizeWithoutIcon = MouseRegion(
+      cursor: SystemMouseCursors.resizeColumn,
+      child: SizedBox(width: 8, height: widget.height),
+    );
+
     final columnWidget = _SortableWidget(
       stateManager: stateManager,
       column: widget.column,
@@ -157,6 +162,11 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
       ),
     );
 
+    Widget menuIconWidget = contextMenuIcon;
+    if (!widget.column.enableContextMenu && style.hideResizeIcon) {
+      menuIconWidget = resizeWithoutIcon;
+    }
+
     return Stack(
       children: [
         Positioned(
@@ -179,9 +189,9 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
                     onPointerDown: _handleOnPointDown,
                     onPointerMove: _handleOnPointMove,
                     onPointerUp: _handleOnPointUp,
-                    child: contextMenuIcon,
+                    child: menuIconWidget,
                   )
-                : contextMenuIcon,
+                : menuIconWidget,
           ),
       ],
     );
