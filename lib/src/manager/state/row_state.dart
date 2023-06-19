@@ -111,7 +111,7 @@ abstract class IRowState {
 
   void trackRowCell(int idxRow, PlutoRow row);
 
-  void notifyTrackingRow(int idxRow);
+  Future notifyTrackingRow(int idxRow);
 }
 
 mixin RowState implements IPlutoGridState {
@@ -264,6 +264,11 @@ mixin RowState implements IPlutoGridState {
     List<PlutoRow> rows, {
     bool notify = true,
   }) {
+
+    if (showLoading) {
+      return;
+    }
+
     _insertRows(rowIdx, rows);
 
     /// Update currentRowIdx
@@ -370,6 +375,10 @@ mixin RowState implements IPlutoGridState {
     List<PlutoRow> rows, {
     bool notify = true,
   }) {
+    if (showLoading) {
+      return;
+    }
+
     if (rows.isEmpty) {
       return;
     }
@@ -528,7 +537,12 @@ mixin RowState implements IPlutoGridState {
       }
 
       for (final row in rows) {
-        row.setState(PlutoRowState.added);
+        if (isRowDefault?.call(row, this as PlutoGridStateManager) ?? false) {
+          row.setState(PlutoRowState.added);
+        }
+        else {
+          row.setState(PlutoRowState.none);
+        }
       }
 
       bool wasEmpty = refRows.isEmpty;
@@ -540,6 +554,7 @@ mixin RowState implements IPlutoGridState {
         rows,
         forceApplySortIdx: false,
       );
+
 
       // If the rows were empty on initializing new rows we set
       // the first cell as focused
@@ -621,19 +636,20 @@ mixin RowState implements IPlutoGridState {
     _rowEditingState = rowEditingState;
   }
 
-  void notifyTrackingRow(int idxRow){
+  @override
+  Future notifyTrackingRow(int idxRow) async {
     if (_rowEditingState.indexRow != null && _rowEditingState.indexRow != idxRow){
       // S'ha canviat la fila seleccionada enviem els canvis si n'hi havia
       // de la fila que modificavem
 
-      onRowChanged?.call(PlutoGridOnRowChangedEvent(
+      await onRowChanged?.call(PlutoGridOnRowChangedEvent(
           rowIdx: _rowEditingState.indexRow!,
           row: _rowEditingState.newRow!,
           oldCellValues: _rowEditingState.cellValues!
       ));
 
-      // Reiniciem el row editing state
-      resetRowEditingState();
+      // // Reiniciem el row editing state
+      // resetRowEditingState();
     }
   }
 

@@ -188,12 +188,15 @@ mixin CellState implements IPlutoGridState {
     PlutoCell? cell,
     int? rowIdx, {
     bool notify = true,
-  }) {
+  }) async {
+
     if (cell == null ||
         rowIdx == null ||
         refRows.isEmpty ||
         rowIdx < 0 ||
-        rowIdx > refRows.length - 1) {
+        rowIdx > refRows.length - 1 ||
+        showLoading
+    ) {
       return;
     }
 
@@ -202,6 +205,7 @@ mixin CellState implements IPlutoGridState {
     }
 
     var oldCell = _state._currentCell;
+    var oldRowIdx = _state._currentCellPosition?.rowIdx ?? 0;
     _state._currentCell = cell;
 
     _state._currentCellPosition = PlutoGridCellPosition(
@@ -223,6 +227,7 @@ mixin CellState implements IPlutoGridState {
     if (mode != PlutoGridMode.readOnly
         && oldCell != null
         && oldCell.row != currentCell!.row
+        && oldRowIdx > rowIdx
         && configuration.lastRowKeyUpAction.isRemoveOne) {
 
       bool isRowDefault = isRowDefaultFunction(oldCell.row, this as PlutoGridStateManager);
@@ -233,7 +238,11 @@ mixin CellState implements IPlutoGridState {
 
     if (mode != PlutoGridMode.readOnly){
       // If row changed notifiy changed row
-      notifyTrackingRow(rowIdx);
+      await notifyTrackingRow(rowIdx);
+    }
+
+    if (oldRowIdx != rowIdx && rowIdx < refRows.length && currentCell!.row.state == PlutoRowState.added) {
+      trackRowCell(rowIdx, currentCell!.row);
     }
 
     notifyListeners(notify, setCurrentCell.hashCode);

@@ -296,6 +296,13 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
       cellColor = const Color(0xffcfd3d7);
     }
 
+    // Si estem a la mateixa fila que tenim seleccionada, posem el color de la
+    // cel·la i no el de read only
+    var ccp = stateManager.currentCellPosition;
+    if (ccp != null && ccp.rowIdx == widget.rowIdx) {
+      cellColor = widget.column.cellColor?.call(widget.row.cells);
+    }
+
     if (isCurrentCell) {
       return BoxDecoration(
         color: cellColor ?? _currentCellColor(

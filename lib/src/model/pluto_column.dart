@@ -204,6 +204,9 @@ class PlutoColumn {
   /// Color de la cel·la
   Color? Function(Map<String, PlutoCell> cells)? cellColor;
 
+  ///  Indica si la columna és obligatoria
+  bool required;
+
   PlutoColumn({
     required this.title,
     required this.field,
@@ -242,6 +245,7 @@ class PlutoColumn {
     this.showHint,
     this.hintColor,
     this.cellColor,
+    this.required = false,
   })  : _key = UniqueKey(),
         _checkReadOnly = checkReadOnly
   {
