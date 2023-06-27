@@ -72,11 +72,17 @@ mixin KeyboardState implements IPlutoGridState {
 
     switch (direction) {
       case PlutoMoveDirection.left:
+        if (cellPosition!.columnIdx! - 1 < 0) {
+          return cellPosition!;
+        }
         return PlutoGridCellPosition(
           columnIdx: columnIndexes[cellPosition!.columnIdx! - 1],
           rowIdx: cellPosition.rowIdx,
         );
       case PlutoMoveDirection.right:
+        if (cellPosition!.columnIdx! + 1 >= columnIndexes.length) {
+          return cellPosition!;
+        }
         return PlutoGridCellPosition(
           columnIdx: columnIndexes[cellPosition!.columnIdx! + 1],
           rowIdx: cellPosition.rowIdx,

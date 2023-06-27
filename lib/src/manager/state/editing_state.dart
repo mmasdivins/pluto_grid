@@ -248,9 +248,9 @@ mixin EditingState implements IPlutoGridState {
     cell.value = value;
 
     // Notifiquem que s'ha canviat
-    if (currentCellPosition?.rowIdx != null) {
-      notifyTrackingRow(currentCellPosition!.rowIdx!);
-    }
+    // if (currentCellPosition?.rowIdx != null) {
+    //   notifyTrackingRow(currentCellPosition!.rowIdx!);
+    // }
 
     if (callOnChangedEvent == true && onChanged != null) {
       onChanged!(PlutoGridOnChangedEvent(

@@ -855,11 +855,6 @@ class PlutoGridActionDelete extends PlutoGridShortcutAction {
     required PlutoGridStateManager stateManager,
   }) {
 
-    bool isEdting = stateManager.isEditing;
-    var mode = stateManager.mode;
-    var cell = stateManager.currentCell;
-    var odre = stateManager.onDeleteRowEvent;
-
     if (stateManager.isEditing == true
         || stateManager.mode == PlutoGridMode.readOnly
         || stateManager.currentCell == null
@@ -870,5 +865,47 @@ class PlutoGridActionDelete extends PlutoGridShortcutAction {
     var row = stateManager.currentCell!.row;
 
     stateManager.onDeleteRowEvent!.call(row, stateManager);
+  }
+}
+
+/// {@template pluto_grid_action_insert}
+/// Inserts a default row.
+/// {@endtemplate}
+class PlutoGridActionInsert extends PlutoGridShortcutAction {
+  const PlutoGridActionInsert();
+
+  @override
+  void execute({
+    required PlutoKeyManagerEvent keyEvent,
+    required PlutoGridStateManager stateManager,
+  }) {
+
+    if (stateManager.isEditing == true
+        || stateManager.showLoading
+        || stateManager.mode == PlutoGridMode.readOnly
+        || stateManager.currentCellPosition == null
+        || stateManager.currentCellPosition?.rowIdx == null) {
+      return;
+    }
+
+    int rowIdx = stateManager.currentCellPosition!.rowIdx!;
+    stateManager.insertRows(
+        rowIdx,
+        [stateManager.getNewRow()]
+    );
+
+    var newRow = stateManager.refRows[rowIdx];
+    // Anem a la fila que hem creat
+    var firstVisibleCol = stateManager.columns.firstWhereOrNull((element) => !element.hide);
+    if (firstVisibleCol != null){
+      var cell = newRow.cells[firstVisibleCol.field];
+      stateManager.setCurrentCell(
+        cell,
+        rowIdx,
+        notify: true,
+      );
+    }
+
+
   }
 }

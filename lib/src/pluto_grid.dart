@@ -17,7 +17,7 @@ typedef PlutoOnLoadedEventCallback = void Function(
 typedef PlutoOnChangedEventCallback = void Function(
     PlutoGridOnChangedEvent event);
 
-typedef PlutoOnRowChangedEventCallback = Future Function(
+typedef PlutoOnRowChangedEventCallback = Future<bool?> Function(
     PlutoGridOnRowChangedEvent event);
 
 typedef PlutoOnLastRowKeyDownEventCallback = void Function(

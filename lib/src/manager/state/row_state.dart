@@ -642,14 +642,16 @@ mixin RowState implements IPlutoGridState {
       // S'ha canviat la fila seleccionada enviem els canvis si n'hi havia
       // de la fila que modificavem
 
-      await onRowChanged?.call(PlutoGridOnRowChangedEvent(
+      bool? result = await onRowChanged?.call(PlutoGridOnRowChangedEvent(
           rowIdx: _rowEditingState.indexRow!,
           row: _rowEditingState.newRow!,
           oldCellValues: _rowEditingState.cellValues!
       ));
 
-      // // Reiniciem el row editing state
-      // resetRowEditingState();
+      if (result == null || result == true) {
+        // Reiniciem el row editing state
+        resetRowEditingState();
+      }
     }
   }
 

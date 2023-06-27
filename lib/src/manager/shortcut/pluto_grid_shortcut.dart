@@ -132,6 +132,9 @@ class PlutoGridShortcut {
     // Deletes the selected row
     LogicalKeySet(LogicalKeyboardKey.delete):
         const PlutoGridActionDelete(),
+    // Inserts a default row on the position
+    LogicalKeySet(LogicalKeyboardKey.insert):
+      const PlutoGridActionInsert(),
 
   };
 }

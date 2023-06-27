@@ -11,6 +11,7 @@ class PlutoRow {
   })  : type = type ?? PlutoRowTypeNormal.instance,
         _checked = checked,
         _state = PlutoRowState.none,
+        _errorState = PlutoRowErrorState(),
         _key = key ?? UniqueKey();
 
   final PlutoRowType type;
@@ -28,6 +29,10 @@ class PlutoRow {
   PlutoRow? _parent;
 
   PlutoRowState _state;
+
+  PlutoRowErrorState _errorState;
+
+  bool _isLoading = false;
 
   Key get key => _key;
 
@@ -115,6 +120,11 @@ class PlutoRow {
   /// Make sure it stays in the list unless you change the filtering again.
   PlutoRowState get state => _state;
 
+  /// State of the row when an error occurs
+  PlutoRowErrorState get errorState => _errorState;
+
+  bool get isLoading => _isLoading;
+
   void setParent(PlutoRow? row) {
     _parent = row;
   }
@@ -130,6 +140,14 @@ class PlutoRow {
 
   void setState(PlutoRowState state) {
     _state = state;
+  }
+
+  void setError(PlutoRowErrorState error) {
+    _errorState = error;
+  }
+
+  void setLoading(bool isLoading) {
+    _isLoading = isLoading;
   }
 
   /// Create PlutoRow in json type.
@@ -305,4 +323,14 @@ enum PlutoRowState {
   bool get isAdded => this == PlutoRowState.added;
 
   bool get isUpdated => this == PlutoRowState.updated;
+}
+
+class PlutoRowErrorState {
+  final bool error;
+  final String msgError;
+
+  PlutoRowErrorState({
+    this.error = false,
+    this.msgError = ""
+  });
 }
