@@ -487,6 +487,16 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
         _moveCell(keyEvent, stateManager);
 
         stateManager.setEditing(saveIsEditing, notify: false);
+
+        if (saveIsEditing) {
+
+          // On change editing after enter, select all text in cell
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (stateManager.textEditingController != null) {
+              stateManager.textEditingController!.selection = TextSelection(baseOffset: 0, extentOffset: stateManager.textEditingController!.value.text.length);
+            }
+          });
+        }
       } else {
         stateManager.toggleEditing(notify: false);
         // On change editing after enter, select all text in cell
