@@ -55,6 +55,14 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
 
     if (stateManager.isCurrentCell(cell) && stateManager.isEditing != true) {
       stateManager.setEditing(true);
+
+      // On change editing after click, select all text in cell
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (stateManager.textEditingController != null) {
+          stateManager.textEditingController!.selection = TextSelection(baseOffset: 0, extentOffset: stateManager.textEditingController!.value.text.length);
+        }
+      });
+
     } else {
       stateManager.setCurrentCell(cell, rowIdx);
     }
