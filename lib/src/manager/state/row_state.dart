@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:pluto_grid/src/manager/state/cell_state.dart';
 
 class RowEditingState {
   int? indexRow;
@@ -639,9 +638,17 @@ mixin RowState implements IPlutoGridState {
   @override
   Future notifyTrackingRow(int idxRow) async {
     if (_rowEditingState.indexRow != null && _rowEditingState.indexRow != idxRow){
+
+      // Primer comprovem si hi s'ha canviat alguna cel·la
+      if (!_compareCells(_rowEditingState.newRow!.cells, _rowEditingState.cellValues!)) {
+        // No s'ha canviat cap cel·la per tant no generem l'event de on row changed
+        // i reïniciem el row editing state
+        resetRowEditingState();
+        return;
+      }
+
       // S'ha canviat la fila seleccionada enviem els canvis si n'hi havia
       // de la fila que modificavem
-
       bool? result = await onRowChanged?.call(PlutoGridOnRowChangedEvent(
           rowIdx: _rowEditingState.indexRow!,
           row: _rowEditingState.newRow!,
@@ -653,6 +660,20 @@ mixin RowState implements IPlutoGridState {
         resetRowEditingState();
       }
     }
+  }
+
+  ///
+  /// Retorna true si s'ha canviat alguna cell, false altrament
+  bool _compareCells(Map<String, PlutoCell> newCells,  Map<String, dynamic> oldCells){
+    for(var entry in newCells.entries) {
+      if(!oldCells.containsKey(entry.key))
+        return true;
+
+      var oc = oldCells[entry.key];
+      if (oc != entry.value.value)
+        return true;
+    }
+    return false;
   }
 
   @override
