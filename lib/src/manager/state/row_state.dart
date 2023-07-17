@@ -6,6 +6,7 @@ class RowEditingState {
   int? indexRow;
   Map<String, dynamic>? cellValues;
   PlutoRow? newRow;
+  bool semaphor = false;
 }
 
 abstract class IRowState {
@@ -637,6 +638,13 @@ mixin RowState implements IPlutoGridState {
 
   @override
   Future notifyTrackingRow(int idxRow) async {
+
+    // If semaphor don't notify
+    if (_rowEditingState.semaphor) {
+      return;
+    }
+
+
     if (_rowEditingState.indexRow != null && _rowEditingState.indexRow != idxRow){
 
       // Primer comprovem si hi s'ha canviat alguna cel·la
