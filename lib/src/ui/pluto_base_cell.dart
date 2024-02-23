@@ -144,7 +144,8 @@ class PlutoBaseCell extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+
+    Widget child = GestureDetector(
       behavior: HitTestBehavior.translucent,
       // Essential gestures.
       onTapUp: _handleOnTapUp,
@@ -171,6 +172,17 @@ class PlutoBaseCell extends StatelessWidget
         ),
       ),
     );
+
+    if (stateManager.onRightClickCell != null){
+      child = stateManager.onRightClickCell!.call(PlutoGridOnRightClickCellEvent(
+        child: child,
+        cell: row.cells[column.field]!,
+        row: row,
+        rowIdx: rowIdx,
+      ));
+    }
+
+    return child;
   }
 }
 

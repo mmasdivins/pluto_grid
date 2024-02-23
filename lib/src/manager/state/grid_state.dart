@@ -21,6 +21,8 @@ abstract class IGridState {
 
   PlutoOnLastRowKeyUpEventCallback? get onLastRowKeyUp;
 
+  PlutoOnRightClickCellEventCallback? get onRightClickCell;
+
   PlutoOnSelectedCellChangedEventCallback? get onSelectedCellChanged;
 
   PlutoOnSelectedEventCallback? get onSelected;

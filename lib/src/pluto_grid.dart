@@ -26,6 +26,9 @@ typedef PlutoOnLastRowKeyDownEventCallback = void Function(
 typedef PlutoOnLastRowKeyUpEventCallback = void Function(
     PlutoGridOnLastRowKeyUpEvent event);
 
+typedef PlutoOnRightClickCellEventCallback = Widget Function(
+    PlutoGridOnRightClickCellEvent event);
+
 typedef PlutoOnSelectedCellChangedEventCallback = void Function(
     PlutoGridOnSelectedCellChangedEvent event);
 
@@ -90,6 +93,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onRowChanged,
     this.onLastRowKeyDown,
     this.onLastRowKeyUp,
+    this.onRightClickCell,
     this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
@@ -205,6 +209,11 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// [onLastRowKeyUp] is called when the key up is pressed on the last row.
   /// {@endtemplate}
   final PlutoOnLastRowKeyUpEventCallback? onLastRowKeyUp;
+
+  /// {@template pluto_grid_property_onRightClickCell}
+  /// [onRightClickCell] is called when the right clik of the mouse is pressed on a cell.
+  /// {@endtemplate}
+  final PlutoOnRightClickCellEventCallback? onRightClickCell;
 
   /// Event que és crida quan és canvia la cel·la seleccionada
   final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
@@ -594,6 +603,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       onRowChanged: widget.onRowChanged,
       onLastRowKeyDown: widget.onLastRowKeyDown,
       onLastRowKeyUp: widget.onLastRowKeyUp,
+      onRightClickCell: widget.onRightClickCell,
       onSelectedCellChanged: widget.onSelectedCellChanged,
       onSelected: widget.onSelected,
       onSorted: widget.onSorted,
@@ -1535,6 +1545,29 @@ class PlutoGridOnLastRowKeyUpEvent {
     String out = '[PlutoGridOnLastRowKeyUpEvent] ';
     out += 'RowIndex : $rowIdx\n';
     out += '::: isRowDefault : $isRowDefault\n';
+    out += '::: row : $row';
+    return out;
+  }
+}
+
+class PlutoGridOnRightClickCellEvent {
+  final int rowIdx;
+  final PlutoRow row;
+  final PlutoCell cell;
+  final Widget child;
+
+  const PlutoGridOnRightClickCellEvent({
+    required this.rowIdx,
+    required this.row,
+    required this.cell,
+    required this.child,
+  });
+
+  @override
+  String toString() {
+    String out = '[PlutoGridOnRightClickCellEvent] ';
+    out += 'RowIndex : $rowIdx\n';
+    out += '::: cell : $cell\n';
     out += '::: row : $row';
     return out;
   }

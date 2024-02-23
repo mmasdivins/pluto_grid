@@ -29,6 +29,9 @@ class PlutoGridPopup {
   /// {@macro pluto_grid_property_onLastRowKeyUp}
   final PlutoOnLastRowKeyUpEventCallback? onLastRowKeyUp;
 
+  /// {@macro pluto_grid_property_onRightClickCell}
+  final PlutoOnRightClickCellEventCallback? onRightClickCell;
+
   /// {@macro pluto_grid_property_onSelectedCellChanged}
   final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
 
@@ -109,6 +112,7 @@ class PlutoGridPopup {
     this.onRowChanged,
     this.onLastRowKeyDown,
     this.onLastRowKeyUp,
+    this.onRightClickCell,
     this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
@@ -166,6 +170,7 @@ class PlutoGridPopup {
                           onRowChanged: onRowChanged,
                           onLastRowKeyDown: onLastRowKeyDown,
                           onLastRowKeyUp: onLastRowKeyUp,
+                          onRightClickCell: onRightClickCell,
                           onSelectedCellChanged: onSelectedCellChanged,
                           onSelected: (PlutoGridOnSelectedEvent event) {
                             Navigator.pop(ctx, event);
