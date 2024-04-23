@@ -19,13 +19,13 @@ class PlutoBaseCell extends StatelessWidget
   final PlutoGridStateManager stateManager;
 
   PlutoBaseCell({
-    Key? key,
+    super.key,
     required this.cell,
     required this.column,
     required this.rowIdx,
     required this.row,
     required this.stateManager,
-  }) : super(key: key);
+  });
 
 
   Timer? doubleTapTimer;
@@ -396,8 +396,7 @@ class _Cell extends PlutoStatefulWidget {
     required this.row,
     required this.column,
     required this.cell,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   State<_Cell> createState() => _CellState();
