@@ -1553,13 +1553,11 @@ class PlutoGridOnRightClickCellEvent {
   final int rowIdx;
   final PlutoRow row;
   final PlutoCell cell;
-  final Widget child;
 
   const PlutoGridOnRightClickCellEvent({
     required this.rowIdx,
     required this.row,
     required this.cell,
-    required this.child,
   });
 
   @override

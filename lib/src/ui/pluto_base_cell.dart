@@ -111,6 +111,14 @@ class PlutoBaseCell extends StatelessWidget
   }
 
   void Function(TapDownDetails details)? _onSecondaryTapOrNull() {
+    if (stateManager.onRightClickCell != null){
+      stateManager.onRightClickCell!.call(PlutoGridOnRightClickCellEvent(
+        cell: row.cells[column.field]!,
+        row: row,
+        rowIdx: rowIdx,
+      ));
+    }
+
     return stateManager.onRowSecondaryTap == null
         ? null
         : _handleOnSecondaryTap;
@@ -172,15 +180,6 @@ class PlutoBaseCell extends StatelessWidget
         ),
       ),
     );
-
-    if (stateManager.onRightClickCell != null){
-      child = stateManager.onRightClickCell!.call(PlutoGridOnRightClickCellEvent(
-        child: child,
-        cell: row.cells[column.field]!,
-        row: row,
-        rowIdx: rowIdx,
-      ));
-    }
 
     return child;
   }
