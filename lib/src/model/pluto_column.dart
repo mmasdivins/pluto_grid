@@ -207,6 +207,9 @@ class PlutoColumn {
   ///  Indica si la columna és obligatoria
   bool required;
 
+  /// Indica si la columna s'exportarà o no
+  bool exportable;
+
   PlutoColumn({
     required this.title,
     required this.field,
@@ -246,6 +249,7 @@ class PlutoColumn {
     this.hintColor,
     this.cellColor,
     this.required = false,
+    this.exportable = true,
   })  : _key = UniqueKey(),
         _checkReadOnly = checkReadOnly
   {

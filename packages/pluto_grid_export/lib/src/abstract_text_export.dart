@@ -8,7 +8,7 @@ abstract class AbstractTextExport<T> {
 
   /// Returns the titles of the active column of PlutoGrid.
   List<String> getColumnTitles(PlutoGridStateManager state) =>
-      visibleColumns(state).map((e) => e.title).toList();
+      exportableColumns(state).map((e) => e.title).toList();
 
   /// Converts a list of PlutoRows to a string to be printed.
   ///
@@ -39,7 +39,7 @@ abstract class AbstractTextExport<T> {
     List<String?> serializedRow = [];
 
     // Order is important, so we iterate over columns
-    for (PlutoColumn column in visibleColumns(state)) {
+    for (PlutoColumn column in exportableColumns(state)) {
       dynamic value = plutoRow.cells[column.field]?.value;
       serializedRow
           .add(value != null ? column.formattedValueForDisplay(value) : "");
@@ -48,6 +48,7 @@ abstract class AbstractTextExport<T> {
     return serializedRow;
   }
 
-  List<PlutoColumn> visibleColumns(PlutoGridStateManager state) =>
-      state.columns.where((element) => !element.hide).toList();
+  List<PlutoColumn> exportableColumns(PlutoGridStateManager state) =>
+      state.columns.where((element) => element.exportable
+      ).toList();
 }

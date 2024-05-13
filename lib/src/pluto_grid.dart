@@ -29,6 +29,9 @@ typedef PlutoOnLastRowKeyUpEventCallback = void Function(
 typedef PlutoOnRightClickCellEventCallback = Widget Function(
     PlutoGridOnRightClickCellEvent event);
 
+typedef PlutoRightClickCellContextMenuEventCallback = Widget Function(
+    PlutoGridRightClickCellContextMenuEvent event);
+
 typedef PlutoOnSelectedCellChangedEventCallback = void Function(
     PlutoGridOnSelectedCellChangedEvent event);
 
@@ -94,6 +97,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onLastRowKeyDown,
     this.onLastRowKeyUp,
     this.onRightClickCell,
+    this.rightClickCellContextMenu,
     this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
@@ -214,6 +218,12 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// [onRightClickCell] is called when the right clik of the mouse is pressed on a cell.
   /// {@endtemplate}
   final PlutoOnRightClickCellEventCallback? onRightClickCell;
+
+  /// {@template pluto_grid_property_rightClickCellContextMenu}
+  /// [rightClickCellContextMenu] is called when the right clik of the mouse is
+  /// pressed on a cell to build a context menu.
+  /// {@endtemplate}
+  final PlutoRightClickCellContextMenuEventCallback? rightClickCellContextMenu;
 
   /// Event que és crida quan és canvia la cel·la seleccionada
   final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
@@ -604,6 +614,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       onLastRowKeyDown: widget.onLastRowKeyDown,
       onLastRowKeyUp: widget.onLastRowKeyUp,
       onRightClickCell: widget.onRightClickCell,
+      rightClickCellContextMenu: widget.rightClickCellContextMenu,
       onSelectedCellChanged: widget.onSelectedCellChanged,
       onSelected: widget.onSelected,
       onSorted: widget.onSorted,
@@ -1553,11 +1564,13 @@ class PlutoGridOnRightClickCellEvent {
   final int rowIdx;
   final PlutoRow row;
   final PlutoCell cell;
+  final TapDownDetails details;
 
   const PlutoGridOnRightClickCellEvent({
     required this.rowIdx,
     required this.row,
     required this.cell,
+    required this.details,
   });
 
   @override
@@ -1566,6 +1579,31 @@ class PlutoGridOnRightClickCellEvent {
     out += 'RowIndex : $rowIdx\n';
     out += '::: cell : $cell\n';
     out += '::: row : $row';
+    out += '::: details : $details';
+    return out;
+  }
+}
+
+class PlutoGridRightClickCellContextMenuEvent {
+  final int rowIdx;
+  final PlutoRow row;
+  final PlutoCell cell;
+  final Widget child;
+
+  const PlutoGridRightClickCellContextMenuEvent({
+    required this.rowIdx,
+    required this.row,
+    required this.cell,
+    required this.child,
+  });
+
+  @override
+  String toString() {
+    String out = '[PlutoGridRightClickCellContextMenuEvent] ';
+    out += 'RowIndex : $rowIdx\n';
+    out += '::: cell : $cell\n';
+    out += '::: row : $row';
+    out += '::: child : $child';
     return out;
   }
 }

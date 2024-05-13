@@ -110,18 +110,19 @@ class PlutoBaseCell extends StatelessWidget
     return stateManager.onRowDoubleTap == null ? null : _handleOnDoubleTap;
   }
 
-  void Function(TapDownDetails details)? _onSecondaryTapOrNull() {
+  void _onSecondaryTapOrNull(TapDownDetails details) {
     if (stateManager.onRightClickCell != null){
       stateManager.onRightClickCell!.call(PlutoGridOnRightClickCellEvent(
         cell: row.cells[column.field]!,
         row: row,
         rowIdx: rowIdx,
+        details: details,
       ));
     }
 
     return stateManager.onRowSecondaryTap == null
         ? null
-        : _handleOnSecondaryTap;
+        : _handleOnSecondaryTap(details);
   }
 
   ///https://github.com/flutter/flutter/issues/121674
@@ -153,6 +154,35 @@ class PlutoBaseCell extends StatelessWidget
   @override
   Widget build(BuildContext context) {
 
+    Widget cellContainer = _CellContainer(
+      cell: cell,
+      rowIdx: rowIdx,
+      row: row,
+      column: column,
+      cellPadding: column.cellPadding ??
+          stateManager.configuration.style.defaultCellPadding,
+      stateManager: stateManager,
+      child: _Cell(
+        stateManager: stateManager,
+        rowIdx: rowIdx,
+        column: column,
+        row: row,
+        cell: cell,
+      ),
+    );
+
+    if (stateManager.rightClickCellContextMenu != null) {
+      cellContainer = stateManager.rightClickCellContextMenu!(
+        PlutoGridRightClickCellContextMenuEvent(
+          rowIdx: rowIdx,
+          row: row,
+          cell: cell,
+          child: cellContainer,
+        ),
+      );
+    }
+
+
     Widget child = GestureDetector(
       behavior: HitTestBehavior.translucent,
       // Essential gestures.
@@ -162,23 +192,8 @@ class PlutoBaseCell extends StatelessWidget
       onLongPressEnd: _handleOnLongPressEnd,
       // Optional gestures.
       // onDoubleTap: _onDoubleTapOrNull(),
-      onSecondaryTapDown: _onSecondaryTapOrNull(),
-      child: _CellContainer(
-        cell: cell,
-        rowIdx: rowIdx,
-        row: row,
-        column: column,
-        cellPadding: column.cellPadding ??
-            stateManager.configuration.style.defaultCellPadding,
-        stateManager: stateManager,
-        child: _Cell(
-          stateManager: stateManager,
-          rowIdx: rowIdx,
-          column: column,
-          row: row,
-          cell: cell,
-        ),
-      ),
+      onSecondaryTapDown: _onSecondaryTapOrNull,
+      child: cellContainer,
     );
 
     return child;

@@ -23,6 +23,8 @@ abstract class IGridState {
 
   PlutoOnRightClickCellEventCallback? get onRightClickCell;
 
+  PlutoRightClickCellContextMenuEventCallback? get rightClickCellContextMenu;
+
   PlutoOnSelectedCellChangedEventCallback? get onSelectedCellChanged;
 
   PlutoOnSelectedEventCallback? get onSelected;

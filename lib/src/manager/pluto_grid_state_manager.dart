@@ -75,6 +75,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     this.onLastRowKeyDown,
     this.onLastRowKeyUp,
     this.onRightClickCell,
+    this.rightClickCellContextMenu,
     this.onSelectedCellChanged,
     this.onSelected,
     this.onSorted,
@@ -139,6 +140,9 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
   @override
   final PlutoOnRightClickCellEventCallback? onRightClickCell;
+
+  @override
+  final PlutoRightClickCellContextMenuEventCallback? rightClickCellContextMenu;
 
   @override
   final PlutoOnSelectedCellChangedEventCallback? onSelectedCellChanged;
@@ -261,6 +265,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     super.onLastRowKeyDown,
     super.onLastRowKeyUp,
     super.onRightClickCell,
+    super.rightClickCellContextMenu,
     super.onSelectedCellChanged,
     super.onSelected,
     super.onSorted,
