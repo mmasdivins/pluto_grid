@@ -16,6 +16,17 @@ abstract class AbstractTextExport<T> {
   List<List<String?>> mapStateToListOfRows(PlutoGridStateManager state) {
     List<List<String?>> outputRows = [];
 
+    List<PlutoRow> rowsToExport = mapStateToListOfPlutoRows(state);
+
+    for (var plutoRow in rowsToExport) {
+      outputRows.add(mapPlutoRowToList(state, plutoRow));
+    }
+
+    return outputRows;
+  }
+
+  List<PlutoRow> mapStateToListOfPlutoRows(PlutoGridStateManager state) {
+
     List<PlutoRow> rowsToExport;
 
     // Use filteredList if available
@@ -24,12 +35,9 @@ abstract class AbstractTextExport<T> {
         ? state.refRows.filteredList
         : state.refRows.originalList;
 
-    for (var plutoRow in rowsToExport) {
-      outputRows.add(mapPlutoRowToList(state, plutoRow));
-    }
-
-    return outputRows;
+    return rowsToExport;
   }
+
 
   /// [state] PlutoGrid's PlutoGridStateManager.
   List<String?> mapPlutoRowToList(

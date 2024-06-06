@@ -53,6 +53,9 @@ typedef PlutoOnRowSecondaryTapEventCallback = void Function(
 typedef PlutoOnRowsMovedEventCallback = void Function(
     PlutoGridOnRowsMovedEvent event);
 
+typedef PlutoOnColumnTapEventCallback = void Function(
+    PlutoGridOnColumnTapEvent event);
+
 typedef PlutoOnColumnsMovedEventCallback = void Function(
     PlutoGridOnColumnsMovedEvent event);
 
@@ -1759,6 +1762,26 @@ class PlutoGridOnRowsMovedEvent {
     required this.idx,
     required this.rows,
   });
+}
+
+/// Argument of [PlutoGrid.onColumnTap] callback
+/// to move columns by dragging or receive left or right fixed events.
+///
+/// [PlutoGridStateManager.column].
+class PlutoGridOnColumnTapEvent {
+  final PlutoColumn column;
+
+  const PlutoGridOnColumnTapEvent({
+    required this.column,
+  });
+
+  @override
+  String toString() {
+    String text =
+        '[PlutoGridOnColumnTapEvent] idx: $column\n';
+
+    return text;
+  }
 }
 
 /// Argument of [PlutoGrid.onColumnsMoved] callback

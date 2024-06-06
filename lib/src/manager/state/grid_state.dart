@@ -39,6 +39,8 @@ abstract class IGridState {
 
   PlutoOnRowsMovedEventCallback? get onRowsMoved;
 
+  PlutoOnColumnTapEventCallback? get onColumnTap;
+
   PlutoOnColumnsMovedEventCallback? get onColumnsMoved;
 
   PlutoColumnMenuDelegate get columnMenuDelegate;

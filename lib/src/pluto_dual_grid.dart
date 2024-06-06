@@ -532,6 +532,9 @@ class PlutoDualGridProps {
   /// {@macro pluto_grid_property_onRowsMoved}
   final PlutoOnRowsMovedEventCallback? onRowsMoved;
 
+  /// {@macro pluto_grid_property_onColumnTap}
+  final PlutoOnColumnTapEventCallback? onColumnTap;
+
   /// {@macro pluto_grid_property_onColumnsMoved}
   final PlutoOnColumnsMovedEventCallback? onColumnsMoved;
 
@@ -590,6 +593,7 @@ class PlutoDualGridProps {
     this.onRowDoubleTap,
     this.onRowSecondaryTap,
     this.onRowsMoved,
+    this.onColumnTap,
     this.onColumnsMoved,
     this.createHeader,
     this.createFooter,
@@ -616,6 +620,7 @@ class PlutoDualGridProps {
     PlutoOptional<PlutoOnRowDoubleTapEventCallback?>? onRowDoubleTap,
     PlutoOptional<PlutoOnRowSecondaryTapEventCallback?>? onRowSecondaryTap,
     PlutoOptional<PlutoOnRowsMovedEventCallback?>? onRowsMoved,
+    PlutoOptional<PlutoOnColumnTapEventCallback?>? onColumnTap,
     PlutoOptional<PlutoOnColumnsMovedEventCallback?>? onColumnsMoved,
     PlutoOptional<CreateHeaderCallBack?>? createHeader,
     PlutoOptional<CreateColumnIndexCallBack?>? createColumnIndex,
@@ -646,6 +651,8 @@ class PlutoDualGridProps {
           ? this.onRowSecondaryTap
           : onRowSecondaryTap.value,
       onRowsMoved: onRowsMoved == null ? this.onRowsMoved : onRowsMoved.value,
+      onColumnTap:
+        onColumnTap == null ? this.onColumnTap : onColumnTap.value,
       onColumnsMoved:
           onColumnsMoved == null ? this.onColumnsMoved : onColumnsMoved.value,
       createHeader:
