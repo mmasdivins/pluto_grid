@@ -100,6 +100,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onLastRowKeyDown,
     this.onLastRowKeyUp,
     this.onRightClickCell,
+    this.onColumnTap,
     this.rightClickCellContextMenu,
     this.onSelectedCellChanged,
     this.onSelected,
@@ -269,6 +270,11 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// if [PlutoColumn.enableRowDrag] is enabled.
   /// {@endtemplate}
   final PlutoOnRowsMovedEventCallback? onRowsMoved;
+
+  /// {@template pluto_grid_property_onColumnTap}
+  /// [onColumnTap] is called after the column is tapped
+  /// {@endtemplate}
+  final PlutoOnColumnTapEventCallback? onColumnTap;
 
   /// {@template pluto_grid_property_onColumnsMoved}
   /// Callback for receiving events
@@ -473,6 +479,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
 
   double _rightFrozenLeftOffset = 0.0;
 
+  int _lengthRows = 0;
+
   Widget? _header;
 
   Widget? _columnIndex;
@@ -600,6 +608,11 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       _rightFrozenLeftOffset,
       stateManager.rightFrozenLeftOffset,
     );
+
+    _lengthRows = update<int>(
+      _lengthRows,
+      stateManager.refRows.length,
+    );
   }
 
   void _initStateManager() {
@@ -625,6 +638,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       onRowDoubleTap: widget.onRowDoubleTap,
       onRowSecondaryTap: widget.onRowSecondaryTap,
       onRowsMoved: widget.onRowsMoved,
+      onColumnTap: widget.onColumnTap,
       onColumnsMoved: widget.onColumnsMoved,
       rowColorCallback: widget.rowColorCallback,
       createHeader: widget.createHeader,
@@ -751,6 +765,8 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
             final bool showColumnFooter = _stateManager.showColumnFooter;
 
             final bool showColumnIndex = _stateManager.showColumnIndex;
+
+            final lenghtRows = _stateManager.rows;
 
             return CustomMultiChildLayout(
               key: _stateManager.gridKey,
@@ -943,6 +959,10 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
     double bodyLeftOffset = 0;
     double bodyRightOffset = 0;
     double cornerOffset = 0;
+    double widthIndexColumn = _calculateTextWidth("${_stateManager.rows.length}");
+    if (widthIndexColumn < 35) {
+      widthIndexColumn = 35;
+    }
 
     // first layout header and footer and see what remains for the scrolling part
     if (hasChild(_StackName.header)) {
@@ -1126,7 +1146,7 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
       var s = layoutChild(
         _StackName.columnsIndex,
         BoxConstraints.tight(
-          Size(30, size.height),
+          Size(widthIndexColumn, size.height),
         ),
       );
 
@@ -1229,7 +1249,7 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
         _StackName.columnsIndexBody,
         BoxConstraints.tight(
           Size(
-            30,
+            widthIndexColumn,
             size.height - bodyRowsTopOffset - bodyRowsBottomOffset,
             // _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
           ),
@@ -1406,6 +1426,17 @@ class PlutoGridLayoutDelegate extends MultiChildLayoutDelegate {
   }
 
   double _safe(double value) => max(0, value);
+
+
+  double _calculateTextWidth(String text) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: TextStyle(fontSize: 16.0)),
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+
+    return textPainter.size.width;
+  }
+
 }
 
 class _GridContainer extends StatelessWidget {
