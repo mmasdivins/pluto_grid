@@ -30,6 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   pluto_grid:
+#    path: ../../../
     git:
       url: https://github.com/mmasdivins/pluto_grid
   pluto_grid_export:
