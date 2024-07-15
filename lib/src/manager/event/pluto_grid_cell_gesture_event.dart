@@ -64,6 +64,12 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
       });
 
     } else {
+      if (stateManager.selectingMode.isRowCell) {
+        stateManager.setCurrentCell(cell, rowIdx);
+        _selecting(stateManager);
+        return;
+      }
+
       stateManager.setCurrentCell(cell, rowIdx);
     }
   }
@@ -73,7 +79,7 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
 
     stateManager.setSelecting(true);
 
-    if (stateManager.selectingMode.isRow) {
+    if (stateManager.selectingMode.isRow || stateManager.selectingMode.isRowCell) {
       stateManager.toggleSelectingRow(rowIdx);
     }
   }
@@ -137,6 +143,9 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
   void _selecting(PlutoGridStateManager stateManager) {
     bool callOnSelected = stateManager.mode.isMultiSelectMode;
 
+    final bool checkSelectedRow = (stateManager.selectingMode.isRow || stateManager.selectingMode.isRowCell) &&
+        stateManager.isSelectedRow(stateManager.refRows[rowIdx].key);
+
     if (stateManager.keyPressed.shift) {
       final int? columnIdx = stateManager.columnIndex(column);
 
@@ -148,7 +157,11 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
       );
     } else if (stateManager.keyPressed.ctrl) {
       stateManager.toggleSelectingRow(rowIdx);
-    } else {
+    }
+    else if (!checkSelectedRow && stateManager.selectingMode.isRowCell) {
+      stateManager.toggleSelectingRow(rowIdx);
+    }
+    else {
       callOnSelected = false;
     }
 

@@ -183,6 +183,38 @@ mixin CellState implements IPlutoGridState {
     notifyListeners(notify, clearCurrentCell.hashCode);
   }
 
+
+  void _selecting(int rowIdx, int? columnIdx) {
+    bool callOnSelected = mode.isMultiSelectMode;
+
+    final bool checkSelectedRow = (selectingMode.isRow || selectingMode.isRowCell) &&
+        isSelectedRow(refRows[rowIdx].key);
+
+    if (keyPressed.shift) {
+      // final int? columnIdx = columnIdx;
+
+      setCurrentSelectingPosition(
+        cellPosition: PlutoGridCellPosition(
+          columnIdx: columnIdx,
+          rowIdx: rowIdx,
+        ),
+      );
+    } else if (keyPressed.ctrl) {
+      toggleSelectingRow(rowIdx);
+    }
+    else if (!checkSelectedRow && selectingMode.isRowCell) {
+      toggleSelectingRow(rowIdx);
+    }
+    else {
+      callOnSelected = false;
+    }
+
+    if (callOnSelected) {
+      handleOnSelected();
+    }
+  }
+
+
   @override
   void setCurrentCell(
     PlutoCell? cell,
@@ -213,7 +245,14 @@ mixin CellState implements IPlutoGridState {
       columnIdx: columnIdxByCellKeyAndRowIdx(cell.key, rowIdx),
     );
 
-    clearCurrentSelecting(notify: false);
+    // Clear selection if selecting mode is not rowCell or
+    // old Row and new Row are different
+    if (!selectingMode.isRowCell || oldRowIdx != rowIdx) {
+      clearCurrentSelecting(notify: false);
+    }
+    if (selectingMode.isRowCell && oldRowIdx != rowIdx){
+      _selecting(rowIdx, columnIdxByCellKeyAndRowIdx(cell.key, rowIdx));
+    }
 
     setEditing(autoEditing, notify: false);
 

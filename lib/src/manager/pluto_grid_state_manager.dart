@@ -563,7 +563,9 @@ enum PlutoGridSelectingMode {
   none,
 
   /// using only internal
-  horizontal;
+  horizontal,
+
+  rowCell;
 
   bool get isCell => this == PlutoGridSelectingMode.cell;
 
@@ -573,6 +575,8 @@ enum PlutoGridSelectingMode {
 
   /// using only internal
   bool get isHorizontal => this == PlutoGridSelectingMode.horizontal;
+
+  bool get isRowCell => this == PlutoGridSelectingMode.rowCell;
 }
 
 abstract class _Apply {

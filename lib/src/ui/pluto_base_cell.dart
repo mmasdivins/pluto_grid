@@ -248,6 +248,8 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
 
     final isCurrentCell = stateManager.isCurrentCell(widget.cell);
 
+    final isSelectedRow = stateManager.isSelectedRow(widget.row.key);
+
     _decoration = update(
       _decoration,
       _boxDecoration(
@@ -260,6 +262,7 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
           widget.column,
           widget.rowIdx,
         ),
+        isSelectedRow: isSelectedRow,
         isGroupedRowCell: stateManager.enabledRowGroups &&
             stateManager.rowGroupDelegate!.isExpandableCell(widget.cell),
         enableCellVerticalBorder: style.enableCellBorderVertical,
@@ -286,12 +289,12 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
     required Color cellColorInReadOnlyState,
     required PlutoGridSelectingMode selectingMode,
   }) {
-    if (!hasFocus) {
-      return gridBackgroundColor;
-    }
+    // if (!hasFocus) {
+    //   return gridBackgroundColor;
+    // }
 
     if (!isEditing) {
-      return selectingMode.isRow ? activatedColor : null;
+      return (selectingMode.isRow || selectingMode.isRowCell) ? activatedColor : null;
     }
 
     return readOnly == true ? cellColorInReadOnlyState : cellColorInEditState;
@@ -303,6 +306,7 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
     required bool isEditing,
     required bool isCurrentCell,
     required bool isSelectedCell,
+    required bool isSelectedRow,
     required bool isGroupedRowCell,
     required bool enableCellVerticalBorder,
     required Color borderColor,

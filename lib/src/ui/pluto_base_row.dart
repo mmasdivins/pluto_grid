@@ -258,12 +258,17 @@ class _RowContainerWidgetState extends PlutoStateWithChange<_RowContainerWidget>
     if (isDragTarget) {
       color = stateManager.configuration.style.cellColorInReadOnlyState;
     } else {
-      final bool checkCurrentRow = !stateManager.selectingMode.isRow &&
-          isFocusedCurrentRow &&
+      final bool checkCurrentRow = (!stateManager.selectingMode.isRow && !stateManager.selectingMode.isRowCell) &&
+          /*isFocusedCurrentRow &&*/
           (!isSelecting && !hasCurrentSelectingPosition);
 
-      final bool checkSelectedRow = stateManager.selectingMode.isRow &&
+      final bool checkSelectedRow = (stateManager.selectingMode.isRow || stateManager.selectingMode.isRowCell) &&
           stateManager.isSelectedRow(widget.row.key);
+
+      var br = isSelecting;
+      var br2 = hasCurrentSelectingPosition;
+      var br3 = stateManager.isSelectedRow(widget.row.key);
+      var br4 = widget.rowIdx;
 
       if (checkCurrentRow || checkSelectedRow) {
         color = stateManager.configuration.style.activatedColor;

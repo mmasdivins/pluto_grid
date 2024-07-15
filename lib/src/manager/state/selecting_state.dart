@@ -124,6 +124,7 @@ mixin SelectingState implements IPlutoGridState {
       case PlutoGridSelectingMode.horizontal:
         return _selectingCellsHorizontally();
       case PlutoGridSelectingMode.row:
+      case PlutoGridSelectingMode.rowCell:
       case PlutoGridSelectingMode.none:
         return [];
     }
@@ -256,7 +257,7 @@ mixin SelectingState implements IPlutoGridState {
     _state._currentSelectingPosition =
         isInvalidCellPosition(cellPosition) ? null : cellPosition;
 
-    if (currentSelectingPosition != null && selectingMode.isRow) {
+    if (currentSelectingPosition != null && (selectingMode.isRow || selectingMode.isRowCell)) {
       setCurrentSelectingRowsByRange(
         currentRowIdx,
         currentSelectingPosition!.rowIdx,
@@ -347,7 +348,7 @@ mixin SelectingState implements IPlutoGridState {
   @override
   void setCurrentSelectingRowsByRange(int? from, int? to,
       {bool notify = true}) {
-    if (!selectingMode.isRow) {
+    if (!selectingMode.isRow && !selectingMode.isRowCell) {
       return;
     }
 
@@ -375,7 +376,7 @@ mixin SelectingState implements IPlutoGridState {
 
   @override
   void toggleSelectingRow(int? rowIdx, {notify = true}) {
-    if (!selectingMode.isRow) {
+    if (!selectingMode.isRow && !selectingMode.isRowCell) {
       return;
     }
 
@@ -387,7 +388,8 @@ mixin SelectingState implements IPlutoGridState {
 
     final keys = Set.from(currentSelectingRows.map((e) => e.key));
 
-    if (keys.contains(row.key)) {
+    // Do not toggle out when selecting mode is RowCell
+    if (keys.contains(row.key) && !selectingMode.isRowCell) {
       currentSelectingRows.removeWhere((element) => element.key == row.key);
     } else {
       currentSelectingRows.add(row);
@@ -406,7 +408,7 @@ mixin SelectingState implements IPlutoGridState {
   @override
   bool isSelectedRow(Key? rowKey) {
     if (rowKey == null ||
-        !selectingMode.isRow ||
+        (!selectingMode.isRow && !selectingMode.isRowCell) ||
         currentSelectingRows.isEmpty) {
       return false;
     }
@@ -521,6 +523,8 @@ mixin SelectingState implements IPlutoGridState {
 
       return false;
     } else if (selectingMode.isRow) {
+      return false;
+    }  else if (selectingMode.isRowCell) {
       return false;
     } else {
       throw Exception('selectingMode is not handled');
