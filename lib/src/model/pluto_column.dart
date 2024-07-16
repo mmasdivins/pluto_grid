@@ -210,6 +210,8 @@ class PlutoColumn {
   /// Indica si la columna s'exportarà o no
   bool exportable;
 
+  String? formatExportExcel;
+
   PlutoColumn({
     required this.title,
     required this.field,
@@ -250,6 +252,7 @@ class PlutoColumn {
     this.cellColor,
     this.required = false,
     this.exportable = true,
+    this.formatExportExcel,
   })  : _key = UniqueKey(),
         _checkReadOnly = checkReadOnly
   {
