@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import '../ui.dart';
 
@@ -364,16 +364,17 @@ class _ColumnWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DragTarget<PlutoColumn>(
-      onWillAcceptWithDetails: (DragTargetDetails<PlutoColumn> details) {
-        return details.data.key != column.key &&
+      onWillAcceptWithDetails: (columnToDrag) {
+        return columnToDrag.data.key != column.key &&
             !stateManager.limitMoveColumn(
-              column: details.data,
+              column: columnToDrag.data,
               targetColumn: column,
             );
       },
-      onAcceptWithDetails: (DragTargetDetails<PlutoColumn> details) {
-        if (details.data.key != column.key) {
-          stateManager.moveColumn(column: details.data, targetColumn: column);
+      onAcceptWithDetails: (columnToMove) {
+        if (columnToMove.data.key != column.key) {
+          stateManager.moveColumn(
+              column: columnToMove.data, targetColumn: column);
         }
       },
       builder: (dragContext, candidate, rejected) {
@@ -483,9 +484,9 @@ class CheckboxAllSelectionWidgetState
       handleOnChanged: _handleOnChanged,
       tristate: true,
       scale: 0.86,
-      unselectedColor: stateManager.configuration.style.iconColor,
-      activeColor: stateManager.configuration.style.activatedBorderColor,
-      checkColor: stateManager.configuration.style.activatedColor,
+      unselectedColor: stateManager.configuration.style.columnUnselectedColor,
+      activeColor: stateManager.configuration.style.columnActiveColor,
+      checkColor: stateManager.configuration.style.columnCheckedColor,
     );
   }
 }
@@ -511,7 +512,6 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
   bool _isFilteredList = false;
   bool _focusInColumn = false;
 
-
   @override
   PlutoGridStateManager get stateManager => widget.stateManager;
 
@@ -528,7 +528,6 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
       _isFilteredList,
       stateManager.isFilteredColumn(widget.column),
     );
-
 
     bool inColumn = false;
     var ci = stateManager.columnIndex(widget.column);
@@ -574,7 +573,6 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Text.rich(
       TextSpan(
         text: _title,

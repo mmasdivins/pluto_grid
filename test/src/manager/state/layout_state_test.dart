@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import '../../../helper/column_helper.dart';
 import '../../../helper/pluto_widget_test_helper.dart';
@@ -91,8 +91,8 @@ void main() {
         expect(
           stateManager.bodyLeftScrollOffset,
           stateManager.gridGlobalOffset!.dx +
-              PlutoGridSettings.gridPadding +
-              PlutoGridSettings.gridBorderWidth +
+              stateManager.configuration.style.gridPadding +
+              stateManager.configuration.style.gridBorderWidth +
               PlutoGridSettings.offsetScrollingFromEdge,
         );
       },
@@ -140,8 +140,8 @@ void main() {
         expect(
           stateManager.bodyLeftScrollOffset,
           stateManager.gridGlobalOffset!.dx +
-              PlutoGridSettings.gridPadding +
-              PlutoGridSettings.gridBorderWidth +
+              stateManager.configuration.style.gridPadding +
+              stateManager.configuration.style.gridBorderWidth +
               PlutoGridSettings.offsetScrollingFromEdge,
         );
       },

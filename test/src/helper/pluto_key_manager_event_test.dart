@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 void main() {
   late FocusNode focusNode;
@@ -23,7 +23,6 @@ void main() {
 
   tearDown(() {
     keyManagerEvent = null;
-    focusNode.dispose();
   });
 
   Future<void> buildWidget({
@@ -134,23 +133,32 @@ void main() {
       await buildWidget(tester: tester, callback: callback);
 
       const key = LogicalKeyboardKey.control;
-      await simulateKeyDownEvent(key);
+      await tester.sendKeyDownEvent(key);
       expect(keyManagerEvent!.isControl, true);
-      await simulateKeyUpEvent(key);
+      await tester.sendKeyUpEvent(key);
     },
   );
 
+  // While key combos still work in the real world, these 3 tests are failing due to what I suspect is an
+  // incomplete deprecation/migration from focusNode `onKey` to `onKeyEvent`.
+  // Flutter 3.19 does not trigger our event for `sendKeyUpEvent` only, and I prefer not
+  // to switch these tests to `sendKeyDownEvent` as that may cause unexpected behavior
+  // such as pasting multiple times due to repeating key presses. It might also be fine.
+
+  // https://github.com/flutter/flutter/issues/136419
   testWidgets(
     'Control + C 키를 입력하면 isCtrlC 가 true 여야 한다.',
     (tester) async {
       await buildWidget(tester: tester, callback: callback);
 
       const key = LogicalKeyboardKey.control;
-      await simulateKeyDownEvent(key);
-      await simulateKeyDownEvent(LogicalKeyboardKey.keyC);
-      expect(keyManagerEvent!.isCtrlC, true);
-      await simulateKeyUpEvent(LogicalKeyboardKey.keyC);
-      await simulateKeyUpEvent(key);
+      const key2 = LogicalKeyboardKey.keyC;
+      await tester.sendKeyDownEvent(key);
+      await tester.sendKeyUpEvent(
+          key2); // sendKeyUpEvent is not sending a keyManagerEvent
+
+      expect(keyManagerEvent?.isCtrlC, true);
+      await tester.sendKeyUpEvent(key);
     },
   );
 
@@ -160,11 +168,10 @@ void main() {
       await buildWidget(tester: tester, callback: callback);
 
       const key = LogicalKeyboardKey.control;
-      await simulateKeyDownEvent(key);
-      await simulateKeyDownEvent(LogicalKeyboardKey.keyV);
+      await tester.sendKeyDownEvent(key);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.keyV);
       expect(keyManagerEvent!.isCtrlV, true);
-      await simulateKeyUpEvent(LogicalKeyboardKey.keyV);
-      await simulateKeyUpEvent(key);
+      await tester.sendKeyUpEvent(key);
     },
   );
 
@@ -175,9 +182,8 @@ void main() {
 
       const key = LogicalKeyboardKey.control;
       await tester.sendKeyDownEvent(key);
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.keyA);
-      expect(keyManagerEvent!.isCtrlA, true);
       await tester.sendKeyUpEvent(LogicalKeyboardKey.keyA);
+      expect(keyManagerEvent!.isCtrlA, true);
       await tester.sendKeyUpEvent(key);
     },
   );

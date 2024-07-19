@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 /// Callback function to implement to add lazy pagination data.
 typedef PlutoLazyPaginationFetch = Future<PlutoLazyPaginationResponse> Function(
@@ -180,6 +180,7 @@ class _PlutoLazyPaginationState extends State<PlutoLazyPagination> {
       ),
     )
         .then((data) {
+      if(!mounted)return;
       stateManager.scroll.bodyRowsVertical!.jumpTo(0);
 
       stateManager.refRows.clearFromOriginal();

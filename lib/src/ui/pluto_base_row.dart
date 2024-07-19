@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
+import 'package:pluto_grid_plus/src/manager/event/pluto_grid_row_hover_event.dart';
 
 import 'ui.dart';
 
@@ -24,11 +25,11 @@ class PlutoBaseRow extends StatelessWidget {
     super.key,
   });
 
-  bool _checkSameDragRows(PlutoRow draggingRow) {
+  bool _checkSameDragRows(DragTargetDetails<PlutoRow> draggingRow) {
     final List<PlutoRow> selectedRows =
         stateManager.currentSelectingRows.isNotEmpty
             ? stateManager.currentSelectingRows
-            : [draggingRow];
+            : [draggingRow.data];
 
     final end = rowIdx + selectedRows.length;
 
@@ -41,14 +42,14 @@ class PlutoBaseRow extends StatelessWidget {
     return true;
   }
 
-  bool _handleOnWillAccept(DragTargetDetails<PlutoRow> details) {
-    return !_checkSameDragRows(details.data);
+  bool _handleOnWillAccept(DragTargetDetails<PlutoRow> draggingRow) {
+    return !_checkSameDragRows(draggingRow);
   }
 
-  void _handleOnAccept(DragTargetDetails<PlutoRow> details) async {
+  void _handleOnAccept(DragTargetDetails<PlutoRow> draggingRow) async {
     final draggingRows = stateManager.currentSelectingRows.isNotEmpty
         ? stateManager.currentSelectingRows
-        : [details.data];
+        : [draggingRow.data];
 
     stateManager.eventManager!.addEvent(
       PlutoGridDragRowsEvent(
@@ -59,7 +60,6 @@ class PlutoBaseRow extends StatelessWidget {
   }
 
   PlutoVisibilityLayoutId _makeCell(PlutoColumn column) {
-
     return PlutoVisibilityLayoutId(
       id: column.field,
       child: PlutoBaseCell(
@@ -105,12 +105,36 @@ class PlutoBaseRow extends StatelessWidget {
     );
   }
 
+  void _handleOnEnter() {
+    // set hovered row index
+    stateManager.eventManager!.addEvent(
+      PlutoGridRowHoverEvent(
+        rowIdx: rowIdx,
+        isHovered: true,
+      ),
+    );
+  }
+
+  void _handleOnExit() {
+    // reset hovered row index
+    stateManager.eventManager!.addEvent(
+      PlutoGridRowHoverEvent(
+        rowIdx: rowIdx,
+        isHovered: false,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DragTarget<PlutoRow>(
-      onWillAcceptWithDetails: _handleOnWillAccept,
-      onAcceptWithDetails: _handleOnAccept,
-      builder: _dragTargetBuilder,
+    return MouseRegion(
+      onEnter: (event) => _handleOnEnter(),
+      onExit: (event) => _handleOnExit(),
+      child: DragTarget<PlutoRow>(
+        onWillAcceptWithDetails: _handleOnWillAccept,
+        onAcceptWithDetails: _handleOnAccept,
+        builder: _dragTargetBuilder,
+      ),
     );
   }
 }
@@ -252,31 +276,37 @@ class _RowContainerWidgetState extends PlutoStateWithChange<_RowContainerWidget>
     required bool isSelecting,
     required bool hasCurrentSelectingPosition,
     required bool isCheckedRow,
+    required bool isHovered,
   }) {
     Color color = _getDefaultRowColor();
 
     if (isDragTarget) {
       color = stateManager.configuration.style.cellColorInReadOnlyState;
     } else {
-      final bool checkCurrentRow = (!stateManager.selectingMode.isRow && !stateManager.selectingMode.isRowCell) &&
-          /*isFocusedCurrentRow &&*/
+      final bool checkCurrentRow = !stateManager.selectingMode.isRow &&
+          isFocusedCurrentRow &&
           (!isSelecting && !hasCurrentSelectingPosition);
 
-      final bool checkSelectedRow = (stateManager.selectingMode.isRow || stateManager.selectingMode.isRowCell) &&
+      final bool checkSelectedRow = stateManager.selectingMode.isRow &&
           stateManager.isSelectedRow(widget.row.key);
-
-      var br = isSelecting;
-      var br2 = hasCurrentSelectingPosition;
-      var br3 = stateManager.isSelectedRow(widget.row.key);
-      var br4 = widget.rowIdx;
 
       if (checkCurrentRow || checkSelectedRow) {
         color = stateManager.configuration.style.activatedColor;
+      } else {
+        // If the row is checked, the hover color is not applied.
+        // If the row is hovered and hover color is enabled,
+        // the configuration hover color is used.
+        bool enableRowHoverColor =
+            stateManager.configuration.style.enableRowHoverColor;
+        if (isHovered && enableRowHoverColor) {
+          color = stateManager.configuration.style.rowHoveredColor;
+        }
       }
     }
 
     return isCheckedRow
-        ? Color.alphaBlend(stateManager.configuration.style.checkedColor, color)
+        ? Color.alphaBlend(
+            stateManager.configuration.style.rowCheckedColor, color)
         : color;
   }
 
@@ -308,12 +338,15 @@ class _RowContainerWidgetState extends PlutoStateWithChange<_RowContainerWidget>
 
     final bool isFocusedCurrentRow = isCurrentRow && stateManager.hasFocus;
 
+    final bool isHovered = stateManager.isRowIdxHovered(widget.rowIdx);
+
     final Color rowColor = _getRowColor(
       isDragTarget: isDragTarget,
       isFocusedCurrentRow: isFocusedCurrentRow,
       isSelecting: isSelecting,
       hasCurrentSelectingPosition: hasCurrentSelectingPosition,
       isCheckedRow: isCheckedRow,
+      isHovered: isHovered,
     );
 
     return BoxDecoration(

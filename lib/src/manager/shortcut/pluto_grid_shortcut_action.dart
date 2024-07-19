@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 /// Define the action by implementing the [execute] method
 /// as an action that can be mapped to a shortcut key.
@@ -340,7 +340,7 @@ class PlutoGridActionDefaultTab extends PlutoGridShortcutAction {
 
     final saveIsEditing = stateManager.isEditing;
 
-    HardwareKeyboard.instance.isShiftPressed
+    keyEvent.isShiftPressed
         ? _moveCellPrevious(stateManager)
         : _moveCellNext(stateManager);
 
@@ -535,7 +535,7 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
     }
 
     if (enterKeyAction.isEditingAndMoveDown) {
-      if (HardwareKeyboard.instance.isShiftPressed) {
+      if (keyEvent.isShiftPressed) {
         stateManager.moveCurrentCell(
           PlutoMoveDirection.up,
           notify: false,
@@ -547,7 +547,7 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
         );
       }
     } else if (enterKeyAction.isEditingAndMoveRight) {
-      if (HardwareKeyboard.instance.isShiftPressed) {
+      if (keyEvent.isShiftPressed) {
         stateManager.moveCurrentCell(
           PlutoMoveDirection.left,
           force: true,

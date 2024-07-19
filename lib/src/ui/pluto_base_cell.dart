@@ -1,8 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
-import 'package:pluto_grid/src/ui/cells/hint_triangle_cell.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
+import 'package:pluto_grid_plus/src/ui/cells/hint_triangle_cell.dart';
 
 import 'ui.dart';
 
@@ -26,7 +25,6 @@ class PlutoBaseCell extends StatelessWidget
     required this.row,
     required this.stateManager,
   });
-
 
   Timer? doubleTapTimer;
   bool isPressed = false;
@@ -60,6 +58,7 @@ class PlutoBaseCell extends StatelessWidget
     } else {
       _onTapUp(details);
     }
+    // _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
   }
 
   void _handleOnLongPressStart(LongPressStartDetails details) {
@@ -125,6 +124,7 @@ class PlutoBaseCell extends StatelessWidget
         : _handleOnSecondaryTap(details);
   }
 
+
   ///https://github.com/flutter/flutter/issues/121674
   void _onTapUp(TapUpDetails details) {
     isPressed = true;
@@ -135,7 +135,7 @@ class PlutoBaseCell extends StatelessWidget
         _addGestureEvent(PlutoGridGestureType.onDoubleTap, Offset.zero);
       }
     } else {
-      doubleTapTimer = Timer(Duration(milliseconds: 300), _doubleTapTimerElapsed);
+      doubleTapTimer = Timer(const Duration(milliseconds: 300), _doubleTapTimerElapsed);
     }
 
     _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
@@ -181,7 +181,6 @@ class PlutoBaseCell extends StatelessWidget
         ),
       );
     }
-
 
     Widget child = GestureDetector(
       behavior: HitTestBehavior.translucent,

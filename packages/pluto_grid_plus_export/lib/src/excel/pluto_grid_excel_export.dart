@@ -1,6 +1,6 @@
 import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import '../abstract_text_export.dart';
 

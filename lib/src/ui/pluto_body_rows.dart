@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import '../helper/platform_helper.dart';
 import 'ui.dart';
@@ -150,10 +150,12 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
             scrollDirection: Axis.vertical,
             physics: const ClampingScrollPhysics(),
             itemCount: _rows.length,
-            itemExtent: stateManager.rowTotalHeight,
+            itemExtent: stateManager.rowWrapper != null
+                ? null
+                : stateManager.rowTotalHeight,
             addRepaintBoundaries: false,
             itemBuilder: (ctx, i) {
-              return PlutoBaseRow(
+              Widget w = PlutoBaseRow(
                 key: ValueKey('body_row_${_rows[i].key}'),
                 rowIdx: i,
                 row: _rows[i],
@@ -161,6 +163,10 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
                 stateManager: stateManager,
                 visibilityLayout: true,
               );
+
+              return stateManager.rowWrapper != null
+                  ? stateManager.rowWrapper(w)
+                  : w;
             },
           ),
         ),

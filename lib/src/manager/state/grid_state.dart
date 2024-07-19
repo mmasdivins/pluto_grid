@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
-import 'package:pluto_grid/src/manager/state/row_state.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 abstract class IGridState {
   GlobalKey get gridKey;
@@ -39,6 +38,10 @@ abstract class IGridState {
 
   PlutoOnRowsMovedEventCallback? get onRowsMoved;
 
+  PlutoOnRowEnterEventCallback? get onRowEnter;
+
+  PlutoOnRowExitEventCallback? get onRowExit;
+
   PlutoOnColumnTapEventCallback? get onColumnTap;
 
   PlutoOnColumnsMovedEventCallback? get onColumnsMoved;
@@ -56,6 +59,8 @@ abstract class IGridState {
   IsRowDefaultCallback? get isRowDefault;
 
   CreateFooterCallBack? get createFooter;
+
+  PlutoSelectDateCallBack? get selectDateCallback;
 
   PlutoGridLocaleText get localeText;
 
@@ -216,7 +221,6 @@ mixin GridState implements IPlutoGridState {
     setSelectingMode(selectingMode);
 
     resetCurrentState();
-
   }
 
   PlutoRow _createNewRow() {
@@ -250,7 +254,6 @@ mixin GridState implements IPlutoGridState {
     }
     return true;
   }
-
 
   @override
   void resetCurrentState({bool notify = true}) {

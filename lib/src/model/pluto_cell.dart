@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 class PlutoCell {
   PlutoCell({
     dynamic value,
     Key? key,
   })  : _key = key ?? UniqueKey(),
-        _value = value;
+        _value = value,
+        _originalValue = value;
 
   final Key _key;
 
   dynamic _value;
+
+  final dynamic _originalValue;
 
   dynamic _valueForSorting;
 
@@ -50,6 +53,10 @@ class PlutoCell {
     }
 
     return _value;
+  }
+
+  dynamic get originalValue {
+    return _originalValue;
   }
 
   set value(dynamic changed) {

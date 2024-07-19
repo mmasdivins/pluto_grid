@@ -19,6 +19,8 @@ export 'pluto_base_row.dart';
 export 'pluto_body_columns.dart';
 export 'pluto_body_columns_footer.dart';
 export 'pluto_body_rows.dart';
+export 'pluto_column_index.dart';
+export 'pluto_column_index_body.dart';
 export 'pluto_left_frozen_columns.dart';
 export 'pluto_left_frozen_columns_footer.dart';
 export 'pluto_left_frozen_rows.dart';

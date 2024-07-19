@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import '../ui/ui.dart';
 
@@ -146,6 +146,10 @@ abstract class PlutoChangeNotifierFilterResolver {
       stateManager.clearCurrentSelecting.hashCode: 'clearCurrentSelecting',
       stateManager.toggleSelectingRow.hashCode: 'toggleSelectingRow',
       stateManager.handleAfterSelectingRow.hashCode: 'handleAfterSelectingRow',
+
+      /// hovering_state
+      stateManager.setHoveredRowIdx.hashCode: 'setHoveredRowIdx',
+      stateManager.isRowIdxHovered.hashCode: 'isRowIdxHovered',
     };
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PlutoGridEventManager {
@@ -32,7 +32,7 @@ class PlutoGridEventManager {
         .where((event) => event.type.isThrottleLeading)
         .transform(
           ThrottleStreamTransformer(
-            (_) => TimerStream<PlutoGridEvent>(_, _.duration as Duration),
+            (e) => TimerStream<PlutoGridEvent>(e, e.duration as Duration),
             trailing: false,
             leading: true,
           ),
@@ -42,7 +42,7 @@ class PlutoGridEventManager {
         .where((event) => event.type.isThrottleTrailing)
         .transform(
           ThrottleStreamTransformer(
-            (_) => TimerStream<PlutoGridEvent>(_, _.duration as Duration),
+            (e) => TimerStream<PlutoGridEvent>(e, e.duration as Duration),
             trailing: true,
             leading: false,
           ),
@@ -51,7 +51,7 @@ class PlutoGridEventManager {
     final debounceStream =
         _subject.stream.where((event) => event.type.isDebounce).transform(
               DebounceStreamTransformer(
-                (_) => TimerStream<PlutoGridEvent>(_, _.duration as Duration),
+                (e) => TimerStream<PlutoGridEvent>(e, e.duration as Duration),
               ),
             );
 

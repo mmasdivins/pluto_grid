@@ -1,4 +1,4 @@
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 abstract class IVisibilityLayoutState {
   /// Set [PlutoColumn.startPosition] to [PlutoColumn.width].
@@ -36,11 +36,11 @@ mixin VisibilityLayoutState implements IPlutoGridState {
 
     if (showFrozenColumn) {
       if (hasLeftFrozenColumns) {
-        offset += PlutoGridSettings.gridBorderWidth;
+        offset += gridBorderWidth;
       }
 
       if (hasRightFrozenColumns) {
-        offset += PlutoGridSettings.gridBorderWidth;
+        offset += gridBorderWidth;
       }
     }
 

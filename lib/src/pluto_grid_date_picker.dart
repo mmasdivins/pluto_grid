@@ -3,7 +3,7 @@ import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import 'ui/ui.dart';
 
@@ -221,8 +221,8 @@ class PlutoGridDatePicker {
     currentMonth = offsetDate.month;
 
     final List<DateTime> days = PlutoDateTimeHelper.getDaysInBetween(
-      DateTime(offsetDate.year, offsetDate.month, 1),
-      DateTime(offsetDate.year, offsetDate.month + 1, 0),
+      DateTime.utc(offsetDate.year, offsetDate.month, 1),
+      DateTime.utc(offsetDate.year, offsetDate.month + 1, 0),
     );
 
     final popupRows = _buildRows(days);

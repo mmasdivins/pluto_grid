@@ -1,7 +1,7 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 
 import '../dummy_data/development.dart';
@@ -20,7 +20,7 @@ enum _Test {
 class DevelopmentScreen extends StatefulWidget {
   static const routeName = 'development';
 
-  const DevelopmentScreen({Key? key}) : super(key: key);
+  const DevelopmentScreen({super.key});
 
   @override
   _DevelopmentScreenState createState() => _DevelopmentScreenState();
@@ -314,6 +314,14 @@ class _DevelopmentScreenState extends State<DevelopmentScreen> {
               //   print('Secondary click A Row.(${e.offset})');
               //   print(e.row?.cells['column1']?.value);
               // },
+              // onRowEnter: (e) {
+              //   print('Enter A Row.');
+              //   print(e.row?.cells['column1']?.value);
+              // },
+              // onRowExit: (e) {
+              //   print('Exit A Row.');
+              //   print(e.row?.cells['column1']?.value);
+              // },
               createHeader: (PlutoGridStateManager stateManager) {
                 // stateManager.headerHeight = 200;
                 return _Header(
@@ -359,7 +367,7 @@ class ClassYouImplemented implements PlutoFilterType {
 }
 
 class _NoRows extends StatelessWidget {
-  const _NoRows({Key? key}) : super(key: key);
+  const _NoRows();
 
   @override
   Widget build(BuildContext context) {
@@ -409,8 +417,7 @@ class _Header extends StatefulWidget {
     required this.setTextDirection,
     required this.setConfiguration,
     required this.setGridMode,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   _HeaderState createState() => _HeaderState();
@@ -664,9 +671,11 @@ class _HeaderState extends State<_Header> {
     return PlutoMenuBar(
       borderColor: Colors.transparent,
       mode: _isMobile ? PlutoMenuBarMode.tap : PlutoMenuBarMode.hover,
-      textStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 14,
+      itemStyle: const PlutoMenuItemStyle(
+        textStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 14,
+        ),
       ),
       menus: [
         PlutoMenuItem(

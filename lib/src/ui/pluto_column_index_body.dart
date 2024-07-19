@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
-import 'package:pluto_grid/src/ui/pluto_column_index.dart';
+import 'package:pluto_grid_plus/pluto_grid_plus.dart';
+import 'package:pluto_grid_plus/src/ui/pluto_column_index.dart';
 
 import '../helper/platform_helper.dart';
 import 'ui.dart';
@@ -318,38 +318,38 @@ class PlutoColumnIndexBodyState extends PlutoStateWithChange<PlutoColumnIndexBod
   // }
 }
 
-class ListResizeDelegate extends SingleChildLayoutDelegate {
-  PlutoGridStateManager stateManager;
-
-  List<PlutoColumn> columns;
-
-  ListResizeDelegate(this.stateManager, this.columns)
-      : super(relayout: stateManager.resizingChangeNotifier);
-
-  @override
-  bool shouldRelayout(covariant SingleChildLayoutDelegate oldDelegate) {
-    return true;
-  }
-
-  double _getWidth() {
-    return columns.fold(
-      0,
-          (previousValue, element) => previousValue + element.width,
-    );
-  }
-
-  @override
-  Size getSize(BoxConstraints constraints) {
-    return constraints.tighten(width: _getWidth()).biggest;
-  }
-
-  @override
-  Offset getPositionForChild(Size size, Size childSize) {
-    return const Offset(0, 0);
-  }
-
-  @override
-  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return constraints.tighten(width: _getWidth());
-  }
-}
+// class ListResizeDelegate extends SingleChildLayoutDelegate {
+//   PlutoGridStateManager stateManager;
+//
+//   List<PlutoColumn> columns;
+//
+//   ListResizeDelegate(this.stateManager, this.columns)
+//       : super(relayout: stateManager.resizingChangeNotifier);
+//
+//   @override
+//   bool shouldRelayout(covariant SingleChildLayoutDelegate oldDelegate) {
+//     return true;
+//   }
+//
+//   double _getWidth() {
+//     return columns.fold(
+//       0,
+//           (previousValue, element) => previousValue + element.width,
+//     );
+//   }
+//
+//   @override
+//   Size getSize(BoxConstraints constraints) {
+//     return constraints.tighten(width: _getWidth()).biggest;
+//   }
+//
+//   @override
+//   Offset getPositionForChild(Size size, Size childSize) {
+//     return const Offset(0, 0);
+//   }
+//
+//   @override
+//   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+//     return constraints.tighten(width: _getWidth());
+//   }
+// }
