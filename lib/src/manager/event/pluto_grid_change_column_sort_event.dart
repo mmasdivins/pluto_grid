@@ -9,7 +9,7 @@ class PlutoGridChangeColumnSortEvent extends PlutoGridEvent {
 
   final PlutoColumn column;
 
-  final PlutoColumnSort oldSort;
+  final PlutoColumnSorting oldSort;
 
   @override
   void handler(PlutoGridStateManager stateManager) {}

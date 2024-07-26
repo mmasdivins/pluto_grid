@@ -211,7 +211,7 @@ class PlutoGridOnSelectedEvent {
 class PlutoGridOnSortedEvent {
   final PlutoColumn column;
 
-  final PlutoColumnSort oldSort;
+  final PlutoColumnSorting oldSort;
 
   const PlutoGridOnSortedEvent({
     required this.column,

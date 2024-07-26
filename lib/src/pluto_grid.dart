@@ -101,6 +101,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     super.key,
     required this.columns,
     required this.rows,
+    this.sortOrder = const [],
     this.rowWrapper,
     this.columnGroups,
     this.onLoaded,
@@ -148,6 +149,15 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// should also be provided to match in [PlutoColumnGroup.fields] as well.
   /// {@endtemplate}
   final List<PlutoColumn> columns;
+
+  /// {@template pluto_grid_property_sortOrder}
+  /// The [PlutoColumn] sortOrder is the priority order of the column when sorting.
+  ///
+  /// The sort can be changed with [PlutoGridStateManager.setColumnsSortOrder].
+  ///
+  /// Each [field] value in [List] must be unique.
+  /// {@endtemplate}
+  final List<String> sortOrder;
 
   /// {@template pluto_grid_property_rows}
   /// [rows] contains a call to the [PlutoGridStateManager.initializeRows] method
@@ -646,6 +656,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
     _stateManager = PlutoGridStateManager(
       columns: widget.columns,
       rows: widget.rows,
+      sortOrder: widget.sortOrder,
       rowWrapper: widget.rowWrapper,
       gridFocusNode: _gridFocusNode,
       scroll: PlutoGridScrollController(

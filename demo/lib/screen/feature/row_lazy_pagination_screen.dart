@@ -90,12 +90,12 @@ class _RowLazyPaginationScreenState extends State<RowLazyPaginationScreen> {
     // request.page is 1 when the sort state changes.
     // This is because when the sort state changes,
     // new data to which the sort state is applied must be loaded.
-    if (request.sortColumn != null && !request.sortColumn!.sort.isNone) {
+    if (request.sortColumn != null && !request.sortColumn!.sortOrder.isNone) {
       tempList = [...tempList];
 
       tempList.sort((a, b) {
-        final sortA = request.sortColumn!.sort.isAscending ? a : b;
-        final sortB = request.sortColumn!.sort.isAscending ? b : a;
+        final sortA = request.sortColumn!.sortOrder.isAscending ? a : b;
+        final sortB = request.sortColumn!.sortOrder.isAscending ? b : a;
 
         return request.sortColumn!.type.compare(
           sortA.cells[request.sortColumn!.field]!.valueForSorting,

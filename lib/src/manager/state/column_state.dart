@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../../pluto_grid_plus.dart';
@@ -21,6 +22,8 @@ abstract class IColumnState {
 
   /// Width of the entire column.
   double get columnsWidth;
+
+  List<String> get sortOrder;
 
   /// Left frozen columns.
   List<PlutoColumn> get leftFrozenColumns;
@@ -318,7 +321,7 @@ mixin ColumnState implements IPlutoGridState {
   @override
   bool get hasSortedColumn {
     for (final column in refColumns) {
-      if (column.sort.isNone == false) {
+      if (column.sort.sortOrder.isNone == false) {
         return true;
       }
     }
@@ -329,7 +332,7 @@ mixin ColumnState implements IPlutoGridState {
   @override
   PlutoColumn? get getSortedColumn {
     for (final column in refColumns) {
-      if (column.sort.isNone == false) {
+      if (column.sort.sortOrder.isNone == false) {
         return column;
       }
     }
@@ -375,11 +378,34 @@ mixin ColumnState implements IPlutoGridState {
   void toggleSortColumn(PlutoColumn column) {
     final oldSort = column.sort;
 
-    if (column.sort.isNone) {
+    if (column.sort.sortOrder.isNone) {
       sortAscending(column, notify: false);
-    } else if (column.sort.isAscending) {
+    } else if (column.sort.sortOrder.isAscending) {
       sortDescending(column, notify: false);
     } else {
+      // Set the sort of the column to none
+      var col = refColumns.originalList.firstWhereOrNull((x) => x.field == column.field);
+      if (col != null) {
+        col.sort = const PlutoColumnSorting(
+          sortOrder: PlutoColumnSort.none,
+          sortPosition: null
+        );
+      }
+
+      var csort = refColumns.originalList
+          .where((x) => x.sort.sortOrder != PlutoColumnSort.none)
+          .sorted((a,b) {
+            if (a.sort.sortPosition == null && b.sort.sortPosition == null) return 0;
+            if (a.sort.sortPosition == null) return 1;
+            if (b.sort.sortPosition == null) return -1;
+            return a.sort.sortPosition!.compareTo(b.sort.sortPosition!);
+      });
+
+      int i = 0;
+      for (var c in csort) {
+        c.sort = c.sort.copyWith(sortPosition: i);
+      }
+
       sortBySortIdx(column, notify: false);
     }
 
@@ -676,11 +702,44 @@ mixin ColumnState implements IPlutoGridState {
     _updateAfterHideColumn(columns: columns, notify: notify);
   }
 
+  int _getMaxSortPositionPlusOne(List<PlutoColumnSorting> list) {
+    bool hasNonZero = false;
+    bool hasNonNull = false;
+    int? maxValue = null;
+
+    for (var obj in list) {
+      if (obj.sortPosition != null) {
+        hasNonNull = true;
+        if (obj.sortPosition != 0) {
+          hasNonZero = true;
+        }
+        if (maxValue == null || obj.sortPosition! > maxValue) {
+          maxValue = obj.sortPosition;
+        }
+      }
+    }
+
+    if (!hasNonNull) {
+      return 0; // All values are null
+    } else if (!hasNonZero) {
+      return 1; // All non-null values are zero
+    } else {
+      return maxValue! + 1; // Maximum value plus one
+    }
+  }
+
   @override
   void sortAscending(PlutoColumn column, {bool notify = true}) {
     _updateBeforeColumnSort();
 
-    column.sort = PlutoColumnSort.ascending;
+    // int position = column.sort.sortPosition ?? refColumns.fold(0, (prev, element) => (element.sort.sortPosition ?? 0) > prev ? (element.sort.sortPosition ?? 0) : prev);
+    int? position = column.sort.sortPosition;
+    position ??= _getMaxSortPositionPlusOne(refColumns.map((x) => x.sort).toList());
+
+    column.sort = column.sort.copyWith(
+      sortOrder: PlutoColumnSort.ascending,
+      sortPosition: position,
+    );
 
     if (sortOnlyEvent) return;
 
@@ -689,10 +748,30 @@ mixin ColumnState implements IPlutoGridState {
           b.cells[column.field]!.valueForSorting,
         );
 
+    int multiColumnCompare(dynamic a, dynamic b) {
+      for (int i = 0; i < columns.length; i++) {
+        final column = columns[i];
+        if (column.sort.sortOrder == PlutoColumnSort.none) {
+          continue;
+        }
+
+        final ascending = column.sort.sortOrder == PlutoColumnSort.ascending;
+        final comparison = column.type.compare(
+          a.cells[column.field]!.valueForSorting,
+          b.cells[column.field]!.valueForSorting,
+        );
+        if (comparison != 0) {
+          return ascending ? comparison : -comparison;
+        }
+      }
+      return 0; // All columns are equal
+    }
+
+
     if (enabledRowGroups) {
-      sortRowGroup(column: column, compare: compare);
+      sortRowGroup(column: column, compare: multiColumnCompare);
     } else {
-      refRows.sort(compare);
+      refRows.sort(multiColumnCompare);
     }
 
     notifyListeners(notify, sortAscending.hashCode);
@@ -702,7 +781,14 @@ mixin ColumnState implements IPlutoGridState {
   void sortDescending(PlutoColumn column, {bool notify = true}) {
     _updateBeforeColumnSort();
 
-    column.sort = PlutoColumnSort.descending;
+    // int position = column.sort.sortPosition ?? refColumns.fold(0, (prev, element) => (element.sort.sortPosition ?? 0) > prev ? (element.sort.sortPosition ?? 0) : prev);
+    int? position = column.sort.sortPosition;
+    position ??= _getMaxSortPositionPlusOne(refColumns.map((x) => x.sort).toList());
+
+    column.sort = column.sort.copyWith(
+      sortOrder: PlutoColumnSort.descending,
+      sortPosition: position,
+    );
 
     if (sortOnlyEvent) return;
 
@@ -711,10 +797,29 @@ mixin ColumnState implements IPlutoGridState {
           b.cells[column.field]!.valueForSorting,
         );
 
+    int multiColumnCompare(dynamic a, dynamic b) {
+      for (int i = 0; i < columns.length; i++) {
+        final column = columns[i];
+        if (column.sort.sortOrder == PlutoColumnSort.none) {
+          continue;
+        }
+
+        final ascending = column.sort.sortOrder == PlutoColumnSort.ascending;
+        final comparison = column.type.compare(
+          a.cells[column.field]!.valueForSorting,
+          b.cells[column.field]!.valueForSorting,
+        );
+        if (comparison != 0) {
+          return ascending ? comparison : -comparison;
+        }
+      }
+      return 0; // All columns are equal
+    }
+
     if (enabledRowGroups) {
-      sortRowGroup(column: column, compare: compare);
+      sortRowGroup(column: column, compare: multiColumnCompare);
     } else {
-      refRows.sort(compare);
+      refRows.sort(multiColumnCompare);
     }
 
     notifyListeners(notify, sortDescending.hashCode);
@@ -889,9 +994,15 @@ mixin ColumnState implements IPlutoGridState {
 
     clearCurrentSelecting(notify: false);
 
-    // Reset column sort to none.
-    for (var i = 0; i < refColumns.originalList.length; i += 1) {
-      refColumns.originalList[i].sort = PlutoColumnSort.none;
+    // If shift is not pressed we set all columns to sort none
+    if (!keyPressed.shift) {
+      // Reset column sort to none.
+      for (var i = 0; i < refColumns.originalList.length; i += 1) {
+        refColumns.originalList[i].sort = const PlutoColumnSorting(
+         sortOrder: PlutoColumnSort.none,
+         sortPosition: null,
+        );
+      }
     }
   }
 
@@ -930,7 +1041,7 @@ mixin ColumnState implements IPlutoGridState {
   }
 
   /// [PlutoGrid.onSorted] Called when a callback is registered.
-  void _callOnSorted(PlutoColumn column, PlutoColumnSort oldSort) {
+  void _callOnSorted(PlutoColumn column, PlutoColumnSorting oldSort) {
     if (sortOnlyEvent) {
       eventManager!.addEvent(
         PlutoGridChangeColumnSortEvent(column: column, oldSort: oldSort),

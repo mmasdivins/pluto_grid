@@ -72,6 +72,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     required List<PlutoRow> rows,
     required this.gridFocusNode,
     required this.scroll,
+    this.sortOrder = const [],
     List<PlutoColumnGroup>? columnGroups,
     this.onChanged,
     this.onRowChanged,
@@ -123,6 +124,9 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
   @override
   final FilteredList<PlutoColumnGroup> refColumnGroups;
+
+  @override
+  final List<String> sortOrder;
 
   @override
   final FilteredList<PlutoRow> refRows;
@@ -238,6 +242,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
     setGroupToColumn();
   }
+
 }
 
 /// It manages the state of the [PlutoGrid] and contains methods used by the grid.
@@ -279,6 +284,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     required super.rows,
     required super.gridFocusNode,
     required super.scroll,
+    super.sortOrder,
     this.rowWrapper,
     super.columnGroups,
     super.onChanged,

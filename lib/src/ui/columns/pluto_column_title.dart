@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pluto_grid_plus/pluto_grid_plus.dart';
+import 'package:pluto_grid_plus/src/model/pluto_column_sorting.dart';
 
 import '../ui.dart';
 
@@ -28,12 +29,15 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
 
   bool _isPointMoving = false;
 
-  PlutoColumnSort _sort = PlutoColumnSort.none;
+  PlutoColumnSorting _sort = const PlutoColumnSorting(
+    sortOrder: PlutoColumnSort.none,
+    sortPosition: null,
+  );
 
   bool get showContextIcon {
     return widget.column.enableContextMenu ||
         widget.column.enableDropToResize ||
-        !_sort.isNone;
+        !_sort.sortOrder.isNone;
   }
 
   bool get enableGesture {
@@ -62,7 +66,7 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
 
   @override
   void updateState(PlutoNotifierEvent event) {
-    _sort = update<PlutoColumnSort>(
+    _sort = update<PlutoColumnSorting>(
       _sort,
       widget.column.sort,
     );
@@ -183,6 +187,7 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
         if (showContextIcon)
           Positioned.directional(
             textDirection: stateManager.textDirection,
+            // start: 0,
             end: -3,
             child: enableGesture
                 ? Listener(
@@ -195,11 +200,33 @@ class PlutoColumnTitleState extends PlutoStateWithChange<PlutoColumnTitle> {
           ),
       ],
     );
+
+    // return Row(
+    //   children: [
+    //     widget.column.enableColumnDrag
+    //         ? _DraggableWidget(
+    //       stateManager: stateManager,
+    //       column: widget.column,
+    //       child: columnWidget,
+    //     )
+    //         : columnWidget,
+    //     if (showContextIcon)
+    //       enableGesture
+    //           ? Listener(
+    //         onPointerDown: _handleOnPointDown,
+    //         onPointerMove: _handleOnPointMove,
+    //         onPointerUp: _handleOnPointUp,
+    //         child: menuIconWidget,
+    //       )
+    //           : menuIconWidget,
+    //   ],
+    // );
+
   }
 }
 
 class PlutoGridColumnIcon extends StatelessWidget {
-  final PlutoColumnSort? sort;
+  final PlutoColumnSorting? sort;
 
   final Color color;
 
@@ -220,32 +247,145 @@ class PlutoGridColumnIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (sort) {
+    return Icon(
+      icon,
+      color: color,
+    );
+    // switch (sort) {
+    //   case PlutoColumnSort.ascending:
+    //     return ascendingIcon == null
+    //         ? Transform.rotate(
+    //             angle: 90 * pi / 90,
+    //             child: const Icon(
+    //               Icons.sort,
+    //               color: Colors.green,
+    //             ),
+    //           )
+    //         : ascendingIcon!;
+    //   case PlutoColumnSort.descending:
+    //     return descendingIcon == null
+    //         ? const Icon(
+    //             Icons.sort,
+    //             color: Colors.red,
+    //           )
+    //         : descendingIcon!;
+    //   default:
+    //     return Icon(
+    //       icon,
+    //       color: color,
+    //     );
+    // }
+  }
+}
+
+class PlutoGridColumnIconSort extends StatelessWidget {
+  final PlutoColumnSorting? sort;
+
+  final Color color;
+
+  final Icon? ascendingIcon;
+
+  final Icon? descendingIcon;
+
+  const PlutoGridColumnIconSort({
+    this.sort,
+    this.color = Colors.black26,
+    this.ascendingIcon,
+    this.descendingIcon,
+    super.key,
+  });
+
+  _iconWithNumber(Widget child, int number) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        child,
+        Positioned(
+          child:  Container(
+            padding: EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              number.toString(),
+              style: TextStyle(fontSize: 10),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (sort == null) {
+      return const SizedBox(height: 0, width: 0,);
+    }
+
+    int sortPosition = (sort!.sortPosition ?? 0) + 1;
+
+    switch (sort!.sortOrder) {
       case PlutoColumnSort.ascending:
         return ascendingIcon == null
-            ? Transform.rotate(
+            ? _iconWithNumber(Transform.rotate(
                 angle: 90 * pi / 90,
                 child: const Icon(
                   Icons.sort,
                   color: Colors.green,
                 ),
-              )
-            : ascendingIcon!;
+              ), sortPosition)
+            : _iconWithNumber(ascendingIcon!, sortPosition);
       case PlutoColumnSort.descending:
         return descendingIcon == null
-            ? const Icon(
+            ? _iconWithNumber(const Icon(
                 Icons.sort,
                 color: Colors.red,
-              )
-            : descendingIcon!;
+              ), sortPosition)
+            : _iconWithNumber(descendingIcon!, sortPosition);
       default:
-        return Icon(
-          icon,
-          color: color,
-        );
+        return const SizedBox(height: 0, width: 0,);
     }
   }
 }
+
+class _IconWithNumber extends StatelessWidget {
+  final IconData icon;
+  final int number;
+  final double iconSize;
+  final TextStyle textStyle;
+
+  _IconWithNumber({
+    required this.icon,
+    required this.number,
+    this.iconSize = 24.0,
+    this.textStyle = const TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Icon(
+          icon,
+          size: iconSize,
+        ),
+        Positioned(
+          child: Text(
+            number.toString(),
+            style: textStyle,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 
 class _DraggableWidget extends StatelessWidget {
   final PlutoGridStateManager stateManager;
@@ -511,6 +651,10 @@ class _ColumnTextWidget extends PlutoStatefulWidget {
 class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
   bool _isFilteredList = false;
   bool _focusInColumn = false;
+  PlutoColumnSorting _sort = const PlutoColumnSorting(
+    sortOrder: PlutoColumnSort.none,
+    sortPosition: null,
+  );
 
   @override
   PlutoGridStateManager get stateManager => widget.stateManager;
@@ -539,6 +683,11 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
       _focusInColumn,
       inColumn,
     );
+
+    _sort = update<PlutoColumnSorting>(
+      _sort,
+      widget.column.sort,
+    );
   }
 
   void _handleOnPressedFilter() {
@@ -552,7 +701,24 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
       widget.column.titleSpan == null ? widget.column.title : null;
 
   List<InlineSpan> get _children => [
-        if (widget.column.titleSpan != null) widget.column.titleSpan!,
+    // if (widget.column.enableSorting)
+    //   WidgetSpan(
+    //     alignment: PlaceholderAlignment.middle,
+    //     child: PlutoGridColumnIconSort(
+    //       sort: _sort,
+    //       color: stateManager.configuration.style.iconColor,
+    //       ascendingIcon: stateManager.configuration.style.columnAscendingIcon,
+    //       descendingIcon: stateManager.configuration.style.columnDescendingIcon,
+    //     ),
+    //   ),
+
+    if (_title != null && _title != "")
+      WidgetSpan(
+        alignment: PlaceholderAlignment.middle,
+        child: Text(_title!),
+      ),
+
+    if (widget.column.titleSpan != null) widget.column.titleSpan!,
         if (_isFilteredList)
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
@@ -571,18 +737,32 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
           ),
       ];
 
+
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        text: _title,
-        children: _children,
-      ),
-      style: _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle,
-      overflow: TextOverflow.ellipsis,
-      softWrap: false,
-      maxLines: 1,
-      textAlign: widget.column.titleTextAlign.value,
+    return Row(
+      children: [
+        if (widget.column.enableSorting)
+          PlutoGridColumnIconSort(
+            sort: _sort,
+            color: stateManager.configuration.style.iconColor,
+            ascendingIcon: stateManager.configuration.style.columnAscendingIcon,
+            descendingIcon: stateManager.configuration.style.columnDescendingIcon,
+          ),
+        Expanded(
+          child: Text.rich(
+            TextSpan(
+              // text: _title,
+              children: _children,
+            ),
+            style: _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+            maxLines: 1,
+            textAlign: widget.column.titleTextAlign.value,
+          ),
+        )
+      ],
     );
   }
 }

@@ -79,7 +79,7 @@ class PlutoColumn {
   PlutoColumnFrozen frozen;
 
   /// Set column sorting.
-  PlutoColumnSort sort;
+  PlutoColumnSorting sort;
 
   /// Formatter for display of cell values.
   PlutoColumnValueFormatter? formatter;
@@ -239,7 +239,7 @@ class PlutoColumn {
     this.textAlign = PlutoColumnTextAlign.start,
     this.titleTextAlign = PlutoColumnTextAlign.start,
     this.frozen = PlutoColumnFrozen.none,
-    this.sort = PlutoColumnSort.none,
+    this.sort = const PlutoColumnSorting(sortOrder: PlutoColumnSort.none, sortPosition: null),
     this.formatter,
     this.applyFormatterInEditing = false,
     this.backgroundColor,
@@ -299,7 +299,7 @@ class PlutoColumn {
       _defaultFilter ?? const PlutoFilterTypeContains();
 
   bool get isShowRightIcon =>
-      enableContextMenu || enableDropToResize || !sort.isNone;
+      enableContextMenu || enableDropToResize || !sort.sortOrder.isNone;
 
   PlutoColumnGroup? group;
 
