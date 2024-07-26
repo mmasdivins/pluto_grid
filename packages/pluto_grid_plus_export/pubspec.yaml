@@ -11,10 +11,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  pluto_grid_plus: ^8.4.2
+#  pluto_grid_plus: ^8.4.2
+  pluto_grid_plus:
+    git:
+      url: https://github.com/mmasdivins/pluto_grid
+#    path: ../..
   csv: ^6.0.0
   pdf: ^3.10.7
   printing: ^5.11.1
+  excel: ^4.0.3
 
 dev_dependencies:
   flutter_test:
