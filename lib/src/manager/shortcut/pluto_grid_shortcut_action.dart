@@ -85,6 +85,7 @@ class PlutoGridActionMoveCellFocus extends PlutoGridShortcutAction {
     required PlutoKeyManagerEvent keyEvent,
     required PlutoGridStateManager stateManager,
   }) {
+
     bool force = keyEvent.isHorizontal &&
         stateManager.configuration.enableMoveHorizontalInEditing == true;
 

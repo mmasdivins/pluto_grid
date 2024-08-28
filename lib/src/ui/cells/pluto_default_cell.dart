@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pluto_grid_plus/pluto_grid_plus.dart';
 
 import '../ui.dart';
@@ -94,7 +95,6 @@ class _PlutoDefaultCellState extends PlutoStateWithChange<PlutoDefaultCell> {
   @override
   void initState() {
     super.initState();
-
     updateState(PlutoNotifierEventForceUpdate.instance);
   }
 
@@ -354,6 +354,13 @@ class CheckboxSelectionWidgetState
   void initState() {
     super.initState();
 
+    stateManager!.keyManager!.subject
+        .listen((PlutoKeyManagerEvent value) {
+      if (value.isKeyDownEvent && value.event.logicalKey == LogicalKeyboardKey.space && stateManager!.currentRowIdx == widget.rowIdx) {
+        _checked == null ? _handleOnChanged(null) : _handleOnChanged(!(_checked!));
+      }
+    });
+
     updateState(PlutoNotifierEventForceUpdate.instance);
   }
 
@@ -411,6 +418,7 @@ class CheckboxSelectionWidgetState
       activeColor: stateManager.configuration.style.cellActiveColor,
       checkColor: stateManager.configuration.style.cellCheckedColor,
     );
+
   }
 }
 

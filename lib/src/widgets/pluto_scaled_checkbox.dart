@@ -34,12 +34,14 @@ class PlutoScaledCheckbox extends StatelessWidget {
         data: ThemeData(
           unselectedWidgetColor: unselectedColor,
         ),
-        child: Checkbox(
-          value: value,
-          tristate: tristate,
-          onChanged: handleOnChanged,
-          activeColor: value == null ? unselectedColor : activeColor,
-          checkColor: checkColor,
+        child: ExcludeFocus(
+          child: Checkbox(
+            value: value,
+            tristate: tristate,
+            onChanged: handleOnChanged,
+            activeColor: value == null ? unselectedColor : activeColor,
+            checkColor: checkColor,
+          ),
         ),
       ),
     );
