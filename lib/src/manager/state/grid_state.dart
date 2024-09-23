@@ -66,6 +66,9 @@ abstract class IGridState {
 
   PlutoGridStyleConfig get style;
 
+  PlutoEnableCheckSelectionCallBack? get enableCheckSelection;
+
+
   /// To delegate sort handling in the [PlutoInfinityScrollRows] or [PlutoLazyPagination] widget
   /// Whether to override the default sort processing.
   /// If this value is true,

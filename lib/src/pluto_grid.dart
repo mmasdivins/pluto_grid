@@ -87,6 +87,8 @@ typedef PlutoRowColorCallback = Color Function(
 typedef PlutoSelectDateCallBack = Future<DateTime?> Function(
     PlutoCell dateCell, PlutoColumn column);
 
+typedef PlutoEnableCheckSelectionCallBack = bool? Function(PlutoRow currentRow);
+
 /// [PlutoGrid] is a widget that receives columns and rows and is expressed as a grid-type UI.
 ///
 /// [PlutoGrid] supports movement and editing with the keyboard,
@@ -136,6 +138,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.configuration = const PlutoGridConfiguration(),
     this.notifierFilterResolver,
     this.mode = PlutoGridMode.normal,
+    this.enableCheckSelection,
   });
 
   /// {@template pluto_grid_property_columns}
@@ -459,6 +462,10 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// {@macro pluto_grid_mode_popup}
   final PlutoGridMode mode;
 
+  /// Controla si és pot o no seleccionar la fila
+  final PlutoEnableCheckSelectionCallBack? enableCheckSelection;
+
+
   /// [setDefaultLocale] sets locale when [Intl] package is used in [PlutoGrid].
   ///
   /// {@template intl_default_locale}
@@ -694,6 +701,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       notifierFilterResolver: widget.notifierFilterResolver,
       configuration: widget.configuration,
       mode: widget.mode,
+      enableCheckSelection: widget.enableCheckSelection,
     );
 
     // Dispose

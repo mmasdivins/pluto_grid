@@ -152,13 +152,22 @@ mixin RowState implements IPlutoGridState {
 
     int countFalse = 0;
 
+    int lengthCheckableRows = 0;
     for (var i = 0; i < length; i += 1) {
-      refRows[i].checked == true ? ++countTrue : ++countFalse;
+      var row = refRows[i];
+      var checked =  row.checked == true;
+
+      bool enabledCheckedRow = enableCheckSelection?.call(row) ?? false;
+
+      if (enabledCheckedRow) {
+        checked ? ++countTrue : ++countFalse;
+        ++lengthCheckableRows;
+      }
 
       if (countTrue > 0 && countFalse > 0) return null;
     }
 
-    return countTrue == length;
+    return countTrue == lengthCheckableRows;
   }
 
   @override
@@ -498,7 +507,9 @@ mixin RowState implements IPlutoGridState {
     bool notify = true,
   }) {
     for (final row in iterateRowAndGroup) {
-      row.setChecked(flag == true);
+      if (enableCheckSelection?.call(row) ?? false) {
+        row.setChecked(flag == true);
+      }
     }
 
     notifyListeners(notify, toggleAllRowChecked.hashCode);

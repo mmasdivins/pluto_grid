@@ -409,9 +409,11 @@ class CheckboxSelectionWidgetState
 
   @override
   Widget build(BuildContext context) {
+    bool enabled = stateManager.enableCheckSelection?.call(widget.row) ?? false;
+
     return PlutoScaledCheckbox(
       value: _checked,
-      handleOnChanged: _handleOnChanged,
+      handleOnChanged: enabled ? _handleOnChanged : null,
       tristate: _tristate,
       scale: 0.86,
       unselectedColor: stateManager.configuration.style.cellUnselectedColor,
