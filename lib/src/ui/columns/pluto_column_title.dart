@@ -715,7 +715,8 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
     if (_title != null && _title != "")
       WidgetSpan(
         alignment: PlaceholderAlignment.middle,
-        child: Text(_title!),
+        child: Text(_title!, style: _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle,
+        ),
       ),
 
     if (widget.column.titleSpan != null) widget.column.titleSpan!,
