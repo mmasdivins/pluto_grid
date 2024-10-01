@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid_plus/pluto_grid_plus.dart';
+import 'package:pluto_grid_plus/src/widgets/pluto_custom_scrollbar.dart';
 
 import '../helper/platform_helper.dart';
 import 'ui.dart';
@@ -120,58 +121,100 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
           }
 
         },
-        child: PlutoScrollbar(
-      verticalController:
-          scrollbarConfig.draggableScrollbar ? _verticalScroll : null,
-      horizontalController:
-          scrollbarConfig.draggableScrollbar ? _horizontalScroll : null,
-      isAlwaysShown: scrollbarConfig.isAlwaysShown,
-      onlyDraggingThumb: scrollbarConfig.onlyDraggingThumb,
-      enableHover: PlatformHelper.isDesktop,
-      enableScrollAfterDragEnd: scrollbarConfig.enableScrollAfterDragEnd,
-      thickness: scrollbarConfig.scrollbarThickness,
-      thicknessWhileDragging: scrollbarConfig.scrollbarThicknessWhileDragging,
-      hoverWidth: scrollbarConfig.hoverWidth,
-      mainAxisMargin: scrollbarConfig.mainAxisMargin,
-      crossAxisMargin: scrollbarConfig.crossAxisMargin,
-      scrollBarColor: scrollbarConfig.scrollBarColor,
-      scrollBarTrackColor: scrollbarConfig.scrollBarTrackColor,
-      radius: scrollbarConfig.scrollbarRadius,
-      radiusWhileDragging: scrollbarConfig.scrollbarRadiusWhileDragging,
-      longPressDuration: scrollbarConfig.longPressDuration,
-      child: SingleChildScrollView(
-        controller: _horizontalScroll,
-        scrollDirection: Axis.horizontal,
-        physics: const ClampingScrollPhysics(),
-        child: CustomSingleChildLayout(
-          delegate: ListResizeDelegate(stateManager, _columns),
-          child: ListView.builder(
-            controller: _verticalScroll,
-            scrollDirection: Axis.vertical,
+        child: PlutoDoubleScrollbar(
+          horizontalController: _horizontalScroll,
+          verticalController: _verticalScroll,
+          trackThickness: scrollbarConfig.scrollbarThickness,
+          child: SingleChildScrollView(
+            controller: _horizontalScroll,
+            scrollDirection: Axis.horizontal,
             physics: const ClampingScrollPhysics(),
-            itemCount: _rows.length,
-            itemExtent: stateManager.rowWrapper != null
-                ? null
-                : stateManager.rowTotalHeight,
-            addRepaintBoundaries: false,
-            itemBuilder: (ctx, i) {
-              Widget w = PlutoBaseRow(
-                key: ValueKey('body_row_${_rows[i].key}'),
-                rowIdx: i,
-                row: _rows[i],
-                columns: _columns,
-                stateManager: stateManager,
-                visibilityLayout: true,
-              );
+            child: CustomSingleChildLayout(
+              delegate: ListResizeDelegate(stateManager, _columns),
+              child: ListView.builder(
+                controller: _verticalScroll,
+                scrollDirection: Axis.vertical,
+                physics: const ClampingScrollPhysics(),
+                itemCount: _rows.length,
+                itemExtent: stateManager.rowWrapper != null
+                    ? null
+                    : stateManager.rowTotalHeight,
+                addRepaintBoundaries: false,
+                itemBuilder: (ctx, i) {
+                  Widget w = PlutoBaseRow(
+                    key: ValueKey('body_row_${_rows[i].key}'),
+                    rowIdx: i,
+                    row: _rows[i],
+                    columns: _columns,
+                    stateManager: stateManager,
+                    visibilityLayout: true,
+                  );
 
-              return stateManager.rowWrapper != null
-                  ? stateManager.rowWrapper(w)
-                  : w;
-            },
+                  return stateManager.rowWrapper != null
+                      ? stateManager.rowWrapper(w)
+                      : w;
+                },
+              ),
+            ),
           ),
         ),
-      ),
-    ));
+
+
+      //   PlutoScrollbar(
+      // verticalController:
+      //     scrollbarConfig.draggableScrollbar ? _verticalScroll : null,
+      // horizontalController:
+      //     scrollbarConfig.draggableScrollbar ? _horizontalScroll : null,
+      // isAlwaysShown: scrollbarConfig.isAlwaysShown,
+      // onlyDraggingThumb: scrollbarConfig.onlyDraggingThumb,
+      // enableHover: PlatformHelper.isDesktop,
+      // enableScrollAfterDragEnd: scrollbarConfig.enableScrollAfterDragEnd,
+      // thickness: scrollbarConfig.scrollbarThickness,
+      // thicknessWhileDragging: scrollbarConfig.scrollbarThicknessWhileDragging,
+      // hoverWidth: scrollbarConfig.hoverWidth,
+      // mainAxisMargin: scrollbarConfig.mainAxisMargin,
+      // crossAxisMargin: scrollbarConfig.crossAxisMargin,
+      // scrollBarColor: scrollbarConfig.scrollBarColor,
+      // scrollBarTrackColor: scrollbarConfig.scrollBarTrackColor,
+      // radius: scrollbarConfig.scrollbarRadius,
+      // radiusWhileDragging: scrollbarConfig.scrollbarRadiusWhileDragging,
+      // longPressDuration: scrollbarConfig.longPressDuration,
+      // child: SingleChildScrollView(
+      //   controller: _horizontalScroll,
+      //   scrollDirection: Axis.horizontal,
+      //   physics: const ClampingScrollPhysics(),
+      //   child: CustomSingleChildLayout(
+      //     delegate: ListResizeDelegate(stateManager, _columns),
+      //     child: ListView.builder(
+      //       controller: _verticalScroll,
+      //       scrollDirection: Axis.vertical,
+      //       physics: const ClampingScrollPhysics(),
+      //       itemCount: _rows.length,
+      //       itemExtent: stateManager.rowWrapper != null
+      //           ? null
+      //           : stateManager.rowTotalHeight,
+      //       addRepaintBoundaries: false,
+      //       itemBuilder: (ctx, i) {
+      //         Widget w = PlutoBaseRow(
+      //           key: ValueKey('body_row_${_rows[i].key}'),
+      //           rowIdx: i,
+      //           row: _rows[i],
+      //           columns: _columns,
+      //           stateManager: stateManager,
+      //           visibilityLayout: true,
+      //         );
+      //
+      //         return stateManager.rowWrapper != null
+      //             ? stateManager.rowWrapper(w)
+      //             : w;
+      //       },
+      //     ),
+      //   ),
+      // ),
+
+
+
+    );
   }
 }
 
