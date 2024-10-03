@@ -121,11 +121,15 @@ class PlutoBodyRowsState extends PlutoStateWithChange<PlutoBodyRows> {
           }
 
         },
-        child: PlutoDoubleScrollbar(
+        child:
+        PlutoDoubleScrollbar(
           horizontalController: _horizontalScroll,
           verticalController: _verticalScroll,
           trackThickness: scrollbarConfig.scrollbarThickness,
-          child: SingleChildScrollView(
+          // horizontalScrollbarAlwaysVisible: true,
+          // verticalScrollbarAlwaysVisible: true,
+          child:
+          SingleChildScrollView(
             controller: _horizontalScroll,
             scrollDirection: Axis.horizontal,
             physics: const ClampingScrollPhysics(),

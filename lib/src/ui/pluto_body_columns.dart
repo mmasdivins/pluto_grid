@@ -106,23 +106,62 @@ class PlutoBodyColumnsState extends PlutoStateWithChange<PlutoBodyColumns> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scroll,
-      scrollDirection: Axis.horizontal,
-      physics: const ClampingScrollPhysics(),
-      child: PlutoVisibilityLayout(
-        delegate: MainColumnLayoutDelegate(
-          stateManager: stateManager,
-          columns: _columns,
-          columnGroups: _columnGroups,
-          frozen: PlutoColumnFrozen.none,
-          textDirection: stateManager.textDirection,
+    final scrollbarConfig = stateManager.configuration.scrollbar;
+
+    // S'ha afegit el stack amb el padding per què tinguin la mateixa longitud
+    // les columnes i les files al afegir el scrollbar
+
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            right: scrollbarConfig.scrollbarThickness,
+          ),
+          child: SingleChildScrollView(
+            controller: _scroll,
+            scrollDirection: Axis.horizontal,
+            physics: const ClampingScrollPhysics(),
+            child: PlutoVisibilityLayout(
+              delegate: MainColumnLayoutDelegate(
+                stateManager: stateManager,
+                columns: _columns,
+                columnGroups: _columnGroups,
+                frozen: PlutoColumnFrozen.none,
+                textDirection: stateManager.textDirection,
+              ),
+              scrollController: _scroll,
+              initialViewportDimension: MediaQuery.of(context).size.width,
+              children: _showColumnGroups == true
+                  ? _columnGroups.map(_makeColumnGroup).toList(growable: false)
+                  : _columns.map(_makeColumn).toList(growable: false),
+            ),
+          ),
         ),
-        scrollController: _scroll,
-        initialViewportDimension: MediaQuery.of(context).size.width,
-        children: _showColumnGroups == true
-            ? _columnGroups.map(_makeColumnGroup).toList(growable: false)
-            : _columns.map(_makeColumn).toList(growable: false),
+
+      ],
+    );
+
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: SingleChildScrollView(
+        controller: _scroll,
+        scrollDirection: Axis.horizontal,
+        physics: const ClampingScrollPhysics(),
+        child: PlutoVisibilityLayout(
+          delegate: MainColumnLayoutDelegate(
+            stateManager: stateManager,
+            columns: _columns,
+            columnGroups: _columnGroups,
+            frozen: PlutoColumnFrozen.none,
+            textDirection: stateManager.textDirection,
+          ),
+          scrollController: _scroll,
+          initialViewportDimension: MediaQuery.of(context).size.width,
+          children: _showColumnGroups == true
+              ? _columnGroups.map(_makeColumnGroup).toList(growable: false)
+              : _columns.map(_makeColumn).toList(growable: false),
+        ),
       ),
     );
   }
