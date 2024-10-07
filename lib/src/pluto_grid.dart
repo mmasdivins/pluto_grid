@@ -90,6 +90,8 @@ typedef PlutoSelectDateCallBack = Future<DateTime?> Function(
 
 typedef PlutoEnableCheckSelectionCallBack = bool? Function(PlutoRow currentRow);
 
+typedef PlutoOnSearchCallBack = void Function(PlutoGridStateManager stateManager);
+
 /// [PlutoGrid] is a widget that receives columns and rows and is expressed as a grid-type UI.
 ///
 /// [PlutoGrid] supports movement and editing with the keyboard,
@@ -140,6 +142,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.notifierFilterResolver,
     this.mode = PlutoGridMode.normal,
     this.enableCheckSelection,
+    this.onSearchCallback,
   });
 
   /// {@template pluto_grid_property_columns}
@@ -466,6 +469,9 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// Controla si és pot o no seleccionar la fila
   final PlutoEnableCheckSelectionCallBack? enableCheckSelection;
 
+  /// Callback quan fem control + F
+  final PlutoOnSearchCallBack? onSearchCallback;
+
 
   /// [setDefaultLocale] sets locale when [Intl] package is used in [PlutoGrid].
   ///
@@ -707,6 +713,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       configuration: widget.configuration,
       mode: widget.mode,
       enableCheckSelection: widget.enableCheckSelection,
+      onSearchCallback: widget.onSearchCallback,
     );
 
     // Dispose

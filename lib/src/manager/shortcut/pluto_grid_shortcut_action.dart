@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pluto_grid_plus/pluto_grid_plus.dart';
@@ -917,6 +918,33 @@ class PlutoGridActionInsert extends PlutoGridShortcutAction {
       );
     }
 
+
+  }
+}
+
+/// {@template pluto_grid_action_search}
+/// Search a string.
+/// {@endtemplate}
+class PlutoGridActionSearch extends PlutoGridShortcutAction {
+  const PlutoGridActionSearch();
+
+  @override
+  void execute({
+    required PlutoKeyManagerEvent keyEvent,
+    required PlutoGridStateManager stateManager,
+  }) {
+
+    if (stateManager.isEditing == true
+        || stateManager.showLoading
+        /*|| stateManager.mode == PlutoGridMode.readOnly
+        || stateManager.currentCellPosition == null
+        || stateManager.currentCellPosition?.rowIdx == null*/) {
+      return;
+    }
+
+    if (stateManager.onSearchCallback != null) {
+      stateManager.onSearchCallback!.call(stateManager);
+    }
 
   }
 }

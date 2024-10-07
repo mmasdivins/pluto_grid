@@ -68,6 +68,8 @@ abstract class IGridState {
 
   PlutoEnableCheckSelectionCallBack? get enableCheckSelection;
 
+  PlutoOnSearchCallBack? get onSearchCallback;
+
 
   /// To delegate sort handling in the [PlutoInfinityScrollRows] or [PlutoLazyPagination] widget
   /// Whether to override the default sort processing.

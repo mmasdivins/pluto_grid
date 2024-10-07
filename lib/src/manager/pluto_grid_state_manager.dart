@@ -105,6 +105,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     PlutoGridConfiguration configuration = const PlutoGridConfiguration(),
     PlutoGridMode? mode,
     this.enableCheckSelection,
+    this.onSearchCallback,
 
   })  : refColumns = FilteredList(initialList: columns),
         refRows = FilteredList(initialList: rows),
@@ -226,6 +227,9 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
   final PlutoEnableCheckSelectionCallBack? enableCheckSelection;
 
   @override
+  final PlutoOnSearchCallBack? onSearchCallback;
+
+  @override
   final GlobalKey gridKey;
 
   void _initialize() {
@@ -323,6 +327,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     super.configuration,
     super.mode,
     super.enableCheckSelection,
+    super.onSearchCallback,
   });
 
   PlutoChangeNotifierFilter<T> resolveNotifierFilter<T>() {
