@@ -157,7 +157,7 @@ mixin RowState implements IPlutoGridState {
       var row = refRows[i];
       var checked =  row.checked == true;
 
-      bool enabledCheckedRow = enableCheckSelection?.call(row) ?? false;
+      bool enabledCheckedRow = enableCheckSelection?.call(row) ?? true;
 
       if (enabledCheckedRow) {
         checked ? ++countTrue : ++countFalse;
@@ -507,7 +507,7 @@ mixin RowState implements IPlutoGridState {
     bool notify = true,
   }) {
     for (final row in iterateRowAndGroup) {
-      if (enableCheckSelection?.call(row) ?? false) {
+      if (enableCheckSelection?.call(row) ?? true) {
         row.setChecked(flag == true);
       }
     }
