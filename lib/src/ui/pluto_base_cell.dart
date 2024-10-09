@@ -321,8 +321,12 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
 
     Color? cellColor = widget.column.cellColor?.call(widget.row.cells);
     if (cellColor == null && readOnly) {
-      // SI no s'ha posat un custom color i és read only el posem en gris
-      cellColor = const Color(0xffcfd3d7);
+      // SI no s'ha posat un custom color i és read only i no hi ha el color
+      // del "pijamat" configurat el posem en gris
+      var style = stateManager.configuration.style;
+      if (style.evenRowColor == null && style.oddRowColor == null) {
+        cellColor = const Color(0xffcfd3d7);
+      }
     }
 
     // Si estem a la mateixa fila que tenim seleccionada, posem el color de la

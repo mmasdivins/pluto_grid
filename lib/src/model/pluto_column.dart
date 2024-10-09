@@ -89,6 +89,7 @@ class PlutoColumn {
   /// or the text cannot be directly modified, such as in the form of select popup.
   bool applyFormatterInEditing;
 
+  /// Background color of title column
   Color? backgroundColor;
 
   /// Customize the widget in the default cell.

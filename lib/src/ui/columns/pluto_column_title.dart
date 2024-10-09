@@ -422,23 +422,25 @@ class _DraggableWidget extends StatelessWidget {
       child: Draggable<PlutoColumn>(
         data: column,
         dragAnchorStrategy: pointerDragAnchorStrategy,
-        feedback: FractionalTranslation(
-          translation: const Offset(-0.5, -0.5),
-          child: PlutoShadowContainer(
-            alignment: column.titleTextAlign.alignmentValue,
-            width: PlutoGridSettings.minColumnWidth,
-            height: stateManager.columnHeight,
-            backgroundColor:
-                stateManager.configuration.style.gridBackgroundColor,
-            borderColor: stateManager.configuration.style.gridBorderColor,
-            child: Text(
-              column.title,
-              style: stateManager.configuration.style.columnTextStyle.copyWith(
-                fontSize: 12,
+        feedback: Material(
+          child: FractionalTranslation(
+            translation: const Offset(-0.5, -0.5),
+            child: PlutoShadowContainer(
+              alignment: column.titleTextAlign.alignmentValue,
+              width: PlutoGridSettings.minColumnWidth,
+              height: stateManager.columnHeight,
+              backgroundColor:
+              stateManager.configuration.style.gridBackgroundColor,
+              borderColor: stateManager.configuration.style.gridBorderColor,
+              child: Text(
+                column.title,
+                style: stateManager.configuration.style.columnTextStyle.copyWith(
+                  fontSize: 12,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                softWrap: false,
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              softWrap: false,
             ),
           ),
         ),
