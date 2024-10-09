@@ -24,6 +24,7 @@ import 'state/scroll_state.dart';
 import 'state/selecting_state.dart';
 import 'state/visibility_layout_state.dart';
 import 'state/hovering_state.dart';
+import 'state/search_state.dart';
 
 abstract class IPlutoGridState
     implements
@@ -45,7 +46,9 @@ abstract class IPlutoGridState
         IScrollState,
         ISelectingState,
         IVisibilityLayoutState,
-        IHoveringState {}
+        IHoveringState,
+        ISearchState
+        {}
 
 class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     with
@@ -66,7 +69,8 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
         ScrollState,
         SelectingState,
         VisibilityLayoutState,
-        HoveringState {
+        HoveringState,
+        SearchState {
   PlutoGridStateChangeNotifier({
     required List<PlutoColumn> columns,
     required List<PlutoRow> rows,
@@ -251,6 +255,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
     setGroupToColumn();
   }
+
 
 }
 

@@ -948,3 +948,28 @@ class PlutoGridActionSearch extends PlutoGridShortcutAction {
 
   }
 }
+
+/// {@template pluto_grid_action_search_next}
+/// Search a string.
+/// {@endtemplate}
+class PlutoGridActionSearchNext extends PlutoGridShortcutAction {
+  const PlutoGridActionSearchNext();
+
+  @override
+  void execute({
+    required PlutoKeyManagerEvent keyEvent,
+    required PlutoGridStateManager stateManager,
+  }) {
+
+    if (stateManager.isEditing == true
+        || stateManager.showLoading
+        /*|| stateManager.mode == PlutoGridMode.readOnly
+        || stateManager.currentCellPosition == null
+        || stateManager.currentCellPosition?.rowIdx == null*/) {
+      return;
+    }
+
+    stateManager.searchNext(notify: true);
+
+  }
+}

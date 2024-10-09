@@ -72,6 +72,13 @@ abstract class PlutoChangeNotifierFilterResolver {
       stateManager.clearCurrentCell.hashCode: 'clearCurrentCell',
       stateManager.setCurrentCell.hashCode: 'setCurrentCell',
 
+      /// search_state
+      stateManager.setFoundCellPosition.hashCode: 'setFoundCellPosition',
+      stateManager.clearFoundCell.hashCode: 'clearFoundCell',
+      stateManager.setFoundCell.hashCode: 'setFoundCell',
+      stateManager.searchText.hashCode: 'searchText',
+      stateManager.searchNext.hashCode: 'searchNext',
+
       /// column_group_state
       stateManager.setShowColumnGroups.hashCode: 'setShowColumnGroups',
       stateManager.removeColumnsInColumnGroup.hashCode:

@@ -138,6 +138,9 @@ class PlutoGridShortcut {
     // Search
     LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF):
         const PlutoGridActionSearch(),
+    // Search Next
+    LogicalKeySet(LogicalKeyboardKey.f3):
+      const PlutoGridActionSearchNext(),
 
   };
 }
