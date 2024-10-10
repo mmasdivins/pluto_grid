@@ -205,6 +205,9 @@ class PlutoColumn {
   /// Hide the column.
   bool hide;
 
+  /// Highlights the column.
+  bool highlight;
+
   /// Valor de hint
   String Function(Map<String, PlutoCell> cells)? hintValue;
 
@@ -263,6 +266,7 @@ class PlutoColumn {
     this.enableAutoEditing = false,
     this.enableEditingMode,
     this.hide = false,
+    this.highlight = false,
     this.hintValue,
     this.showHint,
     this.hintColor,

@@ -243,6 +243,11 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       cellFocus.requestFocus();
     }
 
+    TextStyle textStyle = widget.stateManager.configuration.style.cellTextStyle;
+    if (widget.column.highlight) {
+      textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
+    }
+
     return TextField(
       focusNode: cellFocus,
       controller: _textController,
@@ -251,7 +256,7 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       onEditingComplete: _handleOnComplete,
       onSubmitted: (_) => _handleOnComplete(),
       onTap: _handleOnTap,
-      style: widget.stateManager.configuration.style.cellTextStyle,
+      style: textStyle,
       decoration: const InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide.none,

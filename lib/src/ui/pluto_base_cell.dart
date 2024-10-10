@@ -362,16 +362,32 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
         ),
       );
     } else {
+
+      BoxBorder? border = enableCellVerticalBorder
+          ? BorderDirectional(
+        end: BorderSide(
+          color: borderColor,
+          width: 1.0,
+        ),
+      )
+          : null;
+
+      if (widget.column.highlight) {
+        border = const BorderDirectional(
+          start: BorderSide(
+            color: Colors.black,
+            width: 2.0,
+          ),
+          end: BorderSide(
+            color: Colors.black,
+            width: 2.0,
+          ),
+        );
+      }
+
       return BoxDecoration(
         color: cellColor ?? (isGroupedRowCell ? cellColorGroupedRow : null),
-        border: enableCellVerticalBorder
-            ? BorderDirectional(
-                end: BorderSide(
-                  color: borderColor,
-                  width: 1.0,
-                ),
-              )
-            : null,
+        border: border,
       );
     }
   }

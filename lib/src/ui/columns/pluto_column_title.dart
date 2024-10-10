@@ -702,47 +702,59 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
   String? get _title =>
       widget.column.titleSpan == null ? widget.column.title : null;
 
-  List<InlineSpan> get _children => [
-    // if (widget.column.enableSorting)
-    //   WidgetSpan(
-    //     alignment: PlaceholderAlignment.middle,
-    //     child: PlutoGridColumnIconSort(
-    //       sort: _sort,
-    //       color: stateManager.configuration.style.iconColor,
-    //       ascendingIcon: stateManager.configuration.style.columnAscendingIcon,
-    //       descendingIcon: stateManager.configuration.style.columnDescendingIcon,
-    //     ),
-    //   ),
+  List<InlineSpan> _children() {
+    TextStyle style = _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle;
+    if (widget.column.highlight) {
+      style = style.copyWith(fontWeight: FontWeight.bold);
+    }
 
-    if (_title != null && _title != "")
-      WidgetSpan(
-        alignment: PlaceholderAlignment.middle,
-        child: Text(_title!, style: _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle,
+    return [
+      // if (widget.column.enableSorting)
+      //   WidgetSpan(
+      //     alignment: PlaceholderAlignment.middle,
+      //     child: PlutoGridColumnIconSort(
+      //       sort: _sort,
+      //       color: stateManager.configuration.style.iconColor,
+      //       ascendingIcon: stateManager.configuration.style.columnAscendingIcon,
+      //       descendingIcon: stateManager.configuration.style.columnDescendingIcon,
+      //     ),
+      //   ),
+
+      if (_title != null && _title != "")
+        WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: Text(_title!, style: style,
+          ),
         ),
-      ),
 
-    if (widget.column.titleSpan != null) widget.column.titleSpan!,
-        if (_isFilteredList)
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: IconButton(
-              icon: Icon(
-                Icons.filter_alt_outlined,
-                color: stateManager.configuration.style.iconColor,
-                size: stateManager.configuration.style.iconSize,
-              ),
-              onPressed: _handleOnPressedFilter,
-              constraints: BoxConstraints(
-                maxHeight:
-                    widget.height + (PlutoGridSettings.rowBorderWidth * 2),
-              ),
+      if (widget.column.titleSpan != null) widget.column.titleSpan!,
+      if (_isFilteredList)
+        WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: IconButton(
+            icon: Icon(
+              Icons.filter_alt_outlined,
+              color: stateManager.configuration.style.iconColor,
+              size: stateManager.configuration.style.iconSize,
+            ),
+            onPressed: _handleOnPressedFilter,
+            constraints: BoxConstraints(
+              maxHeight:
+              widget.height + (PlutoGridSettings.rowBorderWidth * 2),
             ),
           ),
-      ];
+        ),
+    ];
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    TextStyle style = _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle;
+    if (widget.column.highlight) {
+      style = style.copyWith(fontWeight: FontWeight.bold);
+    }
+
     return Row(
       children: [
         if (widget.column.enableSorting)
@@ -756,9 +768,9 @@ class _ColumnTextWidgetState extends PlutoStateWithChange<_ColumnTextWidget> {
           child: Text.rich(
             TextSpan(
               // text: _title,
-              children: _children,
+              children: _children(),
             ),
-            style: _focusInColumn ? stateManager.configuration.style.columnSelectedTextStyle : stateManager.configuration.style.columnTextStyle,
+            style: style,
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             maxLines: 1,

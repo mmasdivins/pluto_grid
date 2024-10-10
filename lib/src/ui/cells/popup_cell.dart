@@ -230,13 +230,18 @@ mixin PopupCellState<T extends PopupCell> on State<T>
       textFocus.requestFocus();
     }
 
+    TextStyle textStyle = widget.stateManager.configuration.style.cellTextStyle;
+    if (widget.column.highlight) {
+      textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
+    }
+
     return TextField(
       focusNode: textFocus,
       controller: textController,
       readOnly: true,
       textInputAction: TextInputAction.none,
       onTap: openPopup,
-      style: widget.stateManager.configuration.style.cellTextStyle,
+      style: textStyle,
       decoration: InputDecoration(
         border: const OutlineInputBorder(
           borderSide: BorderSide.none,

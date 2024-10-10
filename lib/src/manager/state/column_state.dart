@@ -125,6 +125,13 @@ abstract class IColumnState {
     bool notify = true,
   });
 
+  /// Highlights or remove the highlight of the [column] with [highlight] value.
+  void highlightColumn(
+    PlutoColumn column,
+    bool highlight, {
+    bool notify = true,
+  });
+
   /// Hide or show the [columns] with [hide] value.
   ///
   /// When [column.frozen.isFrozen] in [columns] and [hide] is false,
@@ -133,6 +140,13 @@ abstract class IColumnState {
   void hideColumns(
     List<PlutoColumn> columns,
     bool hide, {
+    bool notify = true,
+  });
+
+  /// Highlight or remove highligths the [columns] with [highlight] value.
+  void highlightColumns(
+    List<PlutoColumn> columns,
+    bool highlight, {
     bool notify = true,
   });
 
@@ -688,6 +702,21 @@ mixin ColumnState implements IPlutoGridState {
   }
 
   @override
+  void highlightColumn(
+    PlutoColumn column,
+    bool highlight, {
+    bool notify = true,
+  }) {
+    if (column.highlight == highlight) {
+      return;
+    }
+
+    column.highlight = highlight;
+
+    _updateAfterHighlightColumn(columns: [column], notify: notify);
+  }
+
+  @override
   void hideColumns(
     List<PlutoColumn> columns,
     bool hide, {
@@ -700,6 +729,28 @@ mixin ColumnState implements IPlutoGridState {
     _updateLimitedHideColumns(columns, hide);
 
     _updateAfterHideColumn(columns: columns, notify: notify);
+  }
+
+  @override
+  void highlightColumns(
+    List<PlutoColumn> columns,
+    bool highlight, {
+    bool notify = true,
+  }) {
+    if (columns.isEmpty) {
+      return;
+    }
+
+    for (final column in columns) {
+      if (highlight == column.highlight) {
+        continue;
+      }
+
+      column.highlight = highlight;
+    }
+
+
+    _updateAfterHighlightColumn(columns: columns, notify: notify);
   }
 
   int _getMaxSortPositionPlusOne(List<PlutoColumnSorting> list) {
@@ -1148,6 +1199,19 @@ mixin ColumnState implements IPlutoGridState {
     updateVisibilityLayout();
 
     notifyListeners(notify, hideColumn.hashCode);
+  }
+
+  void _updateAfterHighlightColumn({
+    required List<PlutoColumn> columns,
+    required bool notify,
+  }) {
+    refColumns.update();
+
+    resetCurrentState(notify: false);
+
+    updateVisibilityLayout();
+
+    notifyListeners(notify, highlightColumn.hashCode);
   }
 
   bool _updateResizeColumns({

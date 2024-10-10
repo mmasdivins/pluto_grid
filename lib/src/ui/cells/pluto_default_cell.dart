@@ -174,6 +174,11 @@ class _PlutoDefaultCellState extends PlutoStateWithChange<PlutoDefaultCell> {
       );
     }
 
+    TextStyle defaultCellStyle = PlutoDefaultCell.groupCountTextStyle(stateManager.style);
+    if (widget.column.highlight) {
+      defaultCellStyle = defaultCellStyle.copyWith(fontWeight: FontWeight.bold);
+    }
+
     return Row(children: [
       if (_canRowDrag)
         _RowDragIconWidget(
@@ -203,7 +208,7 @@ class _PlutoDefaultCellState extends PlutoStateWithChange<PlutoDefaultCell> {
         Text(
           PlutoDefaultCell.groupCountText(
               stateManager.rowGroupDelegate!, widget.row),
-          style: PlutoDefaultCell.groupCountTextStyle(stateManager.style),
+          style: defaultCellStyle,
         ),
     ]);
   }
@@ -473,6 +478,15 @@ class _DefaultCellWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle style = stateManager.configuration.style.cellTextStyle.copyWith(
+      decoration: TextDecoration.none,
+      fontWeight: FontWeight.normal,
+    );
+
+    if (column.highlight) {
+      style = style.copyWith(fontWeight: FontWeight.bold);
+    }
+
     if (column.hasRenderer) {
       return column.renderer!(PlutoColumnRendererContext(
         column: column,
@@ -485,10 +499,7 @@ class _DefaultCellWidget extends StatelessWidget {
 
     return Text(
       _text,
-      style: stateManager.configuration.style.cellTextStyle.copyWith(
-        decoration: TextDecoration.none,
-        fontWeight: FontWeight.normal,
-      ),
+      style: style,
       overflow: TextOverflow.ellipsis,
       textAlign: column.textAlign.value,
     );
