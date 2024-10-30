@@ -359,7 +359,7 @@ class CheckboxSelectionWidgetState
   void initState() {
     super.initState();
 
-    stateManager!.keyManager!.subject
+    stateManager.keyManager!.subject
         .listen((PlutoKeyManagerEvent value) {
       if (value.isKeyDownEvent && value.event.logicalKey == LogicalKeyboardKey.space && stateManager!.currentRowIdx == widget.rowIdx) {
         _checked == null ? _handleOnChanged(null) : _handleOnChanged(!(_checked!));
@@ -407,9 +407,13 @@ class CheckboxSelectionWidgetState
       );
     }
 
-    setState(() {
-      _checked = changed;
-    });
+    // We change the value before calling set state, and call
+    // only set state only if it's mounted
+    _checked = changed;
+    if (mounted) {
+      setState(() {
+      });
+    }
   }
 
   @override
