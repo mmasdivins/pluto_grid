@@ -194,13 +194,34 @@ mixin SearchState implements IPlutoGridState {
           var cell = row.cells[cols[j].field];
           debugPrint("Search check row: ${i} , col: ${j}");
 
-          String? value = cell?.value?.toString().toUpperCase();
-          String? compare = searchText.toUpperCase();
-          if (value?.contains(compare) ?? false) {
-            _state._foundCell = cell;
-            debugPrint("Search found: ${cell?.value}");
-            break outerLoop;
+          if (cell?.originalValue is int) {
+              var ivalue = int.tryParse(searchText);
+              if (ivalue != null && ivalue == cell?.originalValue) {
+                _state._foundCell = cell;
+                debugPrint("Search found: ${cell?.value}");
+                break outerLoop;
+              }
           }
+          else if (cell?.originalValue is double) {
+            String? parse = searchText.replaceAll(",", ".");
+            var dvalue = double.tryParse(parse);
+            if (dvalue != null && dvalue == cell?.originalValue) {
+              _state._foundCell = cell;
+              debugPrint("Search found: ${cell?.value}");
+              break outerLoop;
+            }
+          }
+          else {
+            String? value = cell?.value?.toString().toUpperCase();
+            String? compare = searchText.toUpperCase();
+            if ((value?.contains(compare) ?? false)) {
+              _state._foundCell = cell;
+              debugPrint("Search found: ${cell?.value}");
+              break outerLoop;
+            }
+          }
+
+
         }
         // He de reiniciar la columna si no sempre buscarà a l'última
         initialCol = 0;
@@ -217,7 +238,12 @@ mixin SearchState implements IPlutoGridState {
             colDirection = (currentPos.columnIdx ?? 0) <= (itemPos.columnIdx ?? 0) ? PlutoMoveDirection.right : PlutoMoveDirection.left;
             rowDirection = (currentPos.rowIdx ?? 0) <= (itemPos.rowIdx ?? 0) ? PlutoMoveDirection.down : PlutoMoveDirection.up;
           }
-          moveScrollByColumn(colDirection, itemPos.columnIdx);
+
+          int? columnIdx = itemPos.columnIdx;
+          if (colDirection == PlutoMoveDirection.left && columnIdx != null) {
+            columnIdx = columnIdx + 1;
+          }
+          moveScrollByColumn(colDirection, columnIdx);
           moveScrollByRow(rowDirection, itemPos.rowIdx);
           setFoundCellPosition(itemPos);
           setFoundCell(foundCell, itemPos.rowIdx);

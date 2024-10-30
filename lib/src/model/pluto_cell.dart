@@ -17,6 +17,8 @@ class PlutoCell {
 
   dynamic _valueForSorting;
 
+  dynamic _valueForSearching;
+
   /// Set initial value according to [PlutoColumn] setting.
   ///
   /// [setColumn] is called when [PlutoGridStateManager.initializeRows] is called.
@@ -67,6 +69,7 @@ class PlutoCell {
     _value = changed;
 
     _valueForSorting = null;
+    _valueForSearching = null;
   }
 
   dynamic get valueForSorting {
@@ -75,9 +78,16 @@ class PlutoCell {
     return _valueForSorting;
   }
 
+  dynamic get valueForSearching {
+    _valueForSearching ??= _getValueForSearching();
+
+    return _valueForSearching;
+  }
+
   void setColumn(PlutoColumn column) {
     _column = column;
     _valueForSorting = _getValueForSorting();
+    _valueForSearching = _getValueForSearching();
     _needToApplyFormatOnInit = _column?.type.applyFormatOnInit == true;
   }
 
@@ -86,6 +96,18 @@ class PlutoCell {
   }
 
   dynamic _getValueForSorting() {
+    if (_column == null) {
+      return _value;
+    }
+
+    if (_needToApplyFormatOnInit) {
+      _applyFormatOnInit();
+    }
+
+    return _column!.type.makeCompareValue(_value);
+  }
+
+  dynamic _getValueForSearching() {
     if (_column == null) {
       return _value;
     }
