@@ -95,7 +95,7 @@ class PlutoGridKeyManager {
   }
 
   void _handleCharacter(PlutoKeyManagerEvent keyEvent) {
-    if (stateManager.isEditing != true && stateManager.mode != PlutoGridMode.readOnly && stateManager.currentCell != null) {
+    if (stateManager.isEditing != true && stateManager.currentCell != null) {
       stateManager.setEditing(true);
 
       if (keyEvent.event.character == null) {
