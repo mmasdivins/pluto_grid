@@ -662,9 +662,15 @@ class _ApplyCellForSetColumnRow implements _Apply {
     }
 
     for (var element in refColumns) {
-      row.cells[element.field]!
-        ..setColumn(element)
-        ..setRow(row);
+      try {
+        row.cells[element.field]!
+          ..setColumn(element)
+          ..setRow(row);
+      }
+      catch(e) {
+        debugPrint("Cell does not exist for column ${element.title}");
+        throw e;
+      }
     }
   }
 }
