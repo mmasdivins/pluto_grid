@@ -60,6 +60,22 @@ class PlutoBaseRow extends StatelessWidget {
   }
 
   PlutoVisibilityLayoutId _makeCell(PlutoColumn column) {
+
+    if (!row.cells.containsKey(column.field)) {
+      stateManager.eventManager?.addEvent(PlutoGridCellNotExistEvent(column: column.field));
+      return PlutoVisibilityLayoutId(
+        id: column.field,
+        child: PlutoBaseCell(
+          key: null,
+          cell: PlutoCell(),
+          column: column,
+          rowIdx: rowIdx,
+          row: row,
+          stateManager: stateManager,
+        ),
+      );
+    }
+
     return PlutoVisibilityLayoutId(
       id: column.field,
       child: PlutoBaseCell(

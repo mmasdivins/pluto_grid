@@ -237,9 +237,11 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
   final GlobalKey gridKey;
 
   void _initialize() {
+
     PlutoGridStateManager.initializeRows(
       refColumns.originalList,
       refRows.originalList,
+      eventManager,
     );
 
     refColumns.setFilter((element) => element.hide == false);
@@ -363,7 +365,8 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
   /// {@macro initialize_rows_sync_or_async}
   static List<PlutoRow> initializeRows(
     List<PlutoColumn> refColumns,
-    List<PlutoRow> refRows, {
+    List<PlutoRow> refRows,
+    PlutoGridEventManager? eventManager,{
     bool forceApplySortIdx = true,
     bool increase = true,
     int start = 0,
@@ -373,14 +376,14 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     }
 
     _ApplyList applyList = _ApplyList([
-      _ApplyCellForSetColumnRow(refColumns),
+      _ApplyCellForSetColumnRow(refColumns, eventManager),
       _ApplyRowForSortIdx(
         forceApply: forceApplySortIdx,
         increase: increase,
         start: start,
         firstRow: refRows.first,
       ),
-      _ApplyRowGroup(refColumns),
+      _ApplyRowGroup(refColumns, eventManager),
     ]);
 
     if (!applyList.apply) {
@@ -424,7 +427,8 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
   /// {@macro initialize_rows_sync_or_async}
   static Future<List<PlutoRow>> initializeRowsAsync(
     List<PlutoColumn> refColumns,
-    List<PlutoRow> refRows, {
+    List<PlutoRow> refRows,
+    PlutoGridEventManager eventManager, {
     bool forceApplySortIdx = true,
     bool increase = true,
     int start = 0,
@@ -463,6 +467,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
         return PlutoGridStateManager.initializeRows(
           refColumns,
           chunk,
+          eventManager,
           forceApplySortIdx: forceApplySortIdx,
           increase: increase,
           start: start + (chunkIndex * chunkSize),
@@ -649,8 +654,9 @@ class _ApplyList implements _Apply {
 
 class _ApplyCellForSetColumnRow implements _Apply {
   final List<PlutoColumn> refColumns;
+  final PlutoGridEventManager? eventManager;
 
-  _ApplyCellForSetColumnRow(this.refColumns);
+  _ApplyCellForSetColumnRow(this.refColumns, this.eventManager);
 
   @override
   bool get apply => true;
@@ -662,15 +668,16 @@ class _ApplyCellForSetColumnRow implements _Apply {
     }
 
     for (var element in refColumns) {
-      try {
-        row.cells[element.field]!
-          ..setColumn(element)
-          ..setRow(row);
-      }
-      catch(e) {
+      if (!row.cells.containsKey(element.field)) {
         debugPrint("Cell does not exist for column ${element.title}");
-        throw e;
+        eventManager?.addEvent(PlutoGridCellNotExistEvent(column: element.title));
+        continue;
       }
+
+      row.cells[element.field]!
+        ..setColumn(element)
+        ..setRow(row);
+
     }
   }
 }
@@ -710,8 +717,9 @@ class _ApplyRowForSortIdx implements _Apply {
 
 class _ApplyRowGroup implements _Apply {
   final List<PlutoColumn> refColumns;
+  final PlutoGridEventManager? eventManager;
 
-  _ApplyRowGroup(this.refColumns);
+  _ApplyRowGroup(this.refColumns, this.eventManager);
 
   @override
   bool get apply => true;
@@ -723,6 +731,7 @@ class _ApplyRowGroup implements _Apply {
         columns: refColumns,
         rows: row.type.group.children.originalList,
         parent: row,
+        eventManager: eventManager,
       );
     }
   }
@@ -731,12 +740,13 @@ class _ApplyRowGroup implements _Apply {
     required List<PlutoColumn> columns,
     required List<PlutoRow> rows,
     required PlutoRow parent,
+    required PlutoGridEventManager? eventManager,
   }) {
     for (final row in rows) {
       row.setParent(parent);
     }
 
-    PlutoGridStateManager.initializeRows(columns, rows);
+    PlutoGridStateManager.initializeRows(columns, rows, eventManager);
   }
 
   bool _hasChildren(PlutoRow row) {

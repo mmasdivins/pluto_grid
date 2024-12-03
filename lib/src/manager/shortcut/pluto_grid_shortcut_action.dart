@@ -894,7 +894,8 @@ class PlutoGridActionInsert extends PlutoGridShortcutAction {
 
     if (stateManager.isEditing == true
         || stateManager.showLoading
-        || stateManager.mode == PlutoGridMode.readOnly
+        // || stateManager.mode == PlutoGridMode.readOnly
+        || !stateManager.mode.isEditableMode
         || stateManager.currentCellPosition == null
         || stateManager.currentCellPosition?.rowIdx == null) {
       return;

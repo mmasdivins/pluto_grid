@@ -347,6 +347,7 @@ mixin RowGroupState implements IPlutoGridState {
       PlutoGridStateManager.initializeRows(
         refColumns.originalList,
         rows,
+        eventManager,
         forceApplySortIdx: false,
       );
     }
