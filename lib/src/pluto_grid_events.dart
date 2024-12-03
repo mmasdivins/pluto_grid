@@ -387,3 +387,14 @@ class PlutoGridOnColumnsMovedEvent {
     return text;
   }
 }
+
+/// When the active cell changes this callback is called
+class PlutoGridOnActiveCellChangedEvent {
+  final int idx;
+  final PlutoCell? cell;
+
+  const PlutoGridOnActiveCellChangedEvent({
+    required this.idx,
+    required this.cell,
+  });
+}

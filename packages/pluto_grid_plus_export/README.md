@@ -1,8 +1,4 @@
-<<<<<<< HEAD:packages/pluto_grid_export/README.md
 ## PlutoGridExport for PlutoGrid - v1.0.5
-=======
-## PlutoGridExport for PlutoGrid - v1.0.4
->>>>>>> pluto_grid_plus/master:packages/pluto_grid_plus_export/README.md
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

@@ -78,6 +78,8 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     required this.scroll,
     this.sortOrder = const [],
     List<PlutoColumnGroup>? columnGroups,
+    this.rowWrapper,
+    this.editCellWrapper,
     this.onChanged,
     this.onRowChanged,
     this.onLastRowKeyDown,
@@ -94,6 +96,7 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     this.onRowExit,
     this.onRowsMoved,
     this.onColumnTap,
+    this.onActiveCellChanged,
     this.onColumnsMoved,
     this.rowColorCallback,
     this.selectDateCallback,
@@ -125,6 +128,13 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
     setGridMode(mode ?? PlutoGridMode.normal);
     _initialize();
   }
+
+  @override
+  final Widget Function(Widget rowWidget)? rowWrapper;
+
+  @override
+  final Widget Function(Widget editCellWidget, PlutoCell cell,
+      TextEditingController controller)? editCellWrapper;
 
   @override
   final FilteredList<PlutoColumn> refColumns;
@@ -191,6 +201,9 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 
   @override
   final PlutoOnColumnTapEventCallback? onColumnTap;
+
+  @override
+  final PlutoOnActiveCellChangedEventCallback? onActiveCellChanged;
 
   @override
   final PlutoOnColumnsMovedEventCallback? onColumnsMoved;
@@ -294,14 +307,14 @@ class PlutoGridStateChangeNotifier extends PlutoChangeNotifier
 /// ```
 /// {@endtemplate}
 class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
-  final rowWrapper;
   PlutoGridStateManager({
     required super.columns,
     required super.rows,
     required super.gridFocusNode,
     required super.scroll,
     super.sortOrder,
-    this.rowWrapper,
+    super.rowWrapper,
+    super.editCellWrapper,
     super.columnGroups,
     super.onChanged,
     super.onRowChanged,
@@ -319,6 +332,7 @@ class PlutoGridStateManager extends PlutoGridStateChangeNotifier {
     super.onRowExit,
     super.onRowsMoved,
     super.onColumnTap,
+    super.onActiveCellChanged,
     super.onColumnsMoved,
     super.rowColorCallback,
     super.selectDateCallback,

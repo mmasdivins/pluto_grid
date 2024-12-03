@@ -92,6 +92,9 @@ typedef PlutoEnableCheckSelectionCallBack = bool? Function(PlutoRow currentRow);
 
 typedef PlutoOnSearchCallBack = void Function(PlutoGridStateManager stateManager);
 
+typedef PlutoOnActiveCellChangedEventCallback = void Function(
+  PlutoGridOnActiveCellChangedEvent event);
+
 /// [PlutoGrid] is a widget that receives columns and rows and is expressed as a grid-type UI.
 ///
 /// [PlutoGrid] supports movement and editing with the keyboard,
@@ -101,13 +104,13 @@ typedef PlutoOnSearchCallBack = void Function(PlutoGridStateManager stateManager
 /// and option selection used inside [PlutoGrid] are created with the API provided outside of [PlutoGrid].
 /// Also, the popup to set the filter or column inside the grid is implemented through the setting of [PlutoGrid].
 class PlutoGrid extends PlutoStatefulWidget {
-  final rowWrapper;
   const PlutoGrid({
     super.key,
     required this.columns,
     required this.rows,
     this.sortOrder = const [],
     this.rowWrapper,
+    this.editCellWrapper,
     this.columnGroups,
     this.onLoaded,
     this.onChanged,
@@ -126,6 +129,7 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.onRowEnter,
     this.onRowExit,
     this.onRowsMoved,
+    this.onActiveCellChanged,
     this.onColumnsMoved,
     this.createHeader,
     this.createFooter,
@@ -144,6 +148,11 @@ class PlutoGrid extends PlutoStatefulWidget {
     this.enableCheckSelection,
     this.onSearchCallback,
   });
+
+  final Widget Function(Widget rowWidget)? rowWrapper;
+
+  final Widget Function(Widget editCellWidget, PlutoCell cell,
+      TextEditingController controller)? editCellWrapper;
 
   /// {@template pluto_grid_property_columns}
   /// The [PlutoColumn] column is delivered as a list and can be added or deleted after grid creation.
@@ -314,6 +323,13 @@ class PlutoGrid extends PlutoStatefulWidget {
   /// [onColumnTap] is called after the column is tapped
   /// {@endtemplate}
   final PlutoOnColumnTapEventCallback? onColumnTap;
+
+  /// {@template pluto_grid_property_onActiveCellChanged}
+  /// Callback for receiving events
+  /// when the active cell is changed
+  /// {@endtemplate}
+  final PlutoOnActiveCellChangedEventCallback? onActiveCellChanged;
+
 
   /// {@template pluto_grid_property_onColumnsMoved}
   /// Callback for receiving events
@@ -676,6 +692,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       rows: widget.rows,
       sortOrder: widget.sortOrder,
       rowWrapper: widget.rowWrapper,
+      editCellWrapper: widget.editCellWrapper,
       gridFocusNode: _gridFocusNode,
       scroll: PlutoGridScrollController(
         vertical: _verticalScroll,
@@ -698,6 +715,7 @@ class PlutoGridState extends PlutoStateWithChange<PlutoGrid> {
       onRowExit: widget.onRowExit,
       onRowsMoved: widget.onRowsMoved,
       onColumnTap: widget.onColumnTap,
+      onActiveCellChanged: widget.onActiveCellChanged,
       onColumnsMoved: widget.onColumnsMoved,
       rowColorCallback: widget.rowColorCallback,
       selectDateCallback: widget.selectDateCallback,

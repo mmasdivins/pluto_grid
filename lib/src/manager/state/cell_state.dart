@@ -285,6 +285,11 @@ mixin CellState implements IPlutoGridState {
     }
 
     notifyListeners(notify, setCurrentCell.hashCode);
+
+    onActiveCellChanged?.call(PlutoGridOnActiveCellChangedEvent(
+      idx: rowIdx,
+      cell: _state._currentCell,
+    ));
   }
 
   bool _isRowDefault(PlutoRow row, PlutoGridStateManager stateManager){

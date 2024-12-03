@@ -29,16 +29,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#<<<<<<< HEAD:packages/pluto_grid_export/example/pubspec.yaml
+
 #  pluto_grid:
 #    path: ../../../
 ##    git:
 ##      url: https://github.com/mmasdivins/pluto_grid
 #  pluto_grid_export:
-#=======
-#  pluto_grid_plus: 8.4.2
+#  pluto_grid_plus: 8.4.3
   pluto_grid_plus:
-    path: ../../..
+      git:
+        url: https://github.com/mmasdivins/pluto_grid
+#    path: ../../..
   pluto_grid_plus_export:
     path: ../
   file_saver: ^0.2.12
