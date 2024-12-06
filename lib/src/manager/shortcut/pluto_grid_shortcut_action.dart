@@ -443,7 +443,7 @@ class PlutoGridActionDefaultEnterKey extends PlutoGridShortcutAction {
         row: stateManager.currentRow,
         rowIdx: stateManager.currentRowIdx,
         cell: stateManager.currentCell,
-        selectedRows: stateManager.mode.isMultiSelectMode
+        selectedRows: (stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectWithCrtlShift)
             ? stateManager.currentSelectingRows
             : null,
       ));

@@ -185,7 +185,7 @@ mixin CellState implements IPlutoGridState {
 
 
   void _selecting(int rowIdx, int? columnIdx) {
-    bool callOnSelected = mode.isMultiSelectMode;
+    bool callOnSelected = mode.isMultiSelectMode || mode.isMultiSelectWithCrtlShift;
 
     final bool checkSelectedRow = (selectingMode.isRow || selectingMode.isRowCell) &&
         isSelectedRow(refRows[rowIdx].key);

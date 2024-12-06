@@ -188,7 +188,7 @@ mixin SelectingState implements IPlutoGridState {
   }) {
     if (mode.isSingleSelectMode) {
       selectingMode = PlutoGridSelectingMode.none;
-    } else if (mode.isMultiSelectMode) {
+    } else if (mode.isMultiSelectMode || mode.isMultiSelectWithCrtlShift) {
       selectingMode = PlutoGridSelectingMode.row;
     }
 

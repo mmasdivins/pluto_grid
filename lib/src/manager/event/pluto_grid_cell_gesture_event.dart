@@ -104,7 +104,7 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
       PlutoGridScrollUpdateDirection.all,
     );
 
-    if (stateManager.mode.isMultiSelectMode) {
+    if (stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectWithCrtlShift) {
       stateManager.handleOnSelected();
     }
   }
@@ -141,7 +141,7 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
   }
 
   void _selecting(PlutoGridStateManager stateManager) {
-    bool callOnSelected = stateManager.mode.isMultiSelectMode;
+    bool callOnSelected = stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectWithCrtlShift;
 
     final bool checkSelectedRow = (stateManager.selectingMode.isRow || stateManager.selectingMode.isRowCell) &&
         stateManager.isSelectedRow(stateManager.refRows[rowIdx].key);
@@ -187,6 +187,9 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
         }
         break;
       case PlutoGridMode.multiSelect:
+        stateManager.toggleSelectingRow(rowIdx);
+        break;
+      case PlutoGridMode.multiSelectWithCtrlShift:
         stateManager.toggleSelectingRow(rowIdx);
         break;
     }

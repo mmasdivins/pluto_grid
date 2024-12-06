@@ -12,9 +12,9 @@ dependencies:
     sdk: flutter
 #  pluto_grid_plus: ^8.4.3
   pluto_grid_plus:
-    git:
-      url: https://github.com/mmasdivins/pluto_grid
-#    path: ../..
+#    git:
+#      url: https://github.com/mmasdivins/pluto_grid
+    path: ../..
   csv: ^6.0.0
   pdf: ^3.10.7
   printing: ^5.11.1

@@ -58,15 +58,23 @@ class PlutoBaseCell extends StatelessWidget
     if (stateManager.onRowDoubleTap == null){
       _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
     } else {
+      // _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
+      if (PlatformHelper.isDesktop &&
+          PlutoDoubleTapDetector.isDoubleTap(cell) &&
+          stateManager.onRowDoubleTap != null) {
+        _handleOnDoubleTap();
+        return;
+      }
+
       _onTapUp(details);
     }
-    // _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
-    if (PlatformHelper.isDesktop &&
-        PlutoDoubleTapDetector.isDoubleTap(cell) &&
-        stateManager.onRowDoubleTap != null) {
-      _handleOnDoubleTap();
-      return;
-    }
+    // // _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
+    // if (PlatformHelper.isDesktop &&
+    //     PlutoDoubleTapDetector.isDoubleTap(cell) &&
+    //     stateManager.onRowDoubleTap != null) {
+    //   _handleOnDoubleTap();
+    //   return;
+    // }
     _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
   }
 

@@ -54,6 +54,18 @@ enum PlutoGridMode {
   /// {@endtemplate}
   multiSelect,
 
+  /// {@template pluto_grid_mode_multiSelect}
+  /// Mode to select multiple rows with shift or control, but only one row without.
+  /// When a row is tapped, it is selected or deselected and the [PlutoGrid.onSelected] callback is called.
+  /// [PlutoGridOnSelectedEvent.selectedRows] contains the selected rows.
+  /// When a row is selected with keyboard shift + arrowDown/Up keys,
+  /// the [PlutoGrid.onSelected] callback is called only when the Enter key is pressed.
+  /// When the Escape key is pressed,
+  /// the selected row is canceled and the [PlutoGrid.onSelected] callback is called
+  /// with a [PlutoGridOnSelectedEvent.selectedRows] value of null.
+  /// {@endtemplate}
+  multiSelectWithCtrlShift,
+
   /// {@template pluto_grid_mode_popup}
   /// This is a mode for popup type.
   /// It is used when calling a popup for filtering or column setting
@@ -70,7 +82,7 @@ enum PlutoGridMode {
 
   bool get isEditableMode => isNormal || isPopup;
 
-  bool get isSelectMode => isSingleSelectMode || isMultiSelectMode;
+  bool get isSelectMode => isSingleSelectMode || isMultiSelectMode || isMultiSelectWithCrtlShift;
 
   bool get isSingleSelectMode => isSelect || isSelectWithOneTap;
 
@@ -81,6 +93,8 @@ enum PlutoGridMode {
   bool get isSelectWithOneTap => this == PlutoGridMode.selectWithOneTap;
 
   bool get isMultiSelect => this == PlutoGridMode.multiSelect;
+
+  bool get isMultiSelectWithCrtlShift => this == PlutoGridMode.multiSelectWithCtrlShift;
 
   bool get isPopup => this == PlutoGridMode.popup;
 }
