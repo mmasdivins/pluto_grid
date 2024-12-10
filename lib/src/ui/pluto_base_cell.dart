@@ -75,7 +75,7 @@ class PlutoBaseCell extends StatelessWidget
     //   _handleOnDoubleTap();
     //   return;
     // }
-    _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
+    // _addGestureEvent(PlutoGridGestureType.onTapUp, details.globalPosition);
   }
 
   void _handleOnLongPressStart(LongPressStartDetails details) {
@@ -352,9 +352,28 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
     // Si estem a la mateixa fila que tenim seleccionada, posem el color de la
     // cel·la i no el de read only
     var ccp = stateManager.currentCellPosition;
-    if (ccp != null && ccp.rowIdx == widget.rowIdx) {
-      cellColor = widget.column.cellColor?.call(widget.row.cells);
+    final keys = Set.from(stateManager.currentSelectingRows.map((e) => e.key));
+
+    switch(stateManager.selectingMode) {
+      case PlutoGridSelectingMode.cell:
+        if (ccp != null && ccp.rowIdx == widget.rowIdx) {
+          cellColor = widget.column.cellColor?.call(widget.row.cells);
+        }
+        break;
+      case PlutoGridSelectingMode.row:
+      case PlutoGridSelectingMode.rowCell:
+        if (keys.contains(widget.row.key)) {
+          cellColor = widget.column.cellColor?.call(widget.row.cells);
+        }
+        break;
+      case PlutoGridSelectingMode.none:
+      case PlutoGridSelectingMode.horizontal:
+        break;
     }
+
+    // if (ccp != null && ccp.rowIdx == widget.rowIdx) {
+    //   cellColor = widget.column.cellColor?.call(widget.row.cells);
+    // }
 
     if (isCurrentCell) {
       return BoxDecoration(
@@ -382,6 +401,20 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
         ),
       );
     } else {
+
+      if (isSelectedRow) {
+        cellColor = cellColor ?? _currentCellColor(
+          hasFocus: hasFocus,
+          isEditing: isEditing,
+          readOnly: readOnly,
+          gridBackgroundColor: gridBackgroundColor,
+          activatedColor: activatedColor,
+          cellColorInReadOnlyState: cellColorInReadOnlyState,
+          cellColorInEditState: cellColorInEditState,
+          selectingMode: selectingMode,
+        );
+      }
+
 
       BoxBorder? border = enableCellVerticalBorder
           ? BorderDirectional(

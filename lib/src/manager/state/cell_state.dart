@@ -10,6 +10,8 @@ abstract class ICellState {
 
   PlutoCell? get firstCell;
 
+  PlutoCell? get firstVisibleCell;
+
   void setCurrentCellPosition(
     PlutoGridCellPosition cellPosition, {
     bool notify = true,
@@ -95,6 +97,24 @@ mixin CellState implements IPlutoGridState {
     final columnField = refColumns[columnIndexes.first].field;
 
     return refRows.first.cells[columnField];
+  }
+
+  @override
+  PlutoCell? get firstVisibleCell {
+    if (refRows.isEmpty || refColumns.isEmpty) {
+      return null;
+    }
+
+    final columnIndexes = columnIndexesByShowFrozen;
+    for (var index in columnIndexes) {
+      if (refColumns[columnIndexes.first].hide)
+        continue;
+
+      final columnField = refColumns[columnIndexes.first].field;
+      return refRows.first.cells[columnField];
+    }
+
+    return null;
   }
 
   @override
@@ -185,7 +205,7 @@ mixin CellState implements IPlutoGridState {
 
 
   void _selecting(int rowIdx, int? columnIdx) {
-    bool callOnSelected = mode.isMultiSelectMode || mode.isMultiSelectWithCrtlShift;
+    bool callOnSelected = mode.isMultiSelectMode || mode.isMultiSelectAlwaysOne;
 
     final bool checkSelectedRow = (selectingMode.isRow || selectingMode.isRowCell) &&
         isSelectedRow(refRows[rowIdx].key);
@@ -202,8 +222,8 @@ mixin CellState implements IPlutoGridState {
     } else if (keyPressed.ctrl) {
       toggleSelectingRow(rowIdx);
     }
-    else if (!checkSelectedRow && selectingMode.isRowCell) {
-      toggleSelectingRow(rowIdx);
+    else if (!checkSelectedRow && mode.isMultiSelectAlwaysOne) {
+      toggleMultiSelectRow(rowIdx);
     }
     else {
       callOnSelected = false;
@@ -237,7 +257,7 @@ mixin CellState implements IPlutoGridState {
     }
 
     var oldCell = _state._currentCell;
-    var oldRowIdx = _state._currentCellPosition?.rowIdx ?? 0;
+    var oldRowIdx = _state._currentCellPosition?.rowIdx;
     _state._currentCell = cell;
 
     _state._currentCellPosition = PlutoGridCellPosition(
@@ -247,10 +267,11 @@ mixin CellState implements IPlutoGridState {
 
     // Clear selection if selecting mode is not rowCell or
     // old Row and new Row are different
-    if (!selectingMode.isRowCell || oldRowIdx != rowIdx) {
+    if (!selectingMode.isRowCell || oldRowIdx == null || oldRowIdx != rowIdx) {
       clearCurrentSelecting(notify: false);
     }
-    if (selectingMode.isRowCell && oldRowIdx != rowIdx){
+
+    if (selectingMode.isRowCell && (oldRowIdx == null || oldRowIdx != rowIdx)){
       _selecting(rowIdx, columnIdxByCellKeyAndRowIdx(cell.key, rowIdx));
     }
 
@@ -266,7 +287,7 @@ mixin CellState implements IPlutoGridState {
     if (mode != PlutoGridMode.readOnly
         && oldCell != null
         && oldCell.row != currentCell!.row
-        && oldRowIdx > rowIdx
+        && (oldRowIdx ?? 0) > rowIdx
         && configuration.lastRowKeyUpAction.isRemoveOne) {
 
       bool isRowDefault = isRowDefaultFunction(oldCell.row, this as PlutoGridStateManager);

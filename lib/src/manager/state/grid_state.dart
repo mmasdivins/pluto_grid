@@ -223,7 +223,7 @@ mixin GridState implements IPlutoGridState {
       case PlutoGridMode.multiSelect:
         selectingMode = PlutoGridSelectingMode.row;
         break;
-      case PlutoGridMode.multiSelectWithCtrlShift:
+      case PlutoGridMode.multiSelectAlwaysOne:
         selectingMode = PlutoGridSelectingMode.row;
         break;
     }
@@ -285,7 +285,7 @@ mixin GridState implements IPlutoGridState {
           row: currentRow,
           rowIdx: currentRowIdx,
           cell: currentCell,
-          selectedRows: (mode.isMultiSelectMode || mode.isMultiSelectWithCrtlShift) ? currentSelectingRows : null,
+          selectedRows: (mode.isMultiSelectMode || mode.isMultiSelectAlwaysOne) ? currentSelectingRows : null,
         ),
       );
     }

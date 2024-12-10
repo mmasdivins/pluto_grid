@@ -77,6 +77,9 @@ abstract class ISelectingState {
   /// Select or unselect a row.
   void toggleSelectingRow(int rowIdx, {bool notify = true});
 
+  /// Selects always the row and unselects the other rows
+  void toggleMultiSelectRow(int rowIdx, {bool notify = true});
+
   bool isSelectingInteraction();
 
   bool isSelectedRow(Key rowKey);
@@ -188,8 +191,10 @@ mixin SelectingState implements IPlutoGridState {
   }) {
     if (mode.isSingleSelectMode) {
       selectingMode = PlutoGridSelectingMode.none;
-    } else if (mode.isMultiSelectMode || mode.isMultiSelectWithCrtlShift) {
+    } else if (mode.isMultiSelectMode) {
       selectingMode = PlutoGridSelectingMode.row;
+    } else if (mode.isMultiSelectAlwaysOne) {
+      selectingMode = PlutoGridSelectingMode.rowCell;
     }
 
     if (_state._selectingMode == selectingMode) {
@@ -224,6 +229,7 @@ mixin SelectingState implements IPlutoGridState {
         );
         break;
       case PlutoGridSelectingMode.row:
+      case PlutoGridSelectingMode.rowCell:
         if (currentCell == null) {
           _setFistCellAsCurrent();
         }
@@ -388,15 +394,41 @@ mixin SelectingState implements IPlutoGridState {
 
     final keys = Set.from(currentSelectingRows.map((e) => e.key));
 
-    // Do not toggle out when selecting mode is RowCell
-    if (keys.contains(row.key) && !selectingMode.isRowCell) {
+    if (keys.contains(row.key)) {
       currentSelectingRows.removeWhere((element) => element.key == row.key);
-    } else {
+    } else if (!keys.contains(row.key)) {
+      // If it does not have the row we add it to the selecting list
       currentSelectingRows.add(row);
     }
 
     notifyListeners(notify, toggleSelectingRow.hashCode);
   }
+
+  @override
+  void toggleMultiSelectRow(int rowIdx, {bool notify = true}) {
+    if (!selectingMode.isRow && !selectingMode.isRowCell) {
+      return;
+    }
+
+    if (rowIdx == null || rowIdx < 0 || rowIdx > refRows.length - 1) {
+      return;
+    }
+
+    final PlutoRow row = refRows[rowIdx];
+
+    final keys = Set.from(currentSelectingRows.map((e) => e.key));
+
+    // We delete the rows that are not the selected one
+    currentSelectingRows.removeWhere((element) => element.key != row.key);
+
+    if (!keys.contains(row.key)) {
+      // If it does not have the row we add it to the selecting list
+      currentSelectingRows.add(row);
+    }
+
+    notifyListeners(notify, toggleMultiSelectRow.hashCode);
+  }
+
 
   @override
   bool isSelectingInteraction() {

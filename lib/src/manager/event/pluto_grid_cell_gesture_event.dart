@@ -104,7 +104,7 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
       PlutoGridScrollUpdateDirection.all,
     );
 
-    if (stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectWithCrtlShift) {
+    if (stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectAlwaysOne) {
       stateManager.handleOnSelected();
     }
   }
@@ -141,7 +141,7 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
   }
 
   void _selecting(PlutoGridStateManager stateManager) {
-    bool callOnSelected = stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectWithCrtlShift;
+    bool callOnSelected = stateManager.mode.isMultiSelectMode || stateManager.mode.isMultiSelectAlwaysOne;
 
     final bool checkSelectedRow = (stateManager.selectingMode.isRow || stateManager.selectingMode.isRowCell) &&
         stateManager.isSelectedRow(stateManager.refRows[rowIdx].key);
@@ -158,7 +158,7 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
     } else if (stateManager.keyPressed.ctrl) {
       stateManager.toggleSelectingRow(rowIdx);
     }
-    else if (!checkSelectedRow && stateManager.selectingMode.isRowCell) {
+    else if (!checkSelectedRow && stateManager.mode.isMultiSelectAlwaysOne) {
       stateManager.toggleSelectingRow(rowIdx);
     }
     else {
@@ -189,8 +189,9 @@ class PlutoGridCellGestureEvent extends PlutoGridEvent {
       case PlutoGridMode.multiSelect:
         stateManager.toggleSelectingRow(rowIdx);
         break;
-      case PlutoGridMode.multiSelectWithCtrlShift:
-        stateManager.toggleSelectingRow(rowIdx);
+      case PlutoGridMode.multiSelectAlwaysOne:
+        stateManager.setCurrentCell(cell, rowIdx);
+        // stateManager.toggleSelectingRow(rowIdx);
         break;
     }
 

@@ -152,6 +152,7 @@ abstract class PlutoChangeNotifierFilterResolver {
           'setCurrentSelectingRowsByRange',
       stateManager.clearCurrentSelecting.hashCode: 'clearCurrentSelecting',
       stateManager.toggleSelectingRow.hashCode: 'toggleSelectingRow',
+      stateManager.toggleMultiSelectRow.hashCode: 'toggleMultiSelectRow',
       stateManager.handleAfterSelectingRow.hashCode: 'handleAfterSelectingRow',
 
       /// hovering_state
