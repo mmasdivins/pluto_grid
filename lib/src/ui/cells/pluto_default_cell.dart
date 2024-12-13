@@ -391,6 +391,11 @@ class CheckboxSelectionWidgetState
   }
 
   void _handleOnChanged(bool? changed) {
+    bool enabled = stateManager.enableCheckSelection?.call(widget.row) ?? true;
+    if (!enabled) {
+      return;
+    }
+
     if (changed == _checked) {
       return;
     }
