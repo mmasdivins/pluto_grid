@@ -175,7 +175,7 @@ mixin RowState implements IPlutoGridState {
       if (countTrue > 0 && countFalse > 0) return null;
     }
 
-    return countTrue == lengthCheckableRows;
+    return (countTrue == lengthCheckableRows) && (countTrue > 0);
   }
 
   @override
