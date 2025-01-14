@@ -301,7 +301,7 @@ mixin CellState implements IPlutoGridState {
       await notifyTrackingRow(rowIdx);
     }
 
-    if (oldRowIdx != rowIdx && rowIdx < refRows.length && currentCell!.row.state == PlutoRowState.added) {
+    if (oldRowIdx != rowIdx && rowIdx < refRows.length && currentCell != null && currentCell!.row.state == PlutoRowState.added) {
       trackRowCell(rowIdx, currentCell!.row);
     }
 
