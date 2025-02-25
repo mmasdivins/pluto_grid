@@ -1113,7 +1113,12 @@ mixin ColumnState implements IPlutoGridState {
       final List<MapEntry<String, PlutoCell>> cells = [];
 
       for (var column in columns) {
-        final cell = PlutoCell(value: column.type.defaultValue)
+        var value = column.type.defaultValue;
+        if (column.type.defaultValue is Function){
+          value = column.type.defaultValue.call();
+        }
+
+        final cell = PlutoCell(value: value)
           ..setRow(row)
           ..setColumn(column);
 
