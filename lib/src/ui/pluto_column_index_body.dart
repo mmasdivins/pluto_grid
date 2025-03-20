@@ -99,9 +99,11 @@ class PlutoColumnIndexBodyState extends PlutoStateWithChange<PlutoColumnIndexBod
         var row = stateManager.refRows[i];
 
         if (row.isLoading) {
-          return const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: CircularProgressIndicator()
+          return const Center(
+            child: Padding(
+                padding: EdgeInsets.all(4.0),
+                child: CircularProgressIndicator()
+            ),
           );
         }
         else if (row.errorState.error) {
